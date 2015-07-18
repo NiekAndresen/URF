@@ -2,9 +2,28 @@
 #include <stdio.h>
 #include <assert.h>
 #include <ctype.h>
-#include "graph.h"
+#include "graphURF.h"
 
-void readInList(Graph *gra, char *path)
+/** Fills the 'edges' array which contains all edges as pairs of vertices (smaller vertex index first) */
+void enumerateEdges(GraphURF *gra)
+{
+    int ed=0,li,ve;
+    //read over all of the adjLists
+    for(li=0; li<gra->V; ++li)
+    {
+        for(ve=0; ve<gra->degree[li]; ++ve)
+        {
+            if(li < gra->adjList[li][ve])
+            {
+                gra->edges[ed][0] = li;
+                gra->edges[ed][1] = gra->adjList[li][ve];
+                ++ed;
+            }
+        }
+    }
+}
+
+void readInList(GraphURF *gra, char *path)
 {
     int i, temp;
     int V, E=0;
@@ -71,6 +90,8 @@ void readInList(Graph *gra, char *path)
     }
     
     fclose(fp);
+    
+    enumerateEdges(gra);
 }
 
 void usage()

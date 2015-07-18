@@ -3,18 +3,18 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <stdio.h>
-#include "graph.h"
+#include "graphURF.h"
 #include "utility.h"
 #include "apsp.h"
 
-void initializeSPathInfo(sPathInfo *info, Graph *gra)
+void initializeSPathInfo(sPathInfo *info, GraphURF *gra)
 {
     info->pred = alloc2DIntArray(gra->V, gra->V);
     info->dist = alloc2DIntArray(gra->V, gra->V);
     info->reachable = alloc2DCharArray(gra->V, gra->V);
 }
 
-void findpaths(sPathInfo *spi, Graph *gra)
+void findpaths(sPathInfo *spi, GraphURF *gra)
 {
     int i,j,w,adj,run;
     int q_head, q_nextfree, q_size;
@@ -40,6 +40,7 @@ void findpaths(sPathInfo *spi, Graph *gra)
                 color[j] = 'w'; //white
             }
             spi->dist[i][i] = 0;
+            spi->pred[i][i] = i;
             color[i] = 'b'; //black
             queue[q_nextfree]=i; //enqueue
             ++q_nextfree; //enqueue
@@ -63,14 +64,17 @@ void findpaths(sPathInfo *spi, Graph *gra)
                                 spi->reachable[i][j] = 0;
                             }
                         }
+                        if(run==1 || (spi->dist[i][w]+1 < spi->dist[i][j]))
+                        {//if 2nd run and dist stays the same, pred shouldn't change to keep the shortest path along ordering
+                            spi->pred[i][j] = w; //predecessor of j on a shortest path from i to j
+                        }
                         spi->dist[i][j] = spi->dist[i][w] + 1;
-                        spi->pred[i][j] = w; //predecessor of j on a shortest path from i to j
                         color[j] = 'b';
                         queue[q_nextfree] = j; //enqueue
                         ++q_nextfree; //enqueue
                         ++q_size; //enqueue
                         if(run==1)
-                        {
+                        {//reachable should not change to 1 in the 2nd run
                             spi->reachable[i][j] = 1;
                         }
                     }
@@ -83,7 +87,7 @@ void findpaths(sPathInfo *spi, Graph *gra)
     free(queue);
 }
 
-sPathInfo *AllPairsShortestPaths(Graph *gra)
+sPathInfo *AllPairsShortestPaths(GraphURF *gra)
 {
     sPathInfo *info = malloc(sizeof(*info));
     

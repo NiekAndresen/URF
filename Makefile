@@ -3,8 +3,8 @@
 CC=clang
 CFLAGS=-Wall -Werror
 
-BIN = niek
-SOURCE = URF.c io.c graph.c utility.c apsp.c
+BIN = testURF.x
+SOURCE = main.c URF.c io.c graphURF.c utility.c apsp.c
 OBJECTS = $(SOURCE:.c=.o)
 
 $(BIN): $(OBJ)

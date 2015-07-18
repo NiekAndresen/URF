@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "graph.h"
+#include "graphURF.h"
 
-void initGraph(Graph *gra, int V, int E, int *degree)
+void initGraph(GraphURF *gra, int V, int E, int *degree)
 {
     int i;
     int **adjList;
+    int **edges;
     
     gra->V = V;
     gra->E = E;
@@ -18,9 +19,16 @@ void initGraph(Graph *gra, int V, int E, int *degree)
         adjList[i] = malloc(degree[i] * sizeof(**adjList));
     }
     gra->adjList = adjList;
+    
+    edges = malloc(E * sizeof(*edges));
+    for(i=0; i<E; ++i)
+    {
+        edges[i] = malloc(2 * sizeof(**edges));
+    }
+    gra->edges = edges;
 }
 
-void deleteGraph(Graph *gra)
+void deleteGraph(GraphURF *gra)
 {
     assert(gra != NULL);
     int i;
@@ -32,10 +40,15 @@ void deleteGraph(Graph *gra)
         }
     }
     free(gra->adjList);
+    for(i=0; i<gra->E; ++i)
+    {
+        free(gra->edges[i]);
+    }
+    free(gra->edges);
     free(gra->degree);
 }
 
-void printGraph(Graph *graph)
+void printGraph(GraphURF *graph)
 {
     int i,j;
     
@@ -48,5 +61,11 @@ void printGraph(Graph *graph)
             printf("%d ",graph->adjList[i][j]);
         }
         printf("\n");
-    }    
+    }
+    printf("edges:\n");
+    for(i=0; i<graph->E; ++i)
+    {
+        printf("%d: [%d,%d]\n", i, graph->edges[i][0], graph->edges[i][1]);
+    }
+    printf("\n");
 }

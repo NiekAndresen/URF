@@ -10,7 +10,7 @@ typedef struct{
 }sPathInfo;
 
 /** Solves the "All Pairs Shortest Paths" on the Graph and returns the result */
-sPathInfo *AllPairsShortestPaths(Graph *gra);
+sPathInfo *AllPairsShortestPaths(GraphURF *gra);
 
 /** Deletes everything that 'AllPairsShortestPaths' has created */
 void deleteAPSP(sPathInfo *info);
