@@ -1,3 +1,5 @@
+/* Niek Andresen 2015 - Bachelor Thesis */
+
 #include <stdlib.h>
 #include "URF.h"
 #include "apsp.h"

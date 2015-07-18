@@ -1,3 +1,5 @@
+/* Niek Andresen 2015 - Bachelor Thesis */
+
 #ifndef URF_H
 #define URF_H
 

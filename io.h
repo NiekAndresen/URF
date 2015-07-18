@@ -1,3 +1,5 @@
+/* Niek Andresen 2015 - Bachelor Thesis */
+
 #ifndef IO_H
 #define IO_H
 

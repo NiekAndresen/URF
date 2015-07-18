@@ -1,4 +1,4 @@
-/** Niek Andresen 2015 - Bachelor Thesis */
+/* Niek Andresen 2015 - Bachelor Thesis */
 
 #include <stdio.h>
 #include <stdlib.h>

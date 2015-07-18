@@ -1,3 +1,5 @@
+/* Niek Andresen 2015 - Bachelor Thesis */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>

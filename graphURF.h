@@ -1,3 +1,5 @@
+/* Niek Andresen 2015 - Bachelor Thesis */
+
 #ifndef GRAPHURF_H
 #define GRAPHURF_H
 
