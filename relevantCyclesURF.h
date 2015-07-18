@@ -16,7 +16,8 @@ typedef struct{
 /** contains the relevant cycles */
 typedef struct{
     rcf *fams;
-    int nofFams; /*number of relevant cycle families*/    
+    int nofFams; /*number of relevant cycle families*/ 
+    int iter; /*iterator*/   
 } rcURF;
 
 /** uses Vismara's algorithm to find relevant cycles represented by relevant cycle families */

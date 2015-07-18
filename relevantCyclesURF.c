@@ -1,5 +1,6 @@
 /* Niek Andresen 2015 - Bachelor Thesis */
 
+#include <limits.h>
 #include "apsp.h"
 #include "graphURF.h"
 #include "relevantCyclesURF.h"
@@ -52,10 +53,25 @@ int pathsShareOnlyStart(int r, int y, int z, GraphURF *gra, sPathInfo *spi)
     return result;
 }
 
-/** just like in Vismara's pseudocode */
-void vismara(rcURF *rc, GraphURF *gra, sPathInfo *spi)
+void addOdd(int r, int y, int z, GraphURF *gra, sPathInfo *spi, rcURF *rc)//TODO inprogress
 {
-    int i,j;
+    rcf *new = malloc(sizeof(**rc->fams));
+    int *proto = malloc(gra->E * sizeof(*proto));
+    new->r = r;
+    new->p = y;
+    new->q = z;
+    new->x = INT_MAX; //odd cycle
+    new->mark = 0;
+    //TODO function that finds edge numbers on path
+    rc->prototype = proto;
+    rc->fams[rc->iter++] = new;
+    
+}
+
+/** just like in Vismara's pseudocode */
+void vismara(rcURF *rc, GraphURF *gra, sPathInfo *spi)//TODO inprogress
+{
+    int i, j, famNo=0;
     int rv,yv,zv,pv,qv; /*variables as in Vismara's algorithm, extended by a 'v'*/
     char *evenCand; /*'S' in Vismara's algorithm*/
     evenCand = malloc(gra->V * sizeof(*evenCand));
@@ -82,19 +98,19 @@ void vismara(rcURF *rc, GraphURF *gra, sPathInfo *spi)
                         else if(spi->dist[rv][zv] != spi->dist[rv][yv] + 1
                                 && (gra->degree[zv] < gra->degree[yv] || (gra->degree[zv] == gra->degree[yv] && zv<yv))
                                 && pathsShareOnlyStart(rv, yv, zv, gra, spi) == 1)
-                        {
-                            //add odd cycle r-y r-z z-y
+                        {/*add odd cycle rv-yv rv-zv zv-yv*/
+                            addOdd(rv, yv, zv, gra, spi, rc);
                         }
                     }
                 }
-                /*any pair in even cand*/
+                /*any pair in evenCand*/
                 for(pv=0; pv<gra->V; ++pv)
-                    for(qv=i+1 qv<gra-V; ++qv)
+                    for(qv=pv+1 qv<gra-V; ++qv)
                     {
                         if((evenCand[pv] == 1) && (evenCand[qv] == 1)
                             && (pathsShareOnlyStart(rv, pv, qv, gra, spi) == 1))
-                        {
-                            //add even cycle r-p r-q p-y-q
+                        {/*add even cycle rv-pv rv-qv pv-yv-qv*/
+                            
                         }
                     }
             }
@@ -107,12 +123,16 @@ void vismara(rcURF *rc, GraphURF *gra, sPathInfo *spi)
 rcURF *findRelCycles(GraphURF *gra, sPathInfo *spi)
 {
     rcURF *rc = malloc(sizeof(*rc));
+    rc->fams = malloc(2*gra->E*gra->E + (gra->E-gra->V+1)*gra-V)); /*number of RCFs is at most 2m²+vn (Vismara Lemma 3)*/
+    rc->nofFams = 0;
+    rc->iter = 0;
     vismara(rc, gra, spi);
     return rc;
 }
 
 void deleteRelCycles(rcURF *rc)
 {
+    free(rc->fams);
     free(rc);
 }
 
