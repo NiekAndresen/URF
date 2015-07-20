@@ -10,6 +10,7 @@ void initGraph(GraphURF *gra, int V, int E, int *degree)
     int i;
     int **adjList;
     int **edges;
+    int *startIdxEdges;
     
     gra->V = V;
     gra->E = E;
@@ -28,6 +29,9 @@ void initGraph(GraphURF *gra, int V, int E, int *degree)
         edges[i] = malloc(2 * sizeof(**edges));
     }
     gra->edges = edges;
+    
+    startIdxEdges = malloc(V * sizeof(*startIdxEdges));
+    gra->startIdxEdges = startIdxEdges;
 }
 
 void deleteGraph(GraphURF *gra)
@@ -48,6 +52,7 @@ void deleteGraph(GraphURF *gra)
     }
     free(gra->edges);
     free(gra->degree);
+    free(gra->startIdxEdges);
 }
 
 void printGraph(GraphURF *graph)

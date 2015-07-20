@@ -13,6 +13,7 @@ void enumerateEdges(GraphURF *gra)
     //read over all of the adjLists
     for(li=0; li<gra->V; ++li)
     {
+        gra->startIdxEdges[li] = ed; 
         for(ve=0; ve<gra->degree[li]; ++ve)
         {
             if(li < gra->adjList[li][ve])

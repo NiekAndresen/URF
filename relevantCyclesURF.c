@@ -53,6 +53,71 @@ int pathsShareOnlyStart(int r, int y, int z, GraphURF *gra, sPathInfo *spi)
     return result;
 }
 
+/** returns the id-no of the edge (from,to) [used in findPrototype]*/
+int giveEdgeNo(int from, int to, GraphURF* gra)
+{
+    int edge;
+    
+    if(from > to)
+    {/*swap order to make from < to*/
+        edge = to;
+        to = from;
+        from = edge;
+    }
+    
+    /*only place where startIdxEdge is used*/
+    for(edge=gra->startIdxEdge[from]; edge<gra->E; ++edge)
+    {
+        if(gra->edges[edge][0] == from && gra->edges[edge][1] == to)
+        {
+            break;
+        }
+    }
+    return edge;
+}
+
+/** returns a cycle vector (element of {0,1}^m). odd (x=INT_MAX) or even cycle.*/
+int *findPrototype(int r, int y, int z, int x, Graph *gra, sPathInfo *spi)
+{
+    int i, vert1, vert2;
+    int *proto;
+    
+    proto = malloc(gra->E * sizeof(*proto));
+    for(i=0; i<gra->E; ++i)
+    {
+        proto[i] = 0;
+    }
+    /*path from r to y*/
+    vert1 = spi->pred[r][y];
+    vert2 = y;
+    do
+    {
+        proto[giveEdgeNo(vert1, vert2, gra)] = 1;
+        vert2 = vert1;
+        vert1 = pred[r][vert1];
+    }while(vert1 != r)
+    /*path from r to z*/
+    vert1 = spi->pred[r][z];
+    vert2 = z;
+    do
+    {
+        proto[giveEdgeNo(vert1, vert2, gra)] = 1;
+        vert2 = vert1;
+        vert1 = pred[r][vert1];
+    }while(vert1 != r)
+    if(x == INT_MAX)/*odd cycle*/
+    {
+        proto[giveEdgeNo(y,z)] = 1;
+    }
+    else /*even cycle*/
+    {
+        proto[giveEdgeNo(y,x)] = 1;
+        proto[giveEdgeNo(z,x)] = 1;
+    }
+    return proto;
+}
+
+/** fills the rc datastructure with the odd cycle r-y-z */
 void addOdd(int r, int y, int z, GraphURF *gra, sPathInfo *spi, rcURF *rc)//TODO inprogress
 {
     rcf *new = malloc(sizeof(**rc->fams));
@@ -130,7 +195,7 @@ rcURF *findRelCycles(GraphURF *gra, sPathInfo *spi)
     return rc;
 }
 
-void deleteRelCycles(rcURF *rc)
+void deleteRelCycles(rcURF *rc)//TODO free individual rcs
 {
     free(rc->fams);
     free(rc);
