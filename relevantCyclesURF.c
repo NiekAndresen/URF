@@ -1,6 +1,8 @@
 /* Niek Andresen 2015 - Bachelor Thesis */
 
+#include <stdlib.h>
 #include <limits.h>
+#include <stdio.h>
 #include "apsp.h"
 #include "graphURF.h"
 #include "relevantCyclesURF.h"
@@ -9,9 +11,9 @@
 int pathsShareOnlyStart(int r, int y, int z, GraphURF *gra, sPathInfo *spi)
 {
     int result = 0, i, pnt, count=0;
-    int *edgesInRY, *edgesInRZ; /*edges in P(r,y) and P(r,z)*/
+    int *vertInRY, *vertInRZ; /*edges in P(r,y) and P(r,z)*/
     vertInRY = malloc(gra->V * sizeof(*vertInRY));
-    vertnRZ = malloc(gra->V * sizeof(*vertInRZ));
+    vertInRZ = malloc(gra->V * sizeof(*vertInRZ));
     
     for(i=0; i<gra->V; ++i)
     {
@@ -21,21 +23,21 @@ int pathsShareOnlyStart(int r, int y, int z, GraphURF *gra, sPathInfo *spi)
     vertInRY[y] = 1;
     vertInRZ[z] = 1;
     /*find out which vertices are on the path P(r,y)*/
-    pnt = spi->pred[r][y]
+    pnt = y;
     do
     {
+      pnt = spi->pred[r][pnt];  
       vertInRY[pnt] = 1;
-      pnt = spi->pred[r][pnt];  
-    }while(pnt != r)
+    }while(pnt != r);
     /*find out which vertices are on the path P(r,z)*/
-    pnt = spi->pred[r][z]
+    pnt = z;
     do
     {
-      vertInRZ[pnt] = 1;
       pnt = spi->pred[r][pnt];  
-    }while(pnt != r)
+      vertInRZ[pnt] = 1;
+    }while(pnt != r);
     /*find out if more than one vertex is shared by the paths*/
-    for(i=0; i<gra->V, count<2; ++i)
+    for(i=0; i<gra->V && count<2; ++i)
     {
         if(vertInRY[i] == 1 && vertInRZ[i] == 1)
         {
@@ -65,8 +67,8 @@ int giveEdgeNo(int from, int to, GraphURF* gra)
         from = edge;
     }
     
-    /*only place where startIdxEdge is used*/
-    for(edge=gra->startIdxEdge[from]; edge<gra->E; ++edge)
+    /*only place where startIdxEdges is used*/
+    for(edge=gra->startIdxEdges[from]; edge<gra->E; ++edge)
     {
         if(gra->edges[edge][0] == from && gra->edges[edge][1] == to)
         {
@@ -77,10 +79,10 @@ int giveEdgeNo(int from, int to, GraphURF* gra)
 }
 
 /** returns a cycle vector (element of {0,1}^m). odd (x=INT_MAX) or even cycle.*/
-int *findPrototype(int r, int y, int z, int x, Graph *gra, sPathInfo *spi)
+char *findPrototype(int r, int y, int z, int x, GraphURF *gra, sPathInfo *spi)
 {
     int i, vert1, vert2;
-    int *proto;
+    char *proto;
     
     proto = malloc(gra->E * sizeof(*proto));
     for(i=0; i<gra->E; ++i)
@@ -88,55 +90,78 @@ int *findPrototype(int r, int y, int z, int x, Graph *gra, sPathInfo *spi)
         proto[i] = 0;
     }
     /*path from r to y*/
-    vert1 = spi->pred[r][y];
-    vert2 = y;
+    vert1 = y;
     do
     {
-        proto[giveEdgeNo(vert1, vert2, gra)] = 1;
         vert2 = vert1;
-        vert1 = pred[r][vert1];
-    }while(vert1 != r)
+        vert1 = spi->pred[r][vert1];
+        proto[giveEdgeNo(vert1, vert2, gra)] = 1;
+    }while(vert1 != r);
     /*path from r to z*/
-    vert1 = spi->pred[r][z];
-    vert2 = z;
+    vert1 = z;
     do
     {
-        proto[giveEdgeNo(vert1, vert2, gra)] = 1;
         vert2 = vert1;
-        vert1 = pred[r][vert1];
-    }while(vert1 != r)
+        vert1 = spi->pred[r][vert1];
+        proto[giveEdgeNo(vert1, vert2, gra)] = 1;
+    }while(vert1 != r);
     if(x == INT_MAX)/*odd cycle*/
     {
-        proto[giveEdgeNo(y,z)] = 1;
+        proto[giveEdgeNo(y,z,gra)] = 1;
     }
     else /*even cycle*/
     {
-        proto[giveEdgeNo(y,x)] = 1;
-        proto[giveEdgeNo(z,x)] = 1;
+        proto[giveEdgeNo(y,x,gra)] = 1;
+        proto[giveEdgeNo(z,x,gra)] = 1;
     }
     return proto;
 }
 
-/** fills the rc datastructure with the odd cycle r-y-z */
-void addOdd(int r, int y, int z, GraphURF *gra, sPathInfo *spi, rcURF *rc)//TODO inprogress
+/** fills the rc datastructure with the odd cycle r-y-z-r */
+void addOdd(int r, int y, int z, GraphURF *gra, sPathInfo *spi, rcURF *rc)
 {
-    rcf *new = malloc(sizeof(**rc->fams));
-    int *proto = malloc(gra->E * sizeof(*proto));
+    rcf *new = malloc(sizeof(*new));
     new->r = r;
     new->p = y;
     new->q = z;
     new->x = INT_MAX; //odd cycle
     new->mark = 0;
-    //TODO function that finds edge numbers on path
-    rc->prototype = proto;
-    rc->fams[rc->iter++] = new;
-    
+    new->prototype = findPrototype(r, y, z, INT_MAX, gra, spi);
+    rc->fams[rc->nofFams++] = new;
+}
+
+/** fills the rc datastructure with the even cycle r-y-x-z-r */
+void addEven(int r, int y, int x, int z, GraphURF *gra, sPathInfo *spi, rcURF *rc)
+{
+    rcf *new = malloc(sizeof(**rc->fams));
+    new->r = r;
+    new->p = y;
+    new->q = z;
+    new->x = x; //even cycle
+    new->mark = 0;
+    new->prototype = findPrototype(r, y, z, x, gra, spi);
+    rc->fams[rc->nofFams++] = new;
+}
+
+/** returns 1 if y is adjacent to z or 0 otherwise */
+int adjacent(int y, int z, GraphURF *gra)
+{
+    int i, result = 0;
+    for(i=0; i<gra->degree[y]; ++i)
+    {
+        if(gra->adjList[y][i] == z)
+        {
+            result = 1;
+            break;
+        }
+    }
+    return result;
 }
 
 /** just like in Vismara's pseudocode */
-void vismara(rcURF *rc, GraphURF *gra, sPathInfo *spi)//TODO inprogress
+void vismara(rcURF *rc, GraphURF *gra, sPathInfo *spi)
 {
-    int i, j, famNo=0;
+    int i;
     int rv,yv,zv,pv,qv; /*variables as in Vismara's algorithm, extended by a 'v'*/
     char *evenCand; /*'S' in Vismara's algorithm*/
     evenCand = malloc(gra->V * sizeof(*evenCand));
@@ -152,11 +177,11 @@ void vismara(rcURF *rc, GraphURF *gra, sPathInfo *spi)//TODO inprogress
                 {
                     evenCand[i] = 0;
                 }
-                for(zv=0; zv<gra-V; ++v)
-                {/*all zv reachable from rv respecting the ordering*/
-                    if(spi->reachable[rv][zv] == 1)
+                for(zv=0; zv<gra->V; ++zv)
+                {/*all zv reachable from rv respecting the ordering and adjacent to yv*/
+                    if(spi->reachable[rv][zv] == 1 && adjacent(yv,zv,gra) == 1)
                     {   
-                        if(spi->dist[rv][zv] + 1 = spi->dist[rv][yz])
+                        if(spi->dist[rv][zv] + 1 == spi->dist[rv][yv])
                         {
                             evenCand[zv] = 1;
                         }
@@ -164,18 +189,20 @@ void vismara(rcURF *rc, GraphURF *gra, sPathInfo *spi)//TODO inprogress
                                 && (gra->degree[zv] < gra->degree[yv] || (gra->degree[zv] == gra->degree[yv] && zv<yv))
                                 && pathsShareOnlyStart(rv, yv, zv, gra, spi) == 1)
                         {/*add odd cycle rv-yv rv-zv zv-yv*/
+printf("adding odd: r:%d y:%d z:%d\n",rv,yv,zv);
                             addOdd(rv, yv, zv, gra, spi, rc);
                         }
                     }
                 }
                 /*any pair in evenCand*/
                 for(pv=0; pv<gra->V; ++pv)
-                    for(qv=pv+1 qv<gra-V; ++qv)
+                    for(qv=pv+1; qv<gra->V; ++qv)
                     {
                         if((evenCand[pv] == 1) && (evenCand[qv] == 1)
                             && (pathsShareOnlyStart(rv, pv, qv, gra, spi) == 1))
                         {/*add even cycle rv-pv rv-qv pv-yv-qv*/
-                            
+printf("adding even: r:%d p:%d q:%d y:%d\n",rv,pv,qv,yv);
+                            addEven(rv, pv, yv, qv, gra, spi, rc);
                         }
                     }
             }
@@ -188,15 +215,19 @@ void vismara(rcURF *rc, GraphURF *gra, sPathInfo *spi)//TODO inprogress
 rcURF *findRelCycles(GraphURF *gra, sPathInfo *spi)
 {
     rcURF *rc = malloc(sizeof(*rc));
-    rc->fams = malloc(2*gra->E*gra->E + (gra->E-gra->V+1)*gra-V)); /*number of RCFs is at most 2m²+vn (Vismara Lemma 3)*/
+    rc->fams = malloc((2*gra->E*gra->E + (gra->E - gra->V +1) * gra->V) * sizeof(*rc->fams)); /*number of RCFs is at most 2m²+vn (Vismara Lemma 3)*/
     rc->nofFams = 0;
-    rc->iter = 0;
     vismara(rc, gra, spi);
     return rc;
 }
 
-void deleteRelCycles(rcURF *rc)//TODO free individual rcs
+void deleteRelCycles(rcURF *rc)
 {
+    int i;
+    for(i=0; i<rc->nofFams; ++i)
+    {
+        free(rc->fams[i]);
+    }
     free(rc->fams);
     free(rc);
 }

@@ -5,10 +5,12 @@
 
 #include "graphURF.h"
 #include "apsp.h"
+#include "relevantCyclesURF.h"
 
 /** struct that contains all data that was accumulated during the calculation of the URF-structure */
 typedef struct{
     int nofURFs;//number of URFs
+    rcURF *RCFs;
     //URFs (RCFs: (r,p,(x,)q+list of all edges); URF-number)
     //basis info
     sPathInfo *spi;//shortest paths info (needed?)

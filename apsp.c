@@ -68,7 +68,10 @@ void findpaths(sPathInfo *spi, GraphURF *gra)
                         {//if 2nd run and dist stays the same, pred shouldn't change to keep the shortest path along ordering
                             spi->pred[i][j] = w; //predecessor of j on a shortest path from i to j
                         }
-                        spi->dist[i][j] = spi->dist[i][w] + 1;
+                        if(spi->dist[i][j] > spi->dist[i][w]+1)
+                        {
+                            spi->dist[i][j] = spi->dist[i][w] + 1;
+                        }
                         color[j] = 'b';
                         queue[q_nextfree] = j; //enqueue
                         ++q_nextfree; //enqueue
