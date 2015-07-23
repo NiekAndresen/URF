@@ -19,7 +19,7 @@ typedef struct{
     int nofFams; /*number of relevant cycle families*/
 } rcURF;
 
-/** uses Vismara's algorithm to find relevant cycles represented by relevant cycle families */
+/** uses Vismara's algorithm to find relevant cycles represented by relevant cycle families. returns them sorted by weight */
 rcURF *findRelCycles(GraphURF *, sPathInfo *);
 
 /** frees all the memory used by the relevant cycles */

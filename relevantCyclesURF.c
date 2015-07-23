@@ -6,6 +6,7 @@
 #include "apsp.h"
 #include "graphURF.h"
 #include "relevantCyclesURF.h"
+#include "RCFquicksort.h"
 
 /** returns 1 if the intersection of P(r,y) and P(r,z) is equal to {r}; 0 otherwise */
 int pathsShareOnlyStart(int r, int y, int z, GraphURF *gra, sPathInfo *spi)
@@ -127,6 +128,7 @@ void addOdd(int r, int y, int z, GraphURF *gra, sPathInfo *spi, rcURF *rc)
     new->x = INT_MAX; //odd cycle
     new->mark = 0;
     new->prototype = findPrototype(r, y, z, INT_MAX, gra, spi);
+    new->weight = spi->dist[r][y] + spi->dist[r][z] + 1;
     rc->fams[rc->nofFams++] = new;
 }
 
@@ -140,6 +142,7 @@ void addEven(int r, int y, int x, int z, GraphURF *gra, sPathInfo *spi, rcURF *r
     new->x = x; //even cycle
     new->mark = 0;
     new->prototype = findPrototype(r, y, z, x, gra, spi);
+    new->weight = spi->dist[r][y] + spi->dist[r][z] + 2;
     rc->fams[rc->nofFams++] = new;
 }
 
@@ -218,6 +221,7 @@ rcURF *findRelCycles(GraphURF *gra, sPathInfo *spi)
     rc->fams = malloc((2*gra->E*gra->E + (gra->E - gra->V +1) * gra->V) * sizeof(*rc->fams)); /*number of RCFs is at most 2m²+vn (Vismara Lemma 3)*/
     rc->nofFams = 0;
     vismara(rc, gra, spi);
+    sortbyweight(rc);
     return rc;
 }
 
