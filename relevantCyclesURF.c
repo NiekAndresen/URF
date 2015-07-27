@@ -230,6 +230,7 @@ void deleteRelCycles(rcURF *rc)
     int i;
     for(i=0; i<rc->nofFams; ++i)
     {
+        free(rc->fams[i]->prototype);
         free(rc->fams[i]);
     }
     free(rc->fams);
