@@ -12,7 +12,7 @@ void swap(rcf **arr, int idx1, int idx2)
 
 int partition(rcf **arr, int low, int high)
 {
-    int i,position = 0;
+    int i,position = low;
     int pivotIdx = (low+high)/2;
     int pivotElem = arr[pivotIdx]->weight;
     swap(arr, pivotIdx, high);

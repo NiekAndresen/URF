@@ -16,6 +16,7 @@ int main(int argc, char **argv)
     printGraph(&graph);
     
     urfdata *udata = calculateURFs(&graph);
+    
     printf("calculated\n");
     printf("dist:\n");
     print2DIntArray(udata->spi->dist, graph.V, graph.V);

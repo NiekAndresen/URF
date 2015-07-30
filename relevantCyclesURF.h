@@ -10,12 +10,12 @@ typedef struct{
     int weight; /*number of edges/vertices in the rcf*/
     int r, p, q, x; /*vertices defining a rcf as in Vismara's definition*/
     char *prototype; /*prototype vector {0,1}^m*/
-    char mark; /*1 if marked, 0 if not (important for URF calculation)*/
+    int mark; /*mark RCF as part of the Basis*/
 }rcf;
 
 /** contains the relevant cycles */
 typedef struct{
-    rcf **fams;
+    rcf **fams; /*array of RCFs sorted by weight*/
     int nofFams; /*number of relevant cycle families*/
 } rcURF;
 

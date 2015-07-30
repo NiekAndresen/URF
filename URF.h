@@ -6,20 +6,22 @@
 #include "graphURF.h"
 #include "apsp.h"
 #include "relevantCyclesURF.h"
+#include "URFInfo.h"
 
 /** struct that contains all data that was accumulated during the calculation of the URF-structure */
 typedef struct{
+    GraphURF *graph;
     int nofURFs;//number of URFs
     rcURF *RCFs;
-    //URFs (RCFs: (r,p,(x,)q+list of all edges); URF-number)
+    URFinfo *urfInfo; //stores which RCFs are URF-related
     //basis info
     sPathInfo *spi;//shortest paths info (needed?)
-} urfdata;
+}urfdata;
 
 /** Calculates the URF-structure of the given graph and returns it. */
 urfdata *calculateURFs(GraphURF *);
 
-/** deletes urfdata from memory */
+/** Deletes urfdata from memory. Does not delete the graph. */
 void deleteURFdata(urfdata *);
 
 ///** Returns the number of URFs. */
