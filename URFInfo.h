@@ -12,9 +12,6 @@ typedef struct{
     int ***URFs; /*array of 2D-matrices. For each weight that a RCF can have there is a matrix that stores 1 at position [i,j] if RCFs i and j (of this particular weight) are URF-related and 0 otherwise.*/
 } URFinfo;
 
-/** Allocates the array in URFinfo. */
-URFinfo *initUrfInfo(rcURF *, GraphURF *);
-
 /** deletes the URFinfo */
 void deleteURFInfo(URFinfo *);
 

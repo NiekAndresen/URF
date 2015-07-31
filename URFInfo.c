@@ -3,10 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "URFInfo.h"
-#include "graphURF.h"
-#include "relevantCyclesURF.h"
-#include "gaussElimURF.h"
+#include "URFrelation.h"
 
+/** allocates the matrices in urfInfo */
 URFinfo *initUrfInfo(rcURF *RCFs, GraphURF *graph)
 {
     URFinfo *urfInfo;
@@ -23,6 +22,7 @@ URFinfo *initUrfInfo(rcURF *RCFs, GraphURF *graph)
         if(RCFs->fams[i]->weight != currWeight)
         {
             ++numOfWeights;
+            currWeight = RCFs->fams[i]->weight;
         }
     }
     
@@ -39,11 +39,12 @@ URFinfo *initUrfInfo(rcURF *RCFs, GraphURF *graph)
         if(RCFs->fams[i]->weight != currWeight)
         {
             ++currIdx;
+            currWeight = RCFs->fams[i]->weight;
         }
         ++numOfProtos[currIdx];
     }
     
-    /*allocate everything*/
+     /*allocate everything*/
     URFs = malloc(numOfWeights * sizeof(*URFs));
     for(i=0; i<numOfWeights; ++i)
     {
@@ -90,7 +91,8 @@ void deleteURFInfo(URFinfo *uInfo)
 URFinfo *checkURFRelation(rcURF *RCFs, GraphURF *graph)
 {
     URFinfo *uInfo = initUrfInfo(RCFs, graph);
-    findRelations(RCFs, graph);
+printf("URFinfo initialized\n");
+    findRelations(RCFs, graph, uInfo);
 printf("relations found - kinda\n");
     return uInfo;
 }

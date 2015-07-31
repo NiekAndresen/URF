@@ -10,7 +10,7 @@
 int main(int argc, char **argv)
 {
     GraphURF graph;
-    int i,j;
+    int i,j,k;
     
     readInList(&graph, "adjlist");
     printGraph(&graph);
@@ -34,6 +34,19 @@ int main(int argc, char **argv)
             printf(" %d ", udata->RCFs->fams[i]->prototype[j]);
         }
         printf("\n");
+    }
+    printf("URFs:\n");
+    for(i=0; i<udata->urfInfo->nofWeights; ++i)
+    {
+        printf("weight %d\n",i);
+        for(j=0; j<udata->urfInfo->nofProtos[i]; ++j)
+        {
+            for(k=0; k<udata->urfInfo->nofProtos[i]; ++k)
+            {
+                printf("%d ",udata->urfInfo->URFs[i][j][k]);
+            }
+            printf("\n");
+        }
     }
     
     deleteURFdata(udata);

@@ -12,4 +12,6 @@ void readInList(GraphURF *gra, char *path);
 /** exits the program and writes instructions to stderr */
 void usage();
 
+void printmat(char **, int, int);
+
 #endif

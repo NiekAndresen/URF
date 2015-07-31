@@ -4,7 +4,7 @@ CC=clang
 CFLAGS=-Wall -Werror
 
 BIN = testURF.x
-SOURCE = main.c URF.c io.c graphURF.c utility.c apsp.c relevantCyclesURF.c RCFquicksort.c URFInfo.c gaussElimURF.c
+SOURCE = main.c URF.c io.c graphURF.c utility.c apsp.c relevantCyclesURF.c RCFquicksort.c URFInfo.c URFrelation.c
 OBJECTS = $(SOURCE:.c=.o)
 
 $(BIN): $(OBJ)

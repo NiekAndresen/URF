@@ -6,6 +6,20 @@
 #include <ctype.h>
 #include "graphURF.h"
 
+/*for debugging purposes*/
+void printmat(char **mat, int maxRow, int maxCol)
+{
+    int i,j;
+    for(i=0; i<=maxRow; ++i)
+    {
+        for(j=0; j<=maxCol; ++j)
+        {
+            printf("%d ",mat[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 /** Fills the 'edges' array which contains all edges as pairs of vertices (smaller vertex index first) */
 void enumerateEdges(GraphURF *gra)
 {
