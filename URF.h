@@ -21,7 +21,7 @@ typedef struct{
 /** Calculates the URF-structure of the given graph and returns it. */
 urfdata *calculateURFs(GraphURF *);
 
-/** Deletes urfdata from memory. Does not delete the graph. */
+/** Deletes urfdata from memory. Does not delete the graph.*/
 void deleteURFdata(urfdata *);
 
 ///** Returns the number of URFs. */

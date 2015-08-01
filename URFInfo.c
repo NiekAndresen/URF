@@ -88,12 +88,10 @@ void deleteURFInfo(URFinfo *uInfo)
     free(uInfo);
 }
 
-URFinfo *checkURFRelation(rcURF *RCFs, GraphURF *graph)
+URFinfo *checkURFRelation(rcURF *RCFs, GraphURF *graph, sPathInfo *spi)
 {
     URFinfo *uInfo = initUrfInfo(RCFs, graph);
-printf("URFinfo initialized\n");
-    findRelations(RCFs, graph, uInfo);
-printf("relations found - kinda\n");
+    findRelations(RCFs, graph, uInfo, spi);
     return uInfo;
 }
 

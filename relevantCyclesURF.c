@@ -67,8 +67,7 @@ int giveEdgeNo(int from, int to, GraphURF* gra)
         to = from;
         from = edge;
     }
-    
-    /*only place where startIdxEdges is used*/
+
     for(edge=gra->startIdxEdges[from]; edge<gra->E; ++edge)
     {
         if(gra->edges[edge][0] == from && gra->edges[edge][1] == to)
@@ -208,6 +207,14 @@ printf("adding even: r:%d p:%d q:%d y:%d\n",rv,pv,qv,yv);
                             addEven(rv, pv, yv, qv, gra, spi, rc);
                         }
                     }
+                /*to fill dPaths in sPathInfo/fill U_r (see Vismara)*/
+                for(pv=0; pv<gra->V; ++pv)
+                {
+                    if(evenCand[pv] == 1)
+                    {
+                        addEdge(spi->dPaths[rv], yv, pv);
+                    }
+                }
             }
         }
     }

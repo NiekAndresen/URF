@@ -5,6 +5,7 @@
 
 #include "graphURF.h"
 #include "relevantCyclesURF.h"
+#include "apsp.h"
 
 typedef struct{
     int nofWeights; /*number of different weights occuring*/
@@ -16,6 +17,6 @@ typedef struct{
 void deleteURFInfo(URFinfo *);
 
 /** Uses Gaussian elimination to mark potentially URF-related RCFs and checks the previously marked RCFs for URF-relation. Fills the URFinfo. */
-URFinfo *checkURFRelation(rcURF *, GraphURF *);
+URFinfo *checkURFRelation(rcURF *, GraphURF *, sPathInfo *);
 
 #endif

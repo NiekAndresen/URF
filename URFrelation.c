@@ -142,7 +142,7 @@ void checkDependencies(rcURF *RCFs, GraphURF *graph, URFinfo *uInfo)
     int currRow; /*index of the first row that does NOT contain a cycle that is part of "B=" (see Vismara)*/
     int i,j,k,testRow=0;
     int numAdded; /*how many cycles were added to 'B' within the currently considered weight*/
-    char indepOfAll;
+    char indepOfAll; /*flag storing if a cycle was independet of all combinations of 'B<' with one of 'B='*/
     if(RCFs->nofFams < 3) return;
 
     matrix = malloc(RCFs->nofFams * sizeof(*matrix));
@@ -163,6 +163,7 @@ void checkDependencies(rcURF *RCFs, GraphURF *graph, URFinfo *uInfo)
                     {
                         matrix[currRow+1] = RCFs->fams[idxWeight(uInfo, i, k)]->prototype;
                         uInfo->URFs[i][j][k] = dependent(matrix, currRow+1, graph->E-1);
+                        uInfo->URFs[i][k][j] = uInfo->URFs[i][j][k]; /*make matrix symmetric*/
                         if(uInfo->URFs[i][j][k] == 1)
                         {
                             indepOfAll = 'n';
@@ -203,9 +204,103 @@ void checkDependencies(rcURF *RCFs, GraphURF *graph, URFinfo *uInfo)
     free(matrix);
 }
 
-void findRelations(rcURF *RCFs, GraphURF *graph, URFinfo *uInfo)//TODO in progress
+/*finds the index of the edge [from, to] in the graph*/
+int edgeIdx(int from, int to, GraphURF *gra)
+{
+    int edge;
+    
+    if(from > to)
+    {/*swap order to make from < to*/
+        edge = to;
+        to = from;
+        from = edge;
+    }
+
+    for(edge=gra->startIdxEdges[from]; edge<gra->E; ++edge)
+    {
+        if((gra->edges[edge][0] == from) && (gra->edges[edge][1] == to))
+        {
+            break;
+        }
+    }
+    return edge;
+}
+
+/** not unlike the function "List_Paths" from Vismara, this function finds all edges that are on shortest paths from r to x recursively and stores the result in the array edges.*/
+/*does not quite work as the calculation of U_r does not consider edges to r itself*/
+void recFinder(int x, int r, int *edges, GraphURF *gra, sPathInfo *spi)
+{
+    int i, vertex;
+    
+    if(x == r) return;
+    for(i=0; i<spi->dPaths[r]->degree[x]; ++i)/*each vertex adjacent to x in U_r*/
+    {
+        vertex = spi->dPaths[r]->adjList[x][i];
+printf("trying to go from %d to %d in U_%d\n",x,vertex,r);
+        edges[edgeIdx(x, vertex, gra)] = 1;
+        recFinder(vertex, r, edges, gra, spi);
+    }
+}
+
+/** finds all edges in the RCF and stores the result in the array edges.*/
+void findEdges(int *edges, rcf *RCF, GraphURF *gra, sPathInfo *spi)
+{
+    recFinder(RCF->p, RCF->r, edges, gra, spi);
+    recFinder(RCF->q, RCF->r, edges, gra, spi);
+} 
+
+/** Checks if the RCFs with indices idx1 and idx2 share at least one edge. returns 1 if yes and 0 otherwise. */
+int shareEdges(rcURF *RCFs, int idx1, int idx2, GraphURF *graph, sPathInfo *spi)
+{
+    int *edges1;
+    int *edges2; /*arrays of {0,1}^m that can store a set of edges with entries being 1 if the edge is contained and 0 otherwise*/
+    int i;
+    int result = 0;
+    edges1 = malloc(graph->E * sizeof(*edges1));
+    edges2 = malloc(graph->E * sizeof(*edges2));
+    for(i=0; i<graph->E; ++i)
+    {
+        edges1[i]=0;
+        edges2[i]=0;
+    }
+    findEdges(edges1, RCFs->fams[idx1], graph, spi);
+    findEdges(edges2, RCFs->fams[idx2], graph, spi);
+    for(i=0; i<graph->E; ++i)
+    {
+        if(edges1[i] == 1 && edges2[i] == 1)
+        {
+            result = 1;
+            break;
+        }
+    }
+    free(edges1);
+    free(edges2);
+    return result;
+}
+
+/** checks the previously 'marked as potentially URF-related' RCFs for edges that they have in common which proves that they are URF-related. */
+void checkEdges(rcURF *RCFs, GraphURF *graph, URFinfo *uInfo, sPathInfo *spi)
+{
+    int i,j,k;
+    for(i=0; i<uInfo->nofWeights; ++i) /*go through all matrices*/
+    {
+        for(j=0; j<uInfo->nofProtos[i]; ++j)
+        {
+            for(k=j+1; k<uInfo->nofProtos[i]; ++k) /*since matrix is symmetric: only look into top right half*/
+            {
+                if(uInfo->URFs[i][j][k] == 1) /*find entries which indicate potential URF-relations*/
+                {
+                    uInfo->URFs[i][j][k] = shareEdges(RCFs, idxWeight(uInfo, i, j), idxWeight(uInfo, i, k), graph, spi); /*1 if RCFs j and k share at least an edge*/
+                    uInfo->URFs[i][k][j] = uInfo->URFs[i][j][k];
+                }
+            }
+        }
+    }
+}
+
+void findRelations(rcURF *RCFs, GraphURF *graph, URFinfo *uInfo, sPathInfo *spi)
 {
     checkDependencies(RCFs, graph, uInfo);
-    //checkEdges();
+    //checkEdges(RCFs, graph, uInfo, spi); needed???
 }
 

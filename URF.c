@@ -17,14 +17,13 @@ urfdata *calculateURFs(GraphURF *gra)
     findShortestPaths(udata, gra);
     udata->RCFs = findRelCycles(gra, udata->spi);
     udata->graph = gra;
-printf("starting new shit\n");
-    udata->urfInfo = checkURFRelation(udata->RCFs, udata->graph);
+    udata->urfInfo = checkURFRelation(udata->RCFs, udata->graph, udata->spi);
     return udata;
 }
 
 void deleteURFdata(urfdata *udata)
 {
-    deleteAPSP(udata->spi);
+    deleteAPSP(udata->spi, udata->graph->V);
     deleteRelCycles(udata->RCFs);
     deleteURFInfo(udata->urfInfo);
     free(udata);

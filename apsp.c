@@ -9,9 +9,15 @@
 
 void initializeSPathInfo(sPathInfo *info, GraphURF *gra)
 {
+    int i;
     info->pred = alloc2DIntArray(gra->V, gra->V);
     info->dist = alloc2DIntArray(gra->V, gra->V);
     info->reachable = alloc2DCharArray(gra->V, gra->V);
+    info->dPaths = malloc(gra->V * sizeof(*info->dPaths));
+    for(i=0; i<gra->V; ++i)
+    {
+        info->dPaths[i] = initNewGraph(gra->V);
+    }
 }
 
 void findpaths(sPathInfo *spi, GraphURF *gra)
@@ -100,10 +106,16 @@ sPathInfo *AllPairsShortestPaths(GraphURF *gra)
     return info;
 }
 
-void deleteAPSP(sPathInfo *info)
+void deleteAPSP(sPathInfo *info, int V)
 {
+    int i;
     delete2DArray((void **)info->pred);
     delete2DArray((void **)info->dist);
     delete2DArray((void **)info->reachable);
+    for(i=0; i<V; ++i)
+    {
+        deleteGraph(info->dPaths[i]);
+    }
+    free(info->dPaths);
     free(info);
 }

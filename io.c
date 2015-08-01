@@ -20,26 +20,6 @@ void printmat(char **mat, int maxRow, int maxCol)
     }
 }
 
-/** Fills the 'edges' array which contains all edges as pairs of vertices (smaller vertex index first) */
-void enumerateEdges(GraphURF *gra)
-{
-    int ed=0,li,ve;
-    //read over all of the adjLists
-    for(li=0; li<gra->V; ++li)
-    {
-        gra->startIdxEdges[li] = ed; 
-        for(ve=0; ve<gra->degree[li]; ++ve)
-        {
-            if(li < gra->adjList[li][ve])
-            {
-                gra->edges[ed][0] = li;
-                gra->edges[ed][1] = gra->adjList[li][ve];
-                ++ed;
-            }
-        }
-    }
-}
-
 void readInList(GraphURF *gra, char *path)
 {
     int i, temp;
@@ -85,7 +65,7 @@ void readInList(GraphURF *gra, char *path)
     }
     V = currLine;
     E = E/2; //edges appear twice in adj-lists
-    initGraph(gra, V, E, degree);
+    initGraph(gra, V, E, degree, 'y');
     
     rewind(fp);
     currLine = 0;
@@ -103,7 +83,7 @@ void readInList(GraphURF *gra, char *path)
             gra->adjList[currLine][currPos] = temp - 1; /*shift in index*/
             ++currPos;
         }
-        cha = fgetc(fp);        
+        cha = fgetc(fp);
     }
     
     fclose(fp);
