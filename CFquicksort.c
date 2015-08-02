@@ -1,16 +1,16 @@
 /* Niek Andresen 2015 - Bachelor Thesis */
 
-#include "relevantCyclesURF.h"
+#include "CycleFamsURF.h"
 
-void swap(rcf **arr, int idx1, int idx2)
+void swap(cfam **arr, int idx1, int idx2)
 {
-    rcf *temp;
+    cfam *temp;
     temp = arr[idx1];
     arr[idx1] = arr[idx2];
     arr[idx2] = temp;
 }
 
-int partition(rcf **arr, int low, int high)
+int partition(cfam **arr, int low, int high)
 {
     int i,position = low;
     int pivotIdx = (low+high)/2;
@@ -27,7 +27,7 @@ int partition(rcf **arr, int low, int high)
     return position;
 }
 
-void quicksort(rcf **arr, int low, int high)
+void quicksort(cfam **arr, int low, int high)
 {
     int separationIdx;
     if(low < high)
@@ -38,7 +38,7 @@ void quicksort(rcf **arr, int low, int high)
     }
 }
 
-void sortbyweight(rcURF *rc)
+void sortbyweight(cfURF *rc)
 {
     quicksort(rc->fams, 0, rc->nofFams-1);
 }

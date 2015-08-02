@@ -126,6 +126,14 @@ GraphURF *initNewGraph(int V)
 
 void addEdge(GraphURF *gra, int from, int to)
 {
+    int i;
+    for(i=0; i<gra->degree[from]; ++i)
+    {
+        if(gra->adjList[from][i] == to)
+        {/*edge already exists*/
+            return;
+        }
+    }
     ++gra->E;
     ++gra->degree[from];
     if(gra->degree[from] == 1)/*has never been initialized*/

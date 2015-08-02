@@ -18,6 +18,7 @@ int main(int argc, char **argv)
     urfdata *udata = calculateURFs(graph);
     
     printf("calculated\n");
+    /*
     printf("dist:\n");
     print2DIntArray(udata->spi->dist, graph->V, graph->V);
     printf("pred:\n");
@@ -30,17 +31,25 @@ int main(int argc, char **argv)
         printf("r=%d\n",i);
         printGraph(udata->spi->dPaths[i]);
     }
-    printf("RCFs:\n");
-    printf("Number of Fams: %d\n", udata->RCFs->nofFams);
-    for(i=0; i<udata->RCFs->nofFams; ++i)
+    */
+    printf("CFs:\n");
+    printf("Number of Fams: %d\n", udata->CFs->nofFams);
+    for(i=0; i<udata->CFs->nofFams; ++i)
     {
         printf("a prototype: ");
         for(j=0; j<graph->E; ++j)
         {
-            printf(" %d ", udata->RCFs->fams[i]->prototype[j]);
+            printf(" %d", udata->CFs->fams[i]->prototype[j]);
         }
         printf("\n");
     }
+    /*
+    printf("mark:\n");
+    for(i=0; i<udata->CFs->nofFams; ++i)
+    {
+        printf("  %d\n",udata->CFs->fams[i]->mark);
+    }
+    */
     printf("URFs:\n");
     for(i=0; i<udata->urfInfo->nofWeights; ++i)
     {
@@ -54,6 +63,7 @@ int main(int argc, char **argv)
             printf("\n");
         }
     }
+    printf("number of URFs: %d\n",udata->nofURFs);
     
     deleteURFdata(udata);
     deleteGraph(graph);

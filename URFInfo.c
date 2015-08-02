@@ -6,7 +6,7 @@
 #include "URFrelation.h"
 
 /** allocates the matrices in urfInfo */
-URFinfo *initUrfInfo(rcURF *RCFs, GraphURF *graph)
+URFinfo *initUrfInfo(cfURF *RCFs, GraphURF *graph)
 {
     URFinfo *urfInfo;
     int ***URFs;
@@ -88,7 +88,7 @@ void deleteURFInfo(URFinfo *uInfo)
     free(uInfo);
 }
 
-URFinfo *checkURFRelation(rcURF *RCFs, GraphURF *graph, sPathInfo *spi)
+URFinfo *checkURFRelation(cfURF *RCFs, GraphURF *graph, sPathInfo *spi)
 {
     URFinfo *uInfo = initUrfInfo(RCFs, graph);
     findRelations(RCFs, graph, uInfo, spi);

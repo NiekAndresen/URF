@@ -5,17 +5,17 @@
 
 #include "graphURF.h"
 #include "apsp.h"
-#include "relevantCyclesURF.h"
+#include "CycleFamsURF.h"
 #include "URFInfo.h"
 
 /** struct that contains all data that was accumulated during the calculation of the URF-structure */
 typedef struct{
     GraphURF *graph;
     int nofURFs;//number of URFs
-    rcURF *RCFs;
+    cfURF *CFs; //the cycle families (found by Vismara's algorithm)
     URFinfo *urfInfo; //stores which RCFs are URF-related
     //basis info
-    sPathInfo *spi;//shortest paths info (needed?)
+    sPathInfo *spi;//shortest paths info
 }urfdata;
 
 /** Calculates the URF-structure of the given graph and returns it. */

@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include "apsp.h"
 #include "graphURF.h"
-#include "relevantCyclesURF.h"
-#include "RCFquicksort.h"
+#include "CycleFamsURF.h"
+#include "CFquicksort.h"
 
 /** returns 1 if the intersection of P(r,y) and P(r,z) is equal to {r}; 0 otherwise */
 int pathsShareOnlyStart(int r, int y, int z, GraphURF *gra, sPathInfo *spi)
@@ -118,9 +118,9 @@ char *findPrototype(int r, int y, int z, int x, GraphURF *gra, sPathInfo *spi)
 }
 
 /** fills the rc datastructure with the odd cycle r-y-z-r */
-void addOdd(int r, int y, int z, GraphURF *gra, sPathInfo *spi, rcURF *rc)
+void addOdd(int r, int y, int z, GraphURF *gra, sPathInfo *spi, cfURF *rc)
 {
-    rcf *new = malloc(sizeof(*new));
+    cfam *new = malloc(sizeof(*new));
     new->r = r;
     new->p = y;
     new->q = z;
@@ -132,9 +132,9 @@ void addOdd(int r, int y, int z, GraphURF *gra, sPathInfo *spi, rcURF *rc)
 }
 
 /** fills the rc datastructure with the even cycle r-y-x-z-r */
-void addEven(int r, int y, int x, int z, GraphURF *gra, sPathInfo *spi, rcURF *rc)
+void addEven(int r, int y, int x, int z, GraphURF *gra, sPathInfo *spi, cfURF *rc)
 {
-    rcf *new = malloc(sizeof(**rc->fams));
+    cfam *new = malloc(sizeof(**rc->fams));
     new->r = r;
     new->p = y;
     new->q = z;
@@ -160,8 +160,8 @@ int adjacent(int y, int z, GraphURF *gra)
     return result;
 }
 
-/** just like in Vismara's pseudocode */
-void vismara(rcURF *rc, GraphURF *gra, sPathInfo *spi)
+/** finds a number of cycle families that contain at least all RELEVANT cycle families - just like in Vismara's pseudocode */
+void vismara(cfURF *rc, GraphURF *gra, sPathInfo *spi)
 {
     int i;
     int rv,yv,zv,pv,qv; /*variables as in Vismara's algorithm, extended by a 'v'*/
@@ -182,7 +182,7 @@ void vismara(rcURF *rc, GraphURF *gra, sPathInfo *spi)
                 for(zv=0; zv<gra->V; ++zv)
                 {/*all zv reachable from rv respecting the ordering and adjacent to yv*/
                     if(spi->reachable[rv][zv] == 1 && adjacent(yv,zv,gra) == 1)
-                    {   
+                    {
                         if(spi->dist[rv][zv] + 1 == spi->dist[rv][yv])
                         {
                             evenCand[zv] = 1;
@@ -193,6 +193,11 @@ void vismara(rcURF *rc, GraphURF *gra, sPathInfo *spi)
                         {/*add odd cycle rv-yv rv-zv zv-yv*/
 printf("adding odd: r:%d y:%d z:%d\n",rv,yv,zv);
                             addOdd(rv, yv, zv, gra, spi, rc);
+                        }
+                        /*to fill dPaths in sPathInfo with the edges to r*/
+                        if(spi->dist[rv][zv] == 1)
+                        {
+                            addEdge(spi->dPaths[rv], zv, rv);
                         }
                     }
                 }
@@ -222,17 +227,17 @@ printf("adding even: r:%d p:%d q:%d y:%d\n",rv,pv,qv,yv);
     free(evenCand);
 }
 
-rcURF *findRelCycles(GraphURF *gra, sPathInfo *spi)
+cfURF *findCycleFams(GraphURF *gra, sPathInfo *spi)
 {
-    rcURF *rc = malloc(sizeof(*rc));
-    rc->fams = malloc((2*gra->E*gra->E + (gra->E - gra->V +1) * gra->V) * sizeof(*rc->fams)); /*number of RCFs is at most 2m²+vn (Vismara Lemma 3)*/
+    cfURF *rc = malloc(sizeof(*rc));
+    rc->fams = malloc((2*gra->E*gra->E + (gra->E - gra->V +1) * gra->V) * sizeof(*rc->fams)); /*number of CFs is at most 2m²+vn (Vismara Lemma 3)*/
     rc->nofFams = 0;
     vismara(rc, gra, spi);
     sortbyweight(rc);
     return rc;
 }
 
-void deleteRelCycles(rcURF *rc)
+void deleteCycleFams(cfURF *rc)
 {
     int i;
     for(i=0; i<rc->nofFams; ++i)

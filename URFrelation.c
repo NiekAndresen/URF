@@ -5,13 +5,13 @@
 #include "URFrelation.h"
 #include "URFInfo.h"
 #include "graphURF.h"
-#include "relevantCyclesURF.h"
+#include "CycleFamsURF.h"
 #include "io.h"
 
-void swapRows(char **mat, int row1, int row2, int dim)
+void swapRows(char **mat, int row1, int row2, int maxCol)
 {
     int temp, i;
-    for(i=0; i<dim; ++i)
+    for(i=0; i<=maxCol; ++i)
     {
         temp = mat[row1][i];
         mat[row1][i] = mat[row2][i];
@@ -23,7 +23,7 @@ void swapRows(char **mat, int row1, int row2, int dim)
 int eliminateRow(char **mat, int row, int row2, int maxCol)
 {
     int i, result=1;
-    for(i=row; i<maxCol; ++i)
+    for(i=row; i<=maxCol; ++i)
     {
         if( (mat[row][i] == 1 && mat[row2][i] != 1) || (mat[row][i] != 1 && mat[row2][i] == 1) )
         {/*exactly one of the entries is 1*/
@@ -73,6 +73,13 @@ int dependent(char **inMat, int maxRow, int maxCol)
             mat[row][col] = inMat[row][col];
         }
     }
+
+if(maxRow == 9)
+{
+    printf("in dependency check:\n");
+    printf("matrix looks like this:\n");
+    printmat(mat, maxRow, maxCol);
+}
     
     col = 0;
     for(row=0; row<=maxRow; ++row)
@@ -98,6 +105,10 @@ int dependent(char **inMat, int maxRow, int maxCol)
         {
             if(mat[row2][col] == 1)
             {
+if(maxRow == 9)
+{
+    printf("eliminating %d with %d to maxCol=%d\n",row2,row,maxCol);
+}
                 indep = eliminateRow(mat, row, row2, maxCol);
                 if(indep == 0)
                 {
@@ -109,6 +120,11 @@ int dependent(char **inMat, int maxRow, int maxCol)
         {
             break;
         }
+if(maxRow == 9)
+{
+    printf("step:\n");
+    printmat(mat, maxRow, maxCol);
+}
     }
     free(mat[0]);
     free(mat);
@@ -136,7 +152,7 @@ To see whether or not two RCFs are potentially URF-related we look at each RCF '
     If it is independent of all those combinations we look at if it is independent of the combination of 'B<' and all of 'B='.
     If this is the case, it becomes part of the basis B (part of 'B=')
     If we find that it is dependent on 'B<' and one of 'B=', the element of 'B=' and C are marked as potentially URF-related.*/
-void checkDependencies(rcURF *RCFs, GraphURF *graph, URFinfo *uInfo)
+void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
 {
     char **matrix;
     int currRow; /*index of the first row that does NOT contain a cycle that is part of "B=" (see Vismara)*/
@@ -151,24 +167,47 @@ void checkDependencies(rcURF *RCFs, GraphURF *graph, URFinfo *uInfo)
     for(i=0; i<uInfo->nofWeights; ++i)/*for each weight (index)*/
     {
         numAdded = 0;
-        for(j=0; j<uInfo->nofProtos[i]; ++j)/*for each RCFs with this weight*/
+        for(j=0; j<uInfo->nofProtos[i]; ++j)/*for each CF with this weight*/
         {
+if(idxWeight(uInfo,i,j) == 8)
+{
+    printf("we are at no 8\n");
+}
             matrix[currRow] = RCFs->fams[idxWeight(uInfo, i, j)]->prototype;/*add prototype to matrix*/
             if(dependent(matrix, currRow, graph->E-1) == 0)/*independent of "B<" (see e.g. Vismara)*/
             {/* check potential URF-relations to other cycles of the same length ("weight") */
+if(idxWeight(uInfo,i,j) == 8)
+{
+    printf("no 8 was indep of B<\n");
+}
+if(idxWeight(uInfo,i,j) == 10)
+{
+    printf("no 10 was indep of B<\n");
+}
                 for(k=0; k<uInfo->nofProtos[i]; ++k)
                 {
                     indepOfAll = 'y';
                     if(RCFs->fams[idxWeight(uInfo, i, k)]->mark == 2) /* if other cycle is marked as being in the set 'B=' */
                     {
                         matrix[currRow+1] = RCFs->fams[idxWeight(uInfo, i, k)]->prototype;
+
+if(idxWeight(uInfo,i,j) == 10)
+{
+    printf("9 should be in B= and now the dependence of B<, 9 and 10 is checked.\n");
+    printf("with the call dependent(matrix, %d, %d)\n",currRow+1, graph->E-1);
+}
                         uInfo->URFs[i][j][k] = dependent(matrix, currRow+1, graph->E-1);
                         uInfo->URFs[i][k][j] = uInfo->URFs[i][j][k]; /*make matrix symmetric*/
+if(idxWeight(uInfo,i,j) == 10)
+{
+    printf("the result was %d\n",uInfo->URFs[i][j][k]);
+}
                         if(uInfo->URFs[i][j][k] == 1)
                         {
                             indepOfAll = 'n';
                         }
                     }
+                RCFs->fams[idxWeight(uInfo,i,j)]->mark = 1; /*was independent of smaller cycles, so it is relevant*/
                 }
             }
             if(indepOfAll == 'y')/*if the cycle was independent of all combinations of 'B<' with one of 'B='*/
@@ -227,7 +266,6 @@ int edgeIdx(int from, int to, GraphURF *gra)
 }
 
 /** not unlike the function "List_Paths" from Vismara, this function finds all edges that are on shortest paths from r to x recursively and stores the result in the array edges.*/
-/*does not quite work as the calculation of U_r does not consider edges to r itself*/
 void recFinder(int x, int r, int *edges, GraphURF *gra, sPathInfo *spi)
 {
     int i, vertex;
@@ -243,14 +281,14 @@ printf("trying to go from %d to %d in U_%d\n",x,vertex,r);
 }
 
 /** finds all edges in the RCF and stores the result in the array edges.*/
-void findEdges(int *edges, rcf *RCF, GraphURF *gra, sPathInfo *spi)
+void findEdges(int *edges, cfam *RCF, GraphURF *gra, sPathInfo *spi)
 {
     recFinder(RCF->p, RCF->r, edges, gra, spi);
     recFinder(RCF->q, RCF->r, edges, gra, spi);
 } 
 
 /** Checks if the RCFs with indices idx1 and idx2 share at least one edge. returns 1 if yes and 0 otherwise. */
-int shareEdges(rcURF *RCFs, int idx1, int idx2, GraphURF *graph, sPathInfo *spi)
+int shareEdges(cfURF *RCFs, int idx1, int idx2, GraphURF *graph, sPathInfo *spi)
 {
     int *edges1;
     int *edges2; /*arrays of {0,1}^m that can store a set of edges with entries being 1 if the edge is contained and 0 otherwise*/
@@ -279,7 +317,7 @@ int shareEdges(rcURF *RCFs, int idx1, int idx2, GraphURF *graph, sPathInfo *spi)
 }
 
 /** checks the previously 'marked as potentially URF-related' RCFs for edges that they have in common which proves that they are URF-related. */
-void checkEdges(rcURF *RCFs, GraphURF *graph, URFinfo *uInfo, sPathInfo *spi)
+void checkEdges(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo, sPathInfo *spi)
 {
     int i,j,k;
     for(i=0; i<uInfo->nofWeights; ++i) /*go through all matrices*/
@@ -298,9 +336,9 @@ void checkEdges(rcURF *RCFs, GraphURF *graph, URFinfo *uInfo, sPathInfo *spi)
     }
 }
 
-void findRelations(rcURF *RCFs, GraphURF *graph, URFinfo *uInfo, sPathInfo *spi)
+void findRelations(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo, sPathInfo *spi)
 {
     checkDependencies(RCFs, graph, uInfo);
-    //checkEdges(RCFs, graph, uInfo, spi); needed???
+    //checkEdges(RCFs, graph, uInfo, spi); //needed? Seems like it's unnecessary.
 }
 
