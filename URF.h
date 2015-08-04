@@ -18,7 +18,7 @@ typedef struct{
     sPathInfo *spi;//shortest paths info
 }urfdata;
 
-/** Calculates the URF-structure of the given graph and returns it. */
+/** Calculates the URF-structure of the given graph and returns it. The graph has to be a correct undirected graph and the edges have to be enumerated with 'enumerateEdges' (see graphURF.h).*/
 urfdata *calculateURFs(GraphURF *);
 
 /** Deletes urfdata from memory. Does not delete the graph.*/

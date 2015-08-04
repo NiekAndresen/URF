@@ -7,7 +7,7 @@
 
 /** reads the adjecency lists in the file path into the Graph.
 The vertices are saved with their index (0 - |V|-1).
-File must not contain empty lines! */
+File must not contain empty lines in between lines with adjacency lists. */
 GraphURF *readInList(char *path);
 
 /** exits the program and writes instructions to stderr */

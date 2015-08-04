@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "graphURF.h"
+#include "io.h"
 
 /** allocates space for the arrays edges and startIdxEdges */
 void prepareEnumeration(GraphURF *gra, int V, int E)
@@ -22,6 +23,9 @@ void prepareEnumeration(GraphURF *gra, int V, int E)
     gra->startIdxEdges = startIdxEdges;
 }
 
+/** initializes a new graph with the values |V|, |E| and the array degree, then
+    allocates enough space for 'adjList' and 'edges', so that they can be filled.
+    Can be called with E=0 to be able to addEdges later.*/
 void initGraph(GraphURF *gra, int V, int E, int *degree)
 {
     int i;
@@ -161,6 +165,7 @@ void addUEdge(GraphURF *gra, int from, int to)
 void enumerateEdges(GraphURF *gra)
 {
     int ed=0,li,ve;
+    
     if(gra->edgesEnumerated != 'y') /*Enumeration has not been prepared before.*/
     {
         prepareEnumeration(gra, gra->V, gra->E);

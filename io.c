@@ -20,6 +20,14 @@ void printmat(char **mat, int maxRow, int maxCol)
     }
 }
 
+void usage()
+{
+    fprintf(stderr, "The input must be an undirected graph.\n");
+    fprintf(stderr, "Read interface comment in GraphURF.h for help.\n");
+    fprintf(stderr, "-program exits-\n");
+    exit(EXIT_FAILURE);
+}
+
 GraphURF *readInList(char *path)
 {
     GraphURF *gra;
@@ -64,15 +72,3 @@ GraphURF *readInList(char *path)
     return gra;
 }
 
-void usage()
-{
-    fprintf(stderr, "The input file must contain adjacency lists of an \n");
-    fprintf(stderr, "undirected Graph.\n");
-    fprintf(stderr, "one list in one line with a space before each new ");
-    fprintf(stderr, "adjacent vertex.\n");
-    fprintf(stderr, "ex: vertex 1 is adjacent to vertices 7 and 16, vertex 2 is adjacent \n");
-    fprintf(stderr, "to only vertex 4:\n");
-    fprintf(stderr, "1 7 16\n");
-    fprintf(stderr, "2 4\n");
-    exit(EXIT_FAILURE);
-}
