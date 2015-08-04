@@ -1,5 +1,6 @@
 /* Niek Andresen 2015 - Bachelor Thesis */
 
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "io.h"
@@ -9,10 +10,10 @@
 
 int main(int argc, char **argv)
 {
-    GraphURF *graph = malloc(sizeof(*graph));
+    GraphURF *graph;
     int i,j,k;
     
-    readInList(graph, "adjlist");
+    graph = readInList("adjlist");
     printGraph(graph);
     
     urfdata *udata = calculateURFs(graph);
@@ -31,11 +32,19 @@ int main(int argc, char **argv)
         printf("r=%d\n",i);
         printGraph(udata->spi->dPaths[i]);
     }
-    */
+    */  
     printf("CFs:\n");
     printf("Number of Fams: %d\n", udata->CFs->nofFams);
     for(i=0; i<udata->CFs->nofFams; ++i)
     {
+        if(udata->CFs->fams[i]->x == INT_MAX)
+        {
+            printf("odd: r=%d, p=%d, q=%d\n",udata->CFs->fams[i]->r,udata->CFs->fams[i]->p,udata->CFs->fams[i]->q);
+        }
+        else
+        {
+            printf("even: r=%d, p=%d, q=%d, x=%d\n",udata->CFs->fams[i]->r,udata->CFs->fams[i]->p,udata->CFs->fams[i]->q,udata->CFs->fams[i]->x);
+        }
         printf("a prototype: ");
         for(j=0; j<graph->E; ++j)
         {

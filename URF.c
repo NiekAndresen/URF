@@ -57,3 +57,8 @@ void deleteURFdata(urfdata *udata)
     deleteURFInfo(udata->urfInfo);
     free(udata);
 }
+
+int numberOfURFs(urfdata *udata)
+{
+    return udata->nofURFs;    
+}

@@ -5,6 +5,7 @@
 #include <assert.h>
 #include "graphURF.h"
 
+/** allocates space for the arrays edges and startIdxEdges */
 void prepareEnumeration(GraphURF *gra, int V, int E)
 {
     int i;
@@ -21,7 +22,7 @@ void prepareEnumeration(GraphURF *gra, int V, int E)
     gra->startIdxEdges = startIdxEdges;
 }
 
-void initGraph(GraphURF *gra, int V, int E, int *degree, char enumerateEdges)
+void initGraph(GraphURF *gra, int V, int E, int *degree)
 {
     int i;
     int **adjList;
@@ -40,11 +41,7 @@ void initGraph(GraphURF *gra, int V, int E, int *degree, char enumerateEdges)
     }
     gra->adjList = adjList;
     
-    gra->edgesEnumerated = enumerateEdges;
-    if(enumerateEdges == 'y')
-    {
-        prepareEnumeration(gra, V, E);
-    }
+    gra->edgesEnumerated = 'n';
 }
 
 int isAdj(GraphURF *graph, int i, int j)
@@ -107,7 +104,6 @@ void printGraph(GraphURF *graph)
             printf("%d: [%d,%d]\n", i, graph->edges[i][0], graph->edges[i][1]);
         }
     }
-    printf("\n");
 }
 
 GraphURF *initNewGraph(int V)
@@ -120,7 +116,7 @@ GraphURF *initNewGraph(int V)
     {
         degree[i] = 0;
     }
-    initGraph(graph,V,0,degree,'n');
+    initGraph(graph,V,0,degree);
     return graph;
 }
 
@@ -136,7 +132,7 @@ void addEdge(GraphURF *gra, int from, int to)
     }
     ++gra->E;
     ++gra->degree[from];
-    if(gra->degree[from] == 1)/*has never been initialized*/
+    if(gra->degree[from] == 1)/*was 0, has never been initialized*/
     {
         gra->adjList[from] = malloc(gra->degree[from] * sizeof(*gra->adjList[from]));
     }
@@ -149,6 +145,14 @@ void addEdge(GraphURF *gra, int from, int to)
 
 void addUEdge(GraphURF *gra, int from, int to)
 {
+    int i;
+    for(i=0; i<gra->degree[from]; ++i)
+    {
+        if(gra->adjList[from][i] == to)
+        {/*edge already exists*/
+            return;
+        }
+    }
     addEdge(gra, from, to);
     addEdge(gra, to, from);
     --gra->E; /*was incremented twice*/
@@ -160,15 +164,15 @@ void enumerateEdges(GraphURF *gra)
     if(gra->edgesEnumerated != 'y') /*Enumeration has not been prepared before.*/
     {
         prepareEnumeration(gra, gra->V, gra->E);
+        gra->edgesEnumerated = 'y';
     }
-    gra->edgesEnumerated = 'y';
     //read over all of the adjLists
     for(li=0; li<gra->V; ++li)
     {
-        gra->startIdxEdges[li] = ed; 
+        gra->startIdxEdges[li] = ed;
         for(ve=0; ve<gra->degree[li]; ++ve)
         {
-            if(li < gra->adjList[li][ve])
+            if(li < gra->adjList[li][ve])/*to count every edge only once*/
             {
                 gra->edges[ed][0] = li;
                 gra->edges[ed][1] = gra->adjList[li][ve];

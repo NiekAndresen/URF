@@ -73,13 +73,6 @@ int dependent(char **inMat, int maxRow, int maxCol)
             mat[row][col] = inMat[row][col];
         }
     }
-
-if(maxRow == 9)
-{
-    printf("in dependency check:\n");
-    printf("matrix looks like this:\n");
-    printmat(mat, maxRow, maxCol);
-}
     
     col = 0;
     for(row=0; row<=maxRow; ++row)
@@ -105,10 +98,6 @@ if(maxRow == 9)
         {
             if(mat[row2][col] == 1)
             {
-if(maxRow == 9)
-{
-    printf("eliminating %d with %d to maxCol=%d\n",row2,row,maxCol);
-}
                 indep = eliminateRow(mat, row, row2, maxCol);
                 if(indep == 0)
                 {
@@ -120,11 +109,6 @@ if(maxRow == 9)
         {
             break;
         }
-if(maxRow == 9)
-{
-    printf("step:\n");
-    printmat(mat, maxRow, maxCol);
-}
     }
     free(mat[0]);
     free(mat);
@@ -142,7 +126,7 @@ int idxWeight(URFinfo *uInfo, int weight, int j)
     return sum + j;
 }
 
-/** Writes into the URFinfo if two RCFs are potentially URF-related because of linear dependencies (condition 3 URF-relation) */
+/** Writes into the URFinfo if two RCFs are potentially URF-related because of linear dependencies (condition 3 URF-relation). In this step all relevant cycle families are marked as well.*/
 /* 3 sets are maintained (see also Vismara):
     'B' is the current set of basis prototypes (corresponding to a RCF)
     'B<' is the set of cycles in B which are shorter than the cycles we are looking at at that moment. RCFs in 'B<' are marked with 1.
@@ -169,46 +153,25 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
         numAdded = 0;
         for(j=0; j<uInfo->nofProtos[i]; ++j)/*for each CF with this weight*/
         {
-if(idxWeight(uInfo,i,j) == 8)
-{
-    printf("we are at no 8\n");
-}
             matrix[currRow] = RCFs->fams[idxWeight(uInfo, i, j)]->prototype;/*add prototype to matrix*/
             if(dependent(matrix, currRow, graph->E-1) == 0)/*independent of "B<" (see e.g. Vismara)*/
             {/* check potential URF-relations to other cycles of the same length ("weight") */
-if(idxWeight(uInfo,i,j) == 8)
-{
-    printf("no 8 was indep of B<\n");
-}
-if(idxWeight(uInfo,i,j) == 10)
-{
-    printf("no 10 was indep of B<\n");
-}
+                uInfo->URFs[i][j][j] = 1; /*URF-related to itself*/
                 for(k=0; k<uInfo->nofProtos[i]; ++k)
                 {
                     indepOfAll = 'y';
                     if(RCFs->fams[idxWeight(uInfo, i, k)]->mark == 2) /* if other cycle is marked as being in the set 'B=' */
                     {
                         matrix[currRow+1] = RCFs->fams[idxWeight(uInfo, i, k)]->prototype;
-
-if(idxWeight(uInfo,i,j) == 10)
-{
-    printf("9 should be in B= and now the dependence of B<, 9 and 10 is checked.\n");
-    printf("with the call dependent(matrix, %d, %d)\n",currRow+1, graph->E-1);
-}
                         uInfo->URFs[i][j][k] = dependent(matrix, currRow+1, graph->E-1);
                         uInfo->URFs[i][k][j] = uInfo->URFs[i][j][k]; /*make matrix symmetric*/
-if(idxWeight(uInfo,i,j) == 10)
-{
-    printf("the result was %d\n",uInfo->URFs[i][j][k]);
-}
                         if(uInfo->URFs[i][j][k] == 1)
                         {
                             indepOfAll = 'n';
                         }
                     }
-                RCFs->fams[idxWeight(uInfo,i,j)]->mark = 1; /*was independent of smaller cycles, so it is relevant*/
                 }
+                RCFs->fams[idxWeight(uInfo,i,j)]->mark = 1; /*was independent of smaller cycles, so it is relevant*/
             }
             if(indepOfAll == 'y')/*if the cycle was independent of all combinations of 'B<' with one of 'B='*/
             {
@@ -274,7 +237,6 @@ void recFinder(int x, int r, int *edges, GraphURF *gra, sPathInfo *spi)
     for(i=0; i<spi->dPaths[r]->degree[x]; ++i)/*each vertex adjacent to x in U_r*/
     {
         vertex = spi->dPaths[r]->adjList[x][i];
-printf("trying to go from %d to %d in U_%d\n",x,vertex,r);
         edges[edgeIdx(x, vertex, gra)] = 1;
         recFinder(vertex, r, edges, gra, spi);
     }

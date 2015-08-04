@@ -24,8 +24,8 @@ urfdata *calculateURFs(GraphURF *);
 /** Deletes urfdata from memory. Does not delete the graph.*/
 void deleteURFdata(urfdata *);
 
-///** Returns the number of URFs. */
-//int numberOfURFs(urfdata *);
+/** Returns the number of URFs. */
+int numberOfURFs(urfdata *);
 
 //get bonds, cycles, atoms
 ///** Writes a specific URF (mode 'a': atoms, 'b': bonds, 'c': cycles) */

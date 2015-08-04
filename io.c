@@ -9,7 +9,7 @@
 /*for debugging purposes*/
 void printmat(char **mat, int maxRow, int maxCol)
 {
-    int i,j;
+    int i, j;
     for(i=0; i<=maxRow; ++i)
     {
         for(j=0; j<=maxCol; ++j)
@@ -20,75 +20,48 @@ void printmat(char **mat, int maxRow, int maxCol)
     }
 }
 
-void readInList(GraphURF *gra, char *path)
+GraphURF *readInList(char *path)
 {
-    int i, temp;
-    int V, E=0;
-    int *degree;
+    GraphURF *gra;
+    int temp;
+    int V;
     char cha;
-    int currLine=0, currNumOfLines=2, currPos=0;
+    int currLine=0;
     FILE *fp;
     fp = fopen(path, "r");
     
-    degree = malloc(currNumOfLines * sizeof(*degree));
-    for(i=0; i<currNumOfLines; ++i)
-    {
-        degree[i] = 0;
-    }
     cha = fgetc(fp);
-    while(cha != EOF) //first run through the file to find |V|, |E| and degree
+    while(cha != EOF) //first run through the file to find |V|
     {
         if(cha == '\n')
         {
-            cha = fgetc(fp);
             ++currLine;
-            if(currLine >= currNumOfLines) //additional space for lines needed
-            {
-                currNumOfLines *= 2;
-                degree = realloc(degree, currNumOfLines * sizeof(*degree));
-                for(i=currLine; i<currNumOfLines; ++i)
-                {
-                    degree[i] = 0;
-                }
-            }
-        }
-        if(cha == ' ')
-        {
-            cha = fgetc(fp);
-            if(isdigit(cha)) //space followed by a number (1-9)
-            {
-                ++degree[currLine];
-                ++E;
-            }
         }
         cha = fgetc(fp);
     }
     V = currLine;
-    E = E/2; //edges appear twice in adj-lists
-    initGraph(gra, V, E, degree, 'y');
+    gra = initNewGraph(V);
     
     rewind(fp);
     currLine = 0;
     cha=fgetc(fp);
     while(cha != EOF) //second run through the file to fill the adjacency lists
     {
-        if(cha == '\n')
-        {
-            ++currLine;
-            currPos = 0;
-        }
         if(cha == ' ')
         {
             fscanf(fp, "%d", &temp);
-            gra->adjList[currLine][currPos] = temp - 1; /*shift in index*/
-            ++currPos;
+            addUEdge(gra, currLine, temp-1);
+        }
+        else if(cha == '\n')
+        {
+            ++currLine;
         }
         cha = fgetc(fp);
     }
-    
     fclose(fp);
     
     enumerateEdges(gra);
+    return gra;
 }
 
 void usage()

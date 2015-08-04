@@ -191,7 +191,6 @@ void vismara(cfURF *rc, GraphURF *gra, sPathInfo *spi)
                                 && (gra->degree[zv] < gra->degree[yv] || (gra->degree[zv] == gra->degree[yv] && zv<yv))
                                 && pathsShareOnlyStart(rv, yv, zv, gra, spi) == 1)
                         {/*add odd cycle rv-yv rv-zv zv-yv*/
-printf("adding odd: r:%d y:%d z:%d\n",rv,yv,zv);
                             addOdd(rv, yv, zv, gra, spi, rc);
                         }
                         /*to fill dPaths in sPathInfo with the edges to r*/
@@ -208,7 +207,6 @@ printf("adding odd: r:%d y:%d z:%d\n",rv,yv,zv);
                         if((evenCand[pv] == 1) && (evenCand[qv] == 1)
                             && (pathsShareOnlyStart(rv, pv, qv, gra, spi) == 1))
                         {/*add even cycle rv-pv rv-qv pv-yv-qv*/
-printf("adding even: r:%d p:%d q:%d y:%d\n",rv,pv,qv,yv);
                             addEven(rv, pv, yv, qv, gra, spi, rc);
                         }
                     }

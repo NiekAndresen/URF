@@ -12,7 +12,7 @@ typedef struct{
     int *startIdxEdges; /*to navigate the edges array quicker: array containing the index at which the edges from a vertex start in the edges array*/
 } GraphURF;
 
-/** initializes a new Graph that edges can be added to */
+/** initializes a new Graph that edges can be added to (allocates space for it) */
 GraphURF *initNewGraph(int V);
 
 /** adds a directed edge to the graph. */
@@ -37,6 +37,6 @@ void printGraph(GraphURF *graph);
     allocates enough space for 'adjList' and 'edges', so that they can be filled.
     Touches and allocates 'edges' and 'startIdxEdges' only if the flag 'enumerateEdges' has been set to 'y'. */
 /* currently only used in io.c. Could be replaced there by the new init (see above), not really needed in the heaeder file anymore. */
-void initGraph(GraphURF *gra, int V, int E, int *degree, char enumerateEdges);
+void initGraph(GraphURF *gra, int V, int E, int *degree);
 
 #endif
