@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "graphURF.h"
-#include "io.h"
 
 /** allocates space for the arrays edges and startIdxEdges */
 void prepareEnumeration(GraphURF *gra, int V, int E)
