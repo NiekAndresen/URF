@@ -86,7 +86,7 @@ int main(int argc, char **argv)
             printf(" (r:%d,p:%d,q:%d,x:%d) ",udata->urfInfo->URFs[i][j]->r,udata->urfInfo->URFs[i][j]->p,udata->urfInfo->URFs[i][j]->q,udata->urfInfo->URFs[i][j]->x);
         }
         printf("\natoms: ");
-        atoms[i] = giveURF(udata, i, 'a');
+        atoms[i] = giveURF(udata, i, 'b');
         k=atoms[i][0];
         for(j=0; k<INT_MAX; ++j)
         {

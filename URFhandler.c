@@ -1,5 +1,6 @@
 /* Niek Andresen 2015 - Bachelor Thesis */
 
+#include <stdio.h>
 #include "apsp.h"
 #include "graphURF.h"
 #include "URFhandler.h"
@@ -50,7 +51,6 @@ void giveEdges(int a, int b, char *array, GraphURF *gra, sPathInfo *spi)
     
     if(a==b) return;
     
-    array[b] = 1;
     for(i=0; i<spi->dPaths[a]->degree[b]; ++i)/*each vertex adjacent to b in U_a*/
     {
         vertex = spi->dPaths[a]->adjList[b][i];

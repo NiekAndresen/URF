@@ -127,7 +127,7 @@ int *giveBonds(urfdata *uData, int index)
                 result = realloc(result, 2*alloced*sizeof(*result));
                 alloced *= 2;
             }
-            result[nextfree] = i;
+            result[nextfree++] = i;
         }
     }
     if(nextfree == alloced)
@@ -157,5 +157,6 @@ int *giveURF(urfdata *uData, int URFindex, char mode)
         fprintf(stderr, "Only 'a' or 'b' are allowed. Read interface for help.\n");
         exit(EXIT_FAILURE);
     }
+
     return result;
 }
