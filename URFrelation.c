@@ -7,6 +7,7 @@
 #include "graphURF.h"
 #include "CycleFamsURF.h"
 #include "io.h"
+#include "URFhandler.h"
 
 void swapRows(char **mat, int row1, int row2, int maxCol)
 {
@@ -205,28 +206,6 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
     }
     
     free(matrix);
-}
-
-/*finds the index of the edge [from, to] in the graph*/
-int edgeIdx(int from, int to, GraphURF *gra)
-{
-    int edge;
-    
-    if(from > to)
-    {/*swap order to make from < to*/
-        edge = to;
-        to = from;
-        from = edge;
-    }
-
-    for(edge=gra->startIdxEdges[from]; edge<gra->E; ++edge)
-    {
-        if((gra->edges[edge][0] == from) && (gra->edges[edge][1] == to))
-        {
-            break;
-        }
-    }
-    return edge;
 }
 
 /** not unlike the function "List_Paths" from Vismara, this function finds all edges that are on shortest paths from r to x recursively and stores the result in the array edges.*/

@@ -27,9 +27,18 @@ void deleteURFdata(urfdata *);
 /** Returns the number of URFs. */
 int numberOfURFs(urfdata *);
 
-//get bonds, cycles, atoms
-///** Writes a specific URF (mode 'a': atoms, 'b': bonds, 'c': cycles) */
-//void giveURF(urfdata *, int index, char mode);
+/** Gives a specific URF identified with it's index
+ modes:
+  - 'a': atoms
+    returns an array of integers containing all indices of atoms (vertices of the graph) that are part of the URF
+  - 'b': bonds
+    returns an array of integers containing all indices of bonds (edges of the graph) that are part of the URF
+The arrays returned are ended with INT_MAX on their last position and have to be deallocated with 'free()'.*/
+int *giveURF(urfdata *, int index, char mode);
+
+//get cycles
+///** gives cycles of an URF */
+//void giveURF(urfdata *, int index);
 
 //for an atom/bond, get all urfs (return anzahl, nummern)
 

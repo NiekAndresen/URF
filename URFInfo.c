@@ -168,7 +168,6 @@ void fillURFs(URFinfo *uInfo, cfURF *CFs)
             alreadyInURF[i][j] = 0;
         }
     }
-printf("alreadyInURF malloced\n");
     
     URFs = malloc(uInfo->nofURFs * sizeof(*URFs));
     nofRCFs = malloc(uInfo->nofURFs * sizeof(*nofRCFs));
@@ -176,7 +175,7 @@ printf("alreadyInURF malloced\n");
     {
         nofRCFs[i] = 0;
     }
-printf("malloced and ready to go\n");
+    
     for(i=0; i<uInfo->nofWeights; ++i)
     {
         for(j=0; j<uInfo->nofProtos[i]; ++j)
@@ -187,7 +186,6 @@ printf("malloced and ready to go\n");
                 {
                     if(uInfo->URFrel[i][j][k] == 1)
                     {
-printf("going to add %d%d%d\n",i,j,k);
                         addRCFtoURF(idxWeight(uInfo,i,k),currURFIdx,nofRCFs[currURFIdx],URFs,CFs);/*add to current URF the CFs with the given Idx*/
                         ++nofRCFs[currURFIdx];
                         alreadyInURF[i][k] = 1;
