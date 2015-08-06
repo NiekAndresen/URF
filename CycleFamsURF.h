@@ -17,7 +17,7 @@ typedef struct{
 typedef struct{
     cfam **fams; /*array of CFs sorted by weight*/
     int nofFams; /*number of cycle families*/
-} cfURF;
+}cfURF;
 
 /** uses Vismara's algorithm to find relevant cycles represented by relevant cycle families. returns them sorted by weight */
 cfURF *findCycleFams(GraphURF *, sPathInfo *);

@@ -67,12 +67,22 @@ int main(int argc, char **argv)
         {
             for(k=0; k<udata->urfInfo->nofProtos[i]; ++k)
             {
-                printf("%d ",udata->urfInfo->URFs[i][j][k]);
+                printf("%d ",udata->urfInfo->URFrel[i][j][k]);
             }
             printf("\n");
         }
     }
     printf("number of URFs: %d\n",udata->nofURFs);
+    for(i=0; i<udata->nofURFs; ++i)
+    {
+        printf("number of CFs in URF %d: %d\n",i,udata->urfInfo->nofCFsPerURF[i]);
+        printf("these are:");
+        for(j=0; j<udata->urfInfo->nofCFsPerURF[i]; ++j)
+        {
+            printf(" (r:%d,p:%d,q:%d,x:%d) ",udata->urfInfo->URFs[i][j]->r,udata->urfInfo->URFs[i][j]->p,udata->urfInfo->URFs[i][j]->q,udata->urfInfo->URFs[i][j]->x);
+        }
+        printf("\n");
+    }
     
     deleteURFdata(udata);
     deleteGraph(graph);

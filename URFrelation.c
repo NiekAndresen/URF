@@ -116,7 +116,7 @@ int dependent(char **inMat, int maxRow, int maxCol)
 }
 
 /** returns the index in the array of RCFs (fams) that the RCF with the weight at the index "weight" and position j has */
-int idxWeight(URFinfo *uInfo, int weight, int j)
+int idxWeights(URFinfo *uInfo, int weight, int j)
 {
     int i, sum = 0;
     for(i=0; i<weight; ++i)
@@ -140,7 +140,7 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
 {
     char **matrix;
     int currRow; /*index of the first row that does NOT contain a cycle that is part of "B=" (see Vismara)*/
-    int i,j,k,testRow=0;
+    int i,j,k,testRow=0,idx;
     int numAdded; /*how many cycles were added to 'B' within the currently considered weight*/
     char indepOfAll; /*flag storing if a cycle was independet of all combinations of 'B<' with one of 'B='*/
     if(RCFs->nofFams < 3) return;
@@ -153,25 +153,25 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
         numAdded = 0;
         for(j=0; j<uInfo->nofProtos[i]; ++j)/*for each CF with this weight*/
         {
-            matrix[currRow] = RCFs->fams[idxWeight(uInfo, i, j)]->prototype;/*add prototype to matrix*/
+            matrix[currRow] = RCFs->fams[idxWeights(uInfo, i, j)]->prototype;/*add prototype to matrix*/
             if(dependent(matrix, currRow, graph->E-1) == 0)/*independent of "B<" (see e.g. Vismara)*/
             {/* check potential URF-relations to other cycles of the same length ("weight") */
-                uInfo->URFs[i][j][j] = 1; /*URF-related to itself*/
+                uInfo->URFrel[i][j][j] = 1; /*URF-related to itself*/
                 for(k=0; k<uInfo->nofProtos[i]; ++k)
                 {
                     indepOfAll = 'y';
-                    if(RCFs->fams[idxWeight(uInfo, i, k)]->mark == 2) /* if other cycle is marked as being in the set 'B=' */
+                    if(RCFs->fams[idxWeights(uInfo, i, k)]->mark == 2) /* if other cycle is marked as being in the set 'B=' */
                     {
-                        matrix[currRow+1] = RCFs->fams[idxWeight(uInfo, i, k)]->prototype;
-                        uInfo->URFs[i][j][k] = dependent(matrix, currRow+1, graph->E-1);
-                        uInfo->URFs[i][k][j] = uInfo->URFs[i][j][k]; /*make matrix symmetric*/
-                        if(uInfo->URFs[i][j][k] == 1)
+                        matrix[currRow+1] = RCFs->fams[idxWeights(uInfo, i, k)]->prototype;
+                        uInfo->URFrel[i][j][k] = dependent(matrix, currRow+1, graph->E-1);
+                        uInfo->URFrel[i][k][j] = uInfo->URFrel[i][j][k]; /*make matrix symmetric*/
+                        if(uInfo->URFrel[i][j][k] == 1)
                         {
                             indepOfAll = 'n';
                         }
                     }
                 }
-                RCFs->fams[idxWeight(uInfo,i,j)]->mark = 1; /*was independent of smaller cycles, so it is relevant*/
+                RCFs->fams[idxWeights(uInfo,i,j)]->mark = 1; /*was independent of smaller cycles, so it is relevant*/
             }
             if(indepOfAll == 'y')/*if the cycle was independent of all combinations of 'B<' with one of 'B='*/
             {
@@ -179,15 +179,15 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
                 testRow = currRow+1;
                 for(k=0; k<uInfo->nofProtos[i]; ++k)
                 {
-                    if(RCFs->fams[idxWeight(uInfo, i, k)]->mark == 2)
+                    if(RCFs->fams[idxWeights(uInfo, i, k)]->mark == 2)
                     {
-                        matrix[testRow++] = RCFs->fams[idxWeight(uInfo, i, k)]->prototype;
+                        matrix[testRow++] = RCFs->fams[idxWeights(uInfo, i, k)]->prototype;
                     }
                 }
                 /*check if the new cycle is indep of all of 'B<' and 'B=' combined*/
                 if(dependent(matrix, testRow-1, graph->E-1) == 0)
                 {
-                    RCFs->fams[idxWeight(uInfo, i, j)]->mark = 2;
+                    RCFs->fams[idxWeights(uInfo, i, j)]->mark = 2;
                     ++numAdded;
                 }
             }
@@ -195,9 +195,10 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
         /*all cycles in 'B=' become part of 'B<'*/
         for(j=0; j<uInfo->nofProtos[i]; ++j)
         {
-            if(RCFs->fams[idxWeight(uInfo, i, j)]->mark == 2)
+            idx = idxWeights(uInfo, i, j);
+            if(RCFs->fams[idx]->mark == 2)
             {
-                RCFs->fams[idxWeight(uInfo, i, j)]->mark = 1;
+                RCFs->fams[idx]->mark = 1;
             }
         }
         currRow += numAdded;
@@ -250,12 +251,12 @@ void findEdges(int *edges, cfam *RCF, GraphURF *gra, sPathInfo *spi)
 } 
 
 /** Checks if the RCFs with indices idx1 and idx2 share at least one edge. returns 1 if yes and 0 otherwise. */
-int shareEdges(cfURF *RCFs, int idx1, int idx2, GraphURF *graph, sPathInfo *spi)
+char shareEdges(cfURF *RCFs, int idx1, int idx2, GraphURF *graph, sPathInfo *spi)
 {
     int *edges1;
     int *edges2; /*arrays of {0,1}^m that can store a set of edges with entries being 1 if the edge is contained and 0 otherwise*/
     int i;
-    int result = 0;
+    char result = 0;
     edges1 = malloc(graph->E * sizeof(*edges1));
     edges2 = malloc(graph->E * sizeof(*edges2));
     for(i=0; i<graph->E; ++i)
@@ -288,10 +289,10 @@ void checkEdges(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo, sPathInfo *spi)
         {
             for(k=j+1; k<uInfo->nofProtos[i]; ++k) /*since matrix is symmetric: only look into top right half*/
             {
-                if(uInfo->URFs[i][j][k] == 1) /*find entries which indicate potential URF-relations*/
+                if(uInfo->URFrel[i][j][k] == 1) /*find entries which indicate potential URF-relations*/
                 {
-                    uInfo->URFs[i][j][k] = shareEdges(RCFs, idxWeight(uInfo, i, j), idxWeight(uInfo, i, k), graph, spi); /*1 if RCFs j and k share at least an edge*/
-                    uInfo->URFs[i][k][j] = uInfo->URFs[i][j][k];
+                    uInfo->URFrel[i][j][k] = shareEdges(RCFs, idxWeights(uInfo, i, j), idxWeights(uInfo, i, k), graph, spi); /*1 if RCFs j and k share at least an edge*/
+                    uInfo->URFrel[i][k][j] = uInfo->URFrel[i][j][k];
                 }
             }
         }

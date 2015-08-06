@@ -11,34 +11,6 @@ void findShortestPaths(urfdata *udata, GraphURF *gra)
     udata->spi = AllPairsShortestPaths(gra);
 }
 
-int countURFs(cfURF *cFams, URFinfo *uInfo)
-{
-    int RCFcount=0, URFRelCount=0, weightIdx, i, j;
-    /*count number of cycles families that are marked as relevant*/
-    for(i=0; i<cFams->nofFams; ++i)
-    {
-        if(cFams->fams[i]->mark > 0)
-        {
-            ++RCFcount;
-        }
-    }
-    /*count number of 1s indicating URF-relation*/
-    for(weightIdx=0; weightIdx<uInfo->nofWeights; ++weightIdx)
-    {
-        for(i=0; i<uInfo->nofProtos[weightIdx]; ++i)
-        {
-            for(j=i+1; j<uInfo->nofProtos[weightIdx]; ++j)
-            {
-                if(uInfo->URFs[weightIdx][i][j] == 1)
-                {
-                    ++URFRelCount;
-                }
-            }
-        }
-    }
-    return RCFcount - URFRelCount;
-}
-
 urfdata *calculateURFs(GraphURF *gra)
 {
     urfdata *udata = malloc(sizeof(*udata));
@@ -46,7 +18,7 @@ urfdata *calculateURFs(GraphURF *gra)
     udata->CFs = findCycleFams(gra, udata->spi);
     udata->graph = gra;
     udata->urfInfo = checkURFRelation(udata->CFs, udata->graph, udata->spi);
-    udata->nofURFs = countURFs(udata->CFs, udata->urfInfo);
+    udata->nofURFs = udata->urfInfo->nofURFs;
     return udata;
 }
 

@@ -9,7 +9,7 @@
 URFinfo *initUrfInfo(cfURF *RCFs, GraphURF *graph)
 {
     URFinfo *urfInfo;
-    int ***URFs;
+    char ***URFrel;
     int numOfWeights = 1;
     int *numOfProtos;
     int i, j, k, currWeight, currIdx;
@@ -45,14 +45,14 @@ URFinfo *initUrfInfo(cfURF *RCFs, GraphURF *graph)
     }
     
      /*allocate everything*/
-    URFs = malloc(numOfWeights * sizeof(*URFs));
+    URFrel = malloc(numOfWeights * sizeof(*URFrel));
     for(i=0; i<numOfWeights; ++i)
     {
-        URFs[i] = malloc(numOfProtos[i] * sizeof(*URFs[i]));
-        *URFs[i] = malloc(numOfProtos[i] * numOfProtos[i] * sizeof(**URFs[i]));
+        URFrel[i] = malloc(numOfProtos[i] * sizeof(*URFrel[i]));
+        *URFrel[i] = malloc(numOfProtos[i] * numOfProtos[i] * sizeof(**URFrel[i]));
         for(j=1; j<numOfProtos[i]; ++j)
         {
-            URFs[i][j] = URFs[i][j-1] + numOfProtos[i];
+            URFrel[i][j] = URFrel[i][j-1] + numOfProtos[i];
         }
     }
     
@@ -63,14 +63,14 @@ URFinfo *initUrfInfo(cfURF *RCFs, GraphURF *graph)
         {
             for(k=0; k<numOfProtos[i]; ++k)
             {
-                URFs[i][j][k] = 0;
+                URFrel[i][j][k] = 0;
             }
         }
     }
     
     urfInfo->nofWeights = numOfWeights;
     urfInfo->nofProtos = numOfProtos;
-    urfInfo->URFs = URFs;
+    urfInfo->URFrel = URFrel;
     
     return urfInfo;
 }
@@ -80,18 +80,139 @@ void deleteURFInfo(URFinfo *uInfo)
     int i;
     for(i=0; i<uInfo->nofWeights; ++i)
     {
-        free(uInfo->URFs[i][0]);
+        free(uInfo->URFrel[i][0]);
+        free(uInfo->URFrel[i]);
+    }
+    free(uInfo->URFrel);
+    free(uInfo->nofProtos);
+    for(i=0; i<uInfo->nofURFs; ++i)
+    {
         free(uInfo->URFs[i]);
     }
     free(uInfo->URFs);
-    free(uInfo->nofProtos);
+    free(uInfo->nofCFsPerURF);
     free(uInfo);
+}
+
+/** returns the number of URFs. */
+int countURFs(cfURF *cFams, URFinfo *uInfo)
+{
+    int RCFcount=0, URFRelCount=0, weightIdx, i, j;
+    /*count number of cycles families that are marked as relevant*/
+    for(i=0; i<cFams->nofFams; ++i)
+    {
+        if(cFams->fams[i]->mark > 0)
+        {
+            ++RCFcount;
+        }
+    }
+    /*count number of 1s indicating URF-relation*/
+    for(weightIdx=0; weightIdx<uInfo->nofWeights; ++weightIdx)
+    {
+        for(i=0; i<uInfo->nofProtos[weightIdx]; ++i)
+        {
+            for(j=i+1; j<uInfo->nofProtos[weightIdx]; ++j)
+            {
+                if(uInfo->URFrel[weightIdx][i][j] == 1)
+                {
+                    ++URFRelCount;
+                }
+            }
+        }
+    }
+    return RCFcount - URFRelCount;
+}
+
+/** returns the index in the array of RCFs (fams) that the RCF with the weight at the index "weight" and position j has */
+int idxWeight(URFinfo *uInfo, int weight, int j)
+{
+    int i, sum = 0;
+    for(i=0; i<weight; ++i)
+    {
+        sum += uInfo->nofProtos[i];
+    }
+    return sum + j;
+}
+
+/** adds the CF with the index 'RCFIdx' to the URF with the index 'URFIdx'. Needs the number of RCFs already in the URF as third parameter 'previouslyAlloced' */
+void addRCFtoURF(int RCFIdx, int URFIdx, int previouslyAlloced, cfam ***URFs, cfURF *CFs)
+{
+    if(previouslyAlloced == 0)
+    {
+        URFs[URFIdx] = malloc((previouslyAlloced+1) * sizeof(*URFs[URFIdx]));
+    }
+    else
+    {
+        URFs[URFIdx] = realloc(URFs[URFIdx], (previouslyAlloced+1) * sizeof(*URFs[URFIdx]));
+    }
+    URFs[URFIdx][previouslyAlloced] =  CFs->fams[RCFIdx];
+}
+
+void fillURFs(URFinfo *uInfo, cfURF *CFs)
+{
+    cfam ***URFs;
+    int *nofRCFs;
+    int currURFIdx=0;
+    int i,j,k;
+    char **alreadyInURF; /*for each weight: an array storing if a RCF is already part of a URF*/
+    
+    alreadyInURF = malloc(uInfo->nofWeights * sizeof(*alreadyInURF));
+    for(i=0; i<uInfo->nofWeights; ++i)
+    {
+        alreadyInURF[i] = malloc(uInfo->nofProtos[i] * sizeof(*alreadyInURF[i]));
+    }
+    for(i=0; i<uInfo->nofWeights; ++i)
+    {
+        for(j=0; j<uInfo->nofProtos[i]; ++j)
+        {
+            alreadyInURF[i][j] = 0;
+        }
+    }
+printf("alreadyInURF malloced\n");
+    
+    URFs = malloc(uInfo->nofURFs * sizeof(*URFs));
+    nofRCFs = malloc(uInfo->nofURFs * sizeof(*nofRCFs));
+    for(i=0; i<uInfo->nofURFs; ++i)
+    {
+        nofRCFs[i] = 0;
+    }
+printf("malloced and ready to go\n");
+    for(i=0; i<uInfo->nofWeights; ++i)
+    {
+        for(j=0; j<uInfo->nofProtos[i]; ++j)
+        {
+            if(alreadyInURF[i][j] == 0)/*this family is not already part of a URF*/
+            {
+                for(k=j; k<uInfo->nofProtos[i]; ++k)
+                {
+                    if(uInfo->URFrel[i][j][k] == 1)
+                    {
+printf("going to add %d%d%d\n",i,j,k);
+                        addRCFtoURF(idxWeight(uInfo,i,k),currURFIdx,nofRCFs[currURFIdx],URFs,CFs);/*add to current URF the CFs with the given Idx*/
+                        ++nofRCFs[currURFIdx];
+                        alreadyInURF[i][k] = 1;
+                    }
+                }
+                ++currURFIdx;
+            }
+        }
+    }
+    
+    for(i=0; i<uInfo->nofWeights; ++i)
+    {
+        free(alreadyInURF[i]);
+    }
+    free(alreadyInURF);
+    uInfo->URFs=URFs;
+    uInfo->nofCFsPerURF = nofRCFs;
 }
 
 URFinfo *checkURFRelation(cfURF *RCFs, GraphURF *graph, sPathInfo *spi)
 {
     URFinfo *uInfo = initUrfInfo(RCFs, graph);
     findRelations(RCFs, graph, uInfo, spi);
+    uInfo->nofURFs = countURFs(RCFs, uInfo);
+    fillURFs(uInfo, RCFs);
     return uInfo;
 }
 
