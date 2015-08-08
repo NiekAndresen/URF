@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 {
     GraphURF *graph;
     int i,j,k;
-    int **atoms;
+    int *atoms;
     
     graph = readInList("adjlist");
     printGraph(graph);
@@ -75,7 +75,6 @@ int main(int argc, char **argv)
         }
     }
     */
-    atoms=malloc(udata->nofURFs * sizeof(*atoms));
     printf("number of URFs: %d\n",udata->nofURFs);
     for(i=0; i<udata->nofURFs; ++i)
     {
@@ -86,22 +85,17 @@ int main(int argc, char **argv)
             printf(" (r:%d,p:%d,q:%d,x:%d) ",udata->urfInfo->URFs[i][j]->r,udata->urfInfo->URFs[i][j]->p,udata->urfInfo->URFs[i][j]->q,udata->urfInfo->URFs[i][j]->x);
         }
         printf("\natoms: ");
-        atoms[i] = giveURF(udata, i, 'b');
-        k=atoms[i][0];
+        atoms = giveURF(udata, i, 'a');
+        k=atoms[0];
         for(j=0; k<INT_MAX; ++j)
         {
             printf("%d ",k);
-            k=atoms[i][j+1];
+            k=atoms[j+1];
         }
         printf("\n");
+        free(atoms);
     }
     
-    for(i=0; i<udata->nofURFs; ++i)
-    {
-        free(atoms[i]);
-    }
-    
-    free(atoms);
     deleteURFdata(udata);
     deleteGraph(graph);
     printf("Niek ist die Nummer %d\n",1);

@@ -160,3 +160,32 @@ int *giveURF(urfdata *uData, int URFindex, char mode)
 
     return result;
 }
+
+char **giveURFCycles(urfdata *udata, int index)
+{
+    int i;
+    int currIdx=0; /*index of next free space in result array*/
+    int alloced=2; /*space for how many cycles has been allocated; is always a power of two.*/
+    int nofFams;
+    cfam **URF;
+    char **paths1, **paths2; /*much like the result array, but storing paths instead of cycles. paths1 for paths from r to p and paths2 for paths from r to q.*/
+    char **result;
+    
+    nofFams = uData->urfInfo->nofCFsPerURF[index];
+    URF = uData->urfInfo->URFs[index];
+    
+    for(i=0; i<nofFams; ++i)
+    {
+        getPaths(URF[i]->r, URF[i]->p, paths1, udata->graph, udata->spi);
+        getPaths(URF[i]->r, URF[i]->q, paths2, udata->graph, udata->spi);
+        currIdx = combinePaths(paths1, paths2, URF[i]->x, result, currIdx, alloced);
+        /*calculate how many spaces are alloced with the help of the returned currIdx. Can be done since 'alloced' is always a power of two*/
+        while(currIdx > alloced) alloced *= 2;
+    }
+    if(currIdx == alloced)
+    {
+        result = realloc(result, (alloced+1)*sizeof(*result));
+    }
+    result[currIdx] = NULL;
+    return result;
+}

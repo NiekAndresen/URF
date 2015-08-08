@@ -48,5 +48,5 @@ int isAdj(GraphURF *, int i, int j);
 /** prints the adjacency lists, |V| and |E| and the edges */
 void printGraph(GraphURF *graph);
 
-
+/*for undirected graphs the degree is the OUT-degree only.*/
 #endif
