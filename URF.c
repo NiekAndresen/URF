@@ -165,20 +165,21 @@ char **giveURFCycles(urfdata *udata, int index)
 {
     int i;
     int currIdx=0; /*index of next free space in result array*/
-    int alloced=2; /*space for how many cycles has been allocated; is always a power of two.*/
+    int alloced=2; /*space for how many cycles/paths has been allocated; is always a power of two. =2 in the beginning, grows with number of cycles*/
     int nofFams;
     cfam **URF;
     char **paths1, **paths2; /*much like the result array, but storing paths instead of cycles. paths1 for paths from r to p and paths2 for paths from r to q.*/
     char **result;
     
-    nofFams = uData->urfInfo->nofCFsPerURF[index];
-    URF = uData->urfInfo->URFs[index];
+    nofFams = udata->urfInfo->nofCFsPerURF[index];
+    URF = udata->urfInfo->URFs[index];
     
+    result = malloc(alloced * sizeof(*result));
     for(i=0; i<nofFams; ++i)
     {
-        getPaths(URF[i]->r, URF[i]->p, paths1, udata->graph, udata->spi);
-        getPaths(URF[i]->r, URF[i]->q, paths2, udata->graph, udata->spi);
-        currIdx = combinePaths(paths1, paths2, URF[i]->x, result, currIdx, alloced);
+        getPaths(URF[i]->r, URF[i]->p, &paths1, alloced, udata->graph, udata->spi);
+        getPaths(URF[i]->r, URF[i]->q, &paths2, alloced, udata->graph, udata->spi);
+        currIdx = combinePaths(&paths1, &paths2, URF[i]->x, &result, currIdx, alloced, udata->graph);
         /*calculate how many spaces are alloced with the help of the returned currIdx. Can be done since 'alloced' is always a power of two*/
         while(currIdx > alloced) alloced *= 2;
     }
@@ -188,4 +189,17 @@ char **giveURFCycles(urfdata *udata, int index)
     }
     result[currIdx] = NULL;
     return result;
+}
+
+void deleteURFCycles(char **cycles)
+{
+    int i;
+    char *cyc;
+    cyc = cycles[0];
+    for(i=0; cyc!=NULL; ++i)
+    {
+        free(cyc);
+        cyc = cycles[i+1];
+    }
+    free(cycles);
 }

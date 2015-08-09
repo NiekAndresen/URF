@@ -39,8 +39,11 @@ int *giveURF(urfdata *, int index, char mode);
 
 /** Gives all cycles of the URF with the given index. Returns an array of cycles. A cycle is represented by an array of {0,1}^n which contains a 1 at position i if the vertex i is part of the cycle or 0 otherwise (n: number of vertices).
 The array of cycles is ended with a terminating NULL pointer.
-This structure has to be deallocated using 'free()'.*/
+This structure has to be deallocated using 'deleteURFCycles(<return value>)'.*/
 char **giveURFCycles(urfdata *, int index);
+
+/** Deallocates all space allocated by the function 'giveURFCycles()'. Call on the return value of that function. */
+void deleteURFCycles(char **);
 
 //for an atom/bond, get all urfs (return anzahl, nummern)
 
