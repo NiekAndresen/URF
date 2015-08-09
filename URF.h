@@ -37,15 +37,24 @@ The arrays returned are ended with INT_MAX on their last position and have to be
 /*alternative: return arrays of {0,1}^n and {0,1}^m*/
 int *giveURF(urfdata *, int index, char mode);
 
-/** Gives all cycles of the URF with the given index. Returns an array of cycles. A cycle is represented by an array of {0,1}^n which contains a 1 at position i if the vertex i is part of the cycle or 0 otherwise (n: number of vertices).
+/** Gives all cycles of the URF with the given index. Returns an array of cycles.
+modes:
+    - 'a': A cycle is represented by an array of {0,1}^n which contains a 1 at position i if the vertex i is part of the cycle or 0 otherwise (n: number of vertices).
+    - 'b': A cycle is represented by an array of {0,1}^m which contains a 1 at position i if the edge i is part of the cycle or 0 otherwise (m: number of edges). [problem here: user doesn't know which edge 'the edge with index i' is; the indices of the edges follow an order: go trough the input adjacency lists (ordered by vertex index) and add an edge at next index if it's not been added before]
 The array of cycles is ended with a terminating NULL pointer.
 This structure has to be deallocated using 'deleteURFCycles(<return value>)'.*/
-char **giveURFCycles(urfdata *, int index);
+char **giveURFCycles(urfdata *, int index, char mode);
 
 /** Deallocates all space allocated by the function 'giveURFCycles()'. Call on the return value of that function. */
 void deleteURFCycles(char **);
 
-//for an atom/bond, get all urfs (return anzahl, nummern)
+/** Gives all URFs containing the give object, which can be an atom or a bond.
+mode:
+    - 'a': atom
+    - 'b': bond
+returns an array of integers containing all indices of URFs containing the object.
+The array ends with a terminating INT_MAX on its last position and has to be deallocated with 'free()' */
+int *listURFs(urfdata *, int object, char mode);
 
 ///** Writes a MCB */
 //void findBasis(GraphURF *);

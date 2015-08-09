@@ -13,9 +13,9 @@ void giveEdges(int a, int b, char *array, GraphURF *, sPathInfo *);
 int edgeIdx(int from, int to, GraphURF *gra);
 
 /** finds all shortest paths (as elements of {0,1}^n) between vertices r and p and writes them into the array 'paths' */
-void getPaths(int r, int p, char ***paths, int alloced, GraphURF *, sPathInfo *);
+void getPaths(int r, int p, char ***paths, int alloced, char mode, GraphURF *, sPathInfo *);
 
 /** combines all the paths out of 'paths1' with all out of 'paths2' to form all possible cycles and writes them into the result array as elements of {0,1}^n. Afterwards all allocated space in 'paths1' and 'paths2' is deallocated. */
-int combinePaths(char ***paths1, char ***paths2, int x, char ***result, int currIdx, int alloced, GraphURF *);
+int combinePaths(char ***paths1, char ***paths2, int p, int q, int x, char ***result, int currIdx, int alloced, char mode, GraphURF *);
 
 #endif

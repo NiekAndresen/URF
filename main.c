@@ -11,9 +11,7 @@
 int main(int argc, char **argv)
 {
     GraphURF *graph;
-    int i,j,l;
-    char *k;
-    char **cycles;
+    int i,j;
     
     graph = readInList("adjlist");
     printGraph(graph);
@@ -85,13 +83,20 @@ int main(int argc, char **argv)
         {
             printf(" (r:%d,p:%d,q:%d,x:%d) ",udata->urfInfo->URFs[i][j]->r,udata->urfInfo->URFs[i][j]->p,udata->urfInfo->URFs[i][j]->q,udata->urfInfo->URFs[i][j]->x);
         }
-        printf("\ncycles:");
-        cycles = giveURFCycles(udata, i);
+        printf("\n");
+
+        int l,number;
+        char **cycles;
+        char *k;
+        char mode = 'a';
+        number = (mode=='a')?graph->V:graph->E;
+        printf("cycles:");
+        cycles = giveURFCycles(udata, i, mode);
         k=cycles[0];
         for(j=0; k!=NULL; ++j)
         {
             printf("\n");
-            for(l=0; l<graph->V; ++l)
+            for(l=0; l<number; ++l)
             {
                 printf("%d ",k[l]);
             }
@@ -100,6 +105,18 @@ int main(int argc, char **argv)
         printf("\n");
         deleteURFCycles(cycles);
     }
+    
+    /*int atom;
+    int *URFsWithAtom;
+    atom=1;
+    URFsWithAtom = listURFs(udata, atom, 'a');
+    printf("listing all URFs with atom %d: ",atom);
+    for(i=0; URFsWithAtom[i]<INT_MAX; ++i)
+    {
+        printf("%d ",URFsWithAtom[i]);
+    }
+    printf("\n");
+    free(URFsWithAtom);*/
     
     deleteURFdata(udata);
     deleteGraph(graph);

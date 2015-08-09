@@ -61,23 +61,30 @@ void giveEdges(int a, int b, char *array, GraphURF *gra, sPathInfo *spi)
     }
 }
 
-/** just like the function "List_Paths" by Vismara: finds all shortest paths between r and p recursively and writes them into the array "paths".*/
-void listPaths(int r, int p, char ***paths, int *currPath, int *alloced, GraphURF *gra, sPathInfo *spi)
+/** just like the function "List_Paths" by Vismara: finds all shortest paths between r and p recursively and writes them into the array "paths". 'mode' determines if the paths are stored as arrays of vertices or of edges.*/
+void listPaths(int r, int p, char ***paths, int *currPath, int *alloced, char mode, GraphURF *gra, sPathInfo *spi)
 {
+    int number; /*number of edges or of vertices in the graph*/
     int vertex;
     int i,j,k;
     char *copyBeforeSplit;
     
-    (*paths)[*currPath][p] = 1;
+    if(mode == 'a') number = gra->V;
+    else number = gra->E;
+    
+    if(mode == 'a')
+    {
+        (*paths)[*currPath][p] = 1;
+    }
     if(r==p)
     {
         return;
     }
-    copyBeforeSplit = malloc(gra->V * sizeof(*copyBeforeSplit));
+    copyBeforeSplit = malloc(number * sizeof(*copyBeforeSplit));
     
     if(spi->dPaths[r]->degree[p] > 1)/*split*/
     {
-        for(i=0; i<gra->V; ++i)/*make a copy of the path so far*/
+        for(i=0; i<number; ++i)/*make a copy of the path so far*/
         {
             copyBeforeSplit[i] = (*paths)[*currPath][i];
         }
@@ -105,31 +112,49 @@ void listPaths(int r, int p, char ***paths, int *currPath, int *alloced, GraphUR
                     (*paths)[*currPath][i] = copyBeforeSplit[i];
                 }
             }
-            listPaths(r,vertex,paths,currPath,alloced,gra,spi);
+            if(mode == 'b')
+            {
+                (*paths)[*currPath][edgeIdx(p,vertex,gra)] = 1;
+            }
+            listPaths(r,vertex,paths,currPath,alloced,mode,gra,spi);
         }
     }
     else/*not a split*/
     {
         vertex = spi->dPaths[r]->adjList[p][0];
-        listPaths(r,vertex,paths,currPath,alloced,gra,spi);
+        if(mode == 'b')
+        {
+            (*paths)[*currPath][edgeIdx(p,vertex,gra)] = 1;
+        }
+        listPaths(r,vertex,paths,currPath,alloced,mode,gra,spi);
     }
     free(copyBeforeSplit);
 }
     
-void getPaths(int r, int p, char ***paths, int alloced, GraphURF *gra, sPathInfo *spi)
+void getPaths(int r, int p, char ***paths, int alloced, char mode, GraphURF *gra, sPathInfo *spi)
 {
     int i,j;
     int currPath=0;
+    int number;
+    
     *paths = malloc(alloced * sizeof(**paths));
     for(i=0; i<alloced; ++i)
     {
-        (*paths)[i] = malloc(gra->V * sizeof(*(*paths)[i]));
-        for(j=0; j<gra->V; ++j)
+        if(mode == 'a')
+        {
+            number = gra->V;
+        }
+        else
+        {
+            number = gra->E;
+        }
+        (*paths)[i] = malloc(number * sizeof(*(*paths)[i]));
+        for(j=0; j<number; ++j)
         {
             (*paths)[i][j] = 0;
         }
     }
-    listPaths(r,p,paths,&currPath,&alloced,gra,spi);
+    listPaths(r,p,paths,&currPath,&alloced,mode,gra,spi);
     if(currPath+1 == alloced)
     {
         *paths = realloc(*paths, (alloced+1)*sizeof(**paths));
@@ -141,20 +166,22 @@ void getPaths(int r, int p, char ***paths, int alloced, GraphURF *gra, sPathInfo
     (*paths)[currPath+1] = NULL;
 }
 
-int combinePaths(char ***paths1, char ***paths2, int x, char ***result, int currIdx, int alloced, GraphURF *gra)
+int combinePaths(char ***paths1, char ***paths2, int p, int q, int x, char ***result, int currIdx, int alloced, char mode, GraphURF *gra)
 {
     char *path1, *path2;
     int i,j,k;
     char *cycle;
+    int number;
     
+    number = (mode == 'a') ? gra->V : gra->E;
     path1=(*paths1)[0];
     for(j=0; path1!=NULL; ++j)
     {
         path2=(*paths2)[0];
         for(k=0; path2!=NULL; ++k)
         {/*all combinations of paths*/
-            cycle=malloc(gra->V * sizeof(*cycle));
-            for(i=0; i<gra->V; ++i)
+            cycle=malloc(number * sizeof(*cycle));
+            for(i=0; i<number; ++i)
             {
                 if(path1[i]==1 || path2[i]==1)
                 {
@@ -165,9 +192,24 @@ int combinePaths(char ***paths1, char ***paths2, int x, char ***result, int curr
                     cycle[i] = 0;
                 }
             }
-            if(x < INT_MAX)/*even cycle*/
+            if(mode == 'a')
             {
-                cycle[x] = 1;
+                if(x < INT_MAX)/*even cycle*/
+                {
+                    cycle[x] = 1;
+                }
+            }
+            else /*mode == 'b'*/
+            {
+                if(x < INT_MAX)/*even cycle*/
+                {
+                    cycle[edgeIdx(p,x,gra)] = 1;
+                    cycle[edgeIdx(q,x,gra)] = 1;
+                }
+                else /*odd cycle*/
+                {
+                    cycle[edgeIdx(p,q,gra)] = 1;
+                }
             }
             if(currIdx == alloced)/*more space needed*/
             {
@@ -180,17 +222,13 @@ int combinePaths(char ***paths1, char ***paths2, int x, char ***result, int curr
         path1=(*paths1)[j+1];
     }
     /*delete paths*/
-    path1=(*paths1)[0];
-    for(j=0; path1!=NULL; ++j)
+    for(j=0; (*paths1)[j]!=NULL; ++j)
     {
-        free(path1);
-        path1=(*paths1)[j+1];
+        free((*paths1)[j]);
     }
-    path2=(*paths2)[0];
-    for(j=0; path2!=NULL; ++j)
+    for(j=0; (*paths2)[j]!=NULL; ++j)
     {
-        free(path2);
-        path2=(*paths2)[j+1];
+        free((*paths2)[j]);
     }
     free(*paths1);
     free(*paths2);

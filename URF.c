@@ -161,7 +161,7 @@ int *giveURF(urfdata *uData, int URFindex, char mode)
     return result;
 }
 
-char **giveURFCycles(urfdata *udata, int index)
+char **giveURFCycles(urfdata *udata, int index, char mode)
 {
     int i;
     int currIdx=0; /*index of next free space in result array*/
@@ -177,9 +177,9 @@ char **giveURFCycles(urfdata *udata, int index)
     result = malloc(alloced * sizeof(*result));
     for(i=0; i<nofFams; ++i)
     {
-        getPaths(URF[i]->r, URF[i]->p, &paths1, alloced, udata->graph, udata->spi);
-        getPaths(URF[i]->r, URF[i]->q, &paths2, alloced, udata->graph, udata->spi);
-        currIdx = combinePaths(&paths1, &paths2, URF[i]->x, &result, currIdx, alloced, udata->graph);
+        getPaths(URF[i]->r, URF[i]->p, &paths1, alloced, mode, udata->graph, udata->spi);
+        getPaths(URF[i]->r, URF[i]->q, &paths2, alloced, mode, udata->graph, udata->spi);
+        currIdx = combinePaths(&paths1, &paths2, URF[i]->p, URF[i]->q, URF[i]->x, &result, currIdx, alloced, mode, udata->graph);
         /*calculate how many spaces are alloced with the help of the returned currIdx. Can be done since 'alloced' is always a power of two*/
         while(currIdx > alloced) alloced *= 2;
     }
@@ -194,12 +194,61 @@ char **giveURFCycles(urfdata *udata, int index)
 void deleteURFCycles(char **cycles)
 {
     int i;
-    char *cyc;
-    cyc = cycles[0];
-    for(i=0; cyc!=NULL; ++i)
+    for(i=0; cycles[i]!=NULL; ++i)
     {
-        free(cyc);
-        cyc = cycles[i+1];
+        free(cycles[i]);
     }
     free(cycles);
+}
+
+int *listURFs(urfdata *udata, int object, char mode)
+{
+    int *result;
+    int *URFs; /*array of {0,1}^#URFs containing 1 on position i if the i-th URF contains the object*/
+    int nextfree=0, alloced=2;
+    int *objects;
+    int i,j;
+    char contained;
+    
+    if(!(mode == 'a' || mode == 'b'))
+    {
+        fprintf(stderr, "ERROR: tried to call 'listURFs()' with invalid mode '%c'\n",mode);
+        fprintf(stderr, "Only 'a' or 'b' are allowed. Read interface for help.\n");
+        exit(EXIT_FAILURE);
+    }
+    URFs = malloc(udata->nofURFs * sizeof(*URFs));
+    for(i=0; i<udata->nofURFs; ++i)
+    {
+        objects = giveURF(udata, i, mode);
+        contained = 0;
+        for(j=0; objects[j]<INT_MAX; ++j)
+        {
+            if(objects[j] == object)
+            {
+                contained = 1;
+                break;
+            }
+        }
+        URFs[i] = contained;
+    }
+    /*translate into result structure*/
+    result=malloc(alloced * sizeof(*result));
+    for(i=0; i<udata->nofURFs; ++i)
+    {
+        if(URFs[i] == 1)
+        {
+            if(nextfree == alloced)
+            {
+                result = realloc(result, 2*alloced*sizeof(*result));
+                alloced *= 2;
+            }
+            result[nextfree++] = i;
+        }
+    }
+    if(nextfree == alloced)
+    {
+        result = realloc(result, (alloced+1)*sizeof(*result));
+    }
+    result[nextfree] = INT_MAX;
+    return result;
 }
