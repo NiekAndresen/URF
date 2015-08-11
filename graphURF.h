@@ -6,9 +6,6 @@
  
  - addUEdge(GraphURF *, int from, int to) to add a new (undirected) edge from the vertex with index "from" to the vertex with index "to". It is NO problem to add an edge twice - even with different order of vertices (will be ignored).
  
-after all edges have been added:
- - enumerateEdges(GraphURF *) to complete the structure
- 
 now calculateURFs (from URF.h) can be called on it 
 
  - deleteGraph to free all allocated space */
@@ -31,14 +28,14 @@ GraphURF *initNewGraph(int V);
 /** adds an undirected edge to the graph. */
 void addUEdge(GraphURF *, int from, int to);
 
-/** Fills the 'edges' array which contains all edges as pairs of vertices (smaller vertex index first). (Should be called on complete graph.) */
-void enumerateEdges(GraphURF *gra);
-
 /** frees all allocated space. */
 void deleteGraph(GraphURF *gra);
 
-
 /**====== These are not needed for URF.h user: =====*/
+
+/** Fills the 'edges' array which contains all edges as pairs of vertices (smaller vertex index first). (Should be called on complete graph.) */
+void enumerateEdges(GraphURF *gra);
+
 /** adds a directed edge to the graph. */
 void addEdge(GraphURF *, int from, int to);
 

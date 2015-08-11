@@ -7,6 +7,7 @@
 #include "apsp.h"
 #include "CycleFamsURF.h"
 #include "URFhandler.h"
+#include "utility.h"
 
 void findShortestPaths(urfdata *udata, GraphURF *gra)
 {
@@ -15,6 +16,10 @@ void findShortestPaths(urfdata *udata, GraphURF *gra)
 
 urfdata *calculateURFs(GraphURF *gra)
 {
+    if(gra->edgesEnumerated != 'y')
+    {
+        enumerateEdges(gra);
+    }
     urfdata *udata = malloc(sizeof(*udata));
     findShortestPaths(udata, gra);
     udata->CFs = findCycleFams(gra, udata->spi);
@@ -230,6 +235,7 @@ int *listURFs(urfdata *udata, int object, char mode)
             }
         }
         URFs[i] = contained;
+        free(objects);
     }
     /*translate into result structure*/
     result=malloc(alloced * sizeof(*result));
@@ -250,5 +256,45 @@ int *listURFs(urfdata *udata, int object, char mode)
         result = realloc(result, (alloced+1)*sizeof(*result));
     }
     result[nextfree] = INT_MAX;
+    free(URFs);
     return result;
+}
+
+int numOfURFsContaining(urfdata *udata, int atom)
+{
+    int *list = listURFs(udata, atom, 'a');
+    int count;
+    for(count=0; list[count]<INT_MAX; ++count);
+    free(list);
+    return count;
+}
+
+char **findBasis(urfdata *udata)
+{
+    /*take a prototype out of each URF ordered by weight until |E|-|V|+1 cycles are collected*/
+    int i,j;
+    char **result;
+    GraphURF *gra = udata->graph;
+    result = alloc2DCharArray(gra->E-gra->V+1, gra->V);
+    for(i=0; i<gra->E-gra->V+1; ++i)
+    {
+        for(j=0; j<gra->V; ++j)
+        {
+            result[i][j] = 0;
+        }
+        for(j=0; j<gra->E; ++j)
+        {
+            if(udata->urfInfo->URFs[i][0]->prototype[j] == 1)
+            {
+                result[i][gra->edges[j][0]] = 1;
+                result[i][gra->edges[j][1]] = 1;            
+            }
+        }
+    }
+    return result;
+}
+
+void deleteBasis(char **bas)
+{
+    delete2DArray((void **)bas);
 }

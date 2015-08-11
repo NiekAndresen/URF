@@ -85,7 +85,7 @@ int main(int argc, char **argv)
         }
         printf("\n");
 
-        int l,number;
+        /*int l,number;
         char **cycles;
         char *k;
         char mode = 'a';
@@ -103,10 +103,22 @@ int main(int argc, char **argv)
             k=cycles[j+1];
         }
         printf("\n");
-        deleteURFCycles(cycles);
+        deleteURFCycles(cycles);*/
     }
     
-    /*int atom;
+    char **basis = findBasis(udata);
+    printf("basis:\n");
+    for(i=0; i<graph->E-graph->V+1; ++i)
+    {
+        for(j=0; j<graph->V;  ++j)
+        {
+            printf("%d ",basis[i][j]);
+        }
+        printf("\n");
+    }
+    deleteBasis(basis);
+    
+    int atom;
     int *URFsWithAtom;
     atom=1;
     URFsWithAtom = listURFs(udata, atom, 'a');
@@ -116,7 +128,8 @@ int main(int argc, char **argv)
         printf("%d ",URFsWithAtom[i]);
     }
     printf("\n");
-    free(URFsWithAtom);*/
+    printf("number of URFs with atom %d: %d\n",atom,numOfURFsContaining(udata, atom));
+    free(URFsWithAtom);
     
     deleteURFdata(udata);
     deleteGraph(graph);

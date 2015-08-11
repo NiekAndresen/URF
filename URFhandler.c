@@ -161,7 +161,10 @@ void getPaths(int r, int p, char ***paths, int alloced, char mode, GraphURF *gra
     }
     else
     {
-        free((*paths)[currPath+1]); /*to avoid memory leak*/
+        for(i=currPath+1; i<alloced; ++i)
+        {
+            free((*paths)[i]); /*to avoid memory leak*/
+        }
     }
     (*paths)[currPath+1] = NULL;
 }

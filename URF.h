@@ -13,12 +13,12 @@ typedef struct{
     GraphURF *graph;
     int nofURFs;//number of URFs
     cfURF *CFs; //the cycle families (found by Vismara's algorithm)
-    URFinfo *urfInfo; //stores which RCFs are URF-related
+    URFinfo *urfInfo; //stores which RCF are URF related and belong to the same URF
     //basis info
     sPathInfo *spi;//shortest paths info
 }urfdata;
 
-/** Calculates the URF-structure of the given graph and returns it. The graph has to be a correct undirected graph and the edges have to be enumerated with 'enumerateEdges' (see graphURF.h).*/
+/** Calculates the URF-structure of the given graph and returns it. The graph has to be a correct undirected graph.*/
 urfdata *calculateURFs(GraphURF *);
 
 /** Deletes urfdata from memory. Does not delete the graph.*/
@@ -48,7 +48,7 @@ char **giveURFCycles(urfdata *, int index, char mode);
 /** Deallocates all space allocated by the function 'giveURFCycles()'. Call on the return value of that function. */
 void deleteURFCycles(char **);
 
-/** Gives all URFs containing the give object, which can be an atom or a bond.
+/** Gives all URFs containing the object, which can be an atom or a bond.
 mode:
     - 'a': atom
     - 'b': bond
@@ -56,8 +56,15 @@ returns an array of integers containing all indices of URFs containing the objec
 The array ends with a terminating INT_MAX on its last position and has to be deallocated with 'free()' */
 int *listURFs(urfdata *, int object, char mode);
 
-///** Writes a MCB */
-//void findBasis(GraphURF *);
+/** returns the number of URFs that contain the given atom */
+int numOfURFsContaining(urfdata *, int atom);
+
+/** returns a set of cycles that forms a MCB of the graph. A cycle is represented by an array of {0,1}^n with a 1 at position i if vertex i is part of the cycle. The result is an array of these cycles. The result contains |E|-|V|+1 cycles. This does not return a correct basis on an unconnected graph.*/
+/*alternatives: return array of vertex indices; give option to call function only on the graph.*/
+char **findBasis(urfdata *);
+
+/** Deallocates the structure returned by 'findBasis()'. */
+void deleteBasis(char **);
 
 ///** gives rcps */
 //void findRCp(urfdata *);
