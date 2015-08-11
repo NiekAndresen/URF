@@ -14,7 +14,6 @@ typedef struct{
     int nofURFs;//number of URFs
     cfURF *CFs; //the cycle families (found by Vismara's algorithm)
     URFinfo *urfInfo; //stores which RCF are URF related and belong to the same URF
-    //basis info
     sPathInfo *spi;//shortest paths info
 }urfdata;
 
@@ -33,7 +32,7 @@ int numberOfURFs(urfdata *);
     returns an array of integers containing all indices of atoms (vertices of the graph) that are part of the URF
   - 'b': bonds
     returns an array of integers containing all indices of bonds (edges of the graph) that are part of the URF
-The arrays returned are ended with INT_MAX on their last position and have to be deallocated with 'free()'.*/
+The array returned is ended with INT_MAX on its last position and has to be deallocated with 'free()'.*/
 /*alternative: return arrays of {0,1}^n and {0,1}^m*/
 int *giveURF(urfdata *, int index, char mode);
 
@@ -44,9 +43,6 @@ modes:
 The array of cycles is ended with a terminating NULL pointer.
 This structure has to be deallocated using 'deleteURFCycles(<return value>)'.*/
 char **giveURFCycles(urfdata *, int index, char mode);
-
-/** Deallocates all space allocated by the function 'giveURFCycles()'. Call on the return value of that function. */
-void deleteURFCycles(char **);
 
 /** Gives all URFs containing the object, which can be an atom or a bond.
 mode:
@@ -59,18 +55,23 @@ int *listURFs(urfdata *, int object, char mode);
 /** returns the number of URFs that contain the given atom */
 int numOfURFsContaining(urfdata *, int atom);
 
-/** returns a set of cycles that forms a MCB of the graph. A cycle is represented by an array of {0,1}^n with a 1 at position i if vertex i is part of the cycle. The result is an array of these cycles. The result contains |E|-|V|+1 cycles. This does not return a correct basis on an unconnected graph.*/
+/** returns a set of cycles that forms a MCB of the graph.
+A cycle is represented by an array of {0,1}^n with a 1 at position i if vertex i is part of the cycle. The result is an array of these cycles. The result contains |E|-|V|+1 cycles. This does not return a correct basis on an unconnected graph.*/
 /*alternatives: return array of vertex indices; give option to call function only on the graph.*/
 char **findBasis(urfdata *);
 
-/** Deallocates the structure returned by 'findBasis()'. */
-void deleteBasis(char **);
+/** Gives a list of relevant cycle prototypes (one for each RCF).
+Returns an array of prototypes which are represented by arrays of {0,1}^n containing a 1 at position i if vertex i is part of the cycle or 0 otherwise. The array is ended with a terminating NULL-pointer.*/
+char **giveRCprototypes(urfdata *);
 
-///** gives rcps */
-//void findRCp(urfdata *);
+/** Gives a list of all relevant cycles.
+The return value is an array of cycles. A cycle is represented by an array of {0,1}^n with a 1 at position i if vertex i is part of the cycle or 0 otherwise. The array is ended with a terminating NULL-pointer. */
+char **giveRCcycles(urfdata *);
 
-///** gives rcs */
-//void findRCc(urfdata *);
+/** Deallocates the structure returned by 'giveURFCycles()' and 'giveRCcycles()' if called on its return value (arrays that are ended with a NULL pointer) */
+void deleteCycles(char **);
 
+/** Deallocates the structure returned by 'findBasis()' and 'giveRCprototypes()' if called on their return values. */
+void deleteArr(char **);
 
 #endif

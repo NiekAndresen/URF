@@ -196,7 +196,7 @@ char **giveURFCycles(urfdata *udata, int index, char mode)
     return result;
 }
 
-void deleteURFCycles(char **cycles)
+void deleteCycles(char **cycles)
 {
     int i;
     for(i=0; cycles[i]!=NULL; ++i)
@@ -294,7 +294,66 @@ char **findBasis(urfdata *udata)
     return result;
 }
 
-void deleteBasis(char **bas)
+void deleteArr(char **arr)
 {
-    delete2DArray((void **)bas);
+    delete2DArray((void **)arr);
+}
+
+char **giveRCprototypes(urfdata *udata)
+{
+    int i, j;
+    char **result;
+    int nofRel=0;
+    int currFam=0;
+    /*find number of relevant cycle families*/
+    for(i=0; i<udata->CFs->nofFams; ++i)
+    {
+        if(udata->CFs->fams[i]->mark > 0)
+        {
+            ++nofRel;
+        }
+    }
+    result = alloc2DCharArray(nofRel+1,udata->graph->V);
+    for(i=0; i<udata->CFs->nofFams; ++i)
+    {
+        if(udata->CFs->fams[i]->mark > 0)
+        {
+            for(j=0; j<udata->graph->V; ++j)
+            {
+                result[currFam][j] = udata->CFs->fams[i]->prototype[j];
+            }
+            ++currFam;
+        }
+    }
+    result[currFam] = NULL;
+    return result;
+}
+
+char **giveRCcycles(urfdata *udata)
+{
+    int i;
+    cfURF *RCs = udata->CFs;
+    char **result;
+    int alloced = 8;
+    int currIdx=0;
+    char **paths1, **paths2; /*array storing shortest paths between two points. paths1 for paths from r to p and paths2 for paths from r to q.*/
+    
+    result = malloc(alloced * sizeof(*result));    
+    for(i=0; i<RCs->nofFams; ++i)
+    {
+        if(RCs->fams[i]->mark > 0)/*relevant*/
+        {
+            getPaths(RCs->fams[i]->r, RCs->fams[i]->p, &paths1, alloced, 'a', udata->graph, udata->spi);
+            getPaths(RCs->fams[i]->r, RCs->fams[i]->q, &paths2, alloced, 'a', udata->graph, udata->spi);
+            currIdx = combinePaths(&paths1, &paths2, RCs->fams[i]->p, RCs->fams[i]->q, RCs->fams[i]->x, &result, currIdx, alloced, 'a', udata->graph);
+            /*calculate how many spaces are alloced with the help of the returned currIdx. Can be done since 'alloced' is always a power of two*/
+            while(currIdx > alloced) alloced *= 2;            
+        }
+    }
+    if(currIdx == alloced)
+    {
+        result = realloc(result, (alloced+1)*sizeof(*result));
+    }
+    result[currIdx] = NULL;
+    return result;
 }

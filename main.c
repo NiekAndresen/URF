@@ -103,7 +103,7 @@ int main(int argc, char **argv)
             k=cycles[j+1];
         }
         printf("\n");
-        deleteURFCycles(cycles);*/
+        deleteCycles(cycles);*/
     }
     
     char **basis = findBasis(udata);
@@ -116,7 +116,7 @@ int main(int argc, char **argv)
         }
         printf("\n");
     }
-    deleteBasis(basis);
+    deleteArr(basis);
     
     int atom;
     int *URFsWithAtom;
@@ -130,6 +130,32 @@ int main(int argc, char **argv)
     printf("\n");
     printf("number of URFs with atom %d: %d\n",atom,numOfURFsContaining(udata, atom));
     free(URFsWithAtom);
+    
+    /*char **protos;
+    printf("RC prototypes:\n");
+    protos=giveRCprototypes(udata);
+    for(i=0; protos[i]!=NULL; ++i)
+    {
+        for(j=0; j<graph->V; ++j)
+        {
+            printf("%d ",protos[i][j]);
+        }
+        printf("\n");
+    }
+    deleteArr(protos);*/
+    
+    char **relCycles;
+    printf("RC prototypes:\n");
+    relCycles=giveRCcycles(udata);
+    for(i=0; relCycles[i]!=NULL; ++i)
+    {
+        for(j=0; j<graph->V; ++j)
+        {
+            printf("%d ",relCycles[i][j]);
+        }
+        printf("\n");
+    }
+    deleteCycles(relCycles);
     
     deleteURFdata(udata);
     deleteGraph(graph);
