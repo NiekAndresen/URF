@@ -37,6 +37,11 @@ GraphURF *readInList(char *path)
     int currLine=0;
     FILE *fp;
     fp = fopen(path, "r");
+    if(fp == NULL)
+    {
+        fprintf(stderr, "Could not open file %s\n",path);
+        usage();
+    }
     
     cha = fgetc(fp);
     while(cha != EOF) //first run through the file to find |V|
@@ -67,7 +72,7 @@ GraphURF *readInList(char *path)
         cha = fgetc(fp);
     }
     fclose(fp);
-    
+
     enumerateEdges(gra);
     return gra;
 }
