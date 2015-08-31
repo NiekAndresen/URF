@@ -144,7 +144,21 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
     int i,j,k,testRow=0,idx;
     int numAdded; /*how many cycles were added to 'B' within the currently considered weight*/
     char indepOfAll; /*flag storing if a cycle was independet of all combinations of 'B<' with one of 'B='*/
-    if(RCFs->nofFams < 3) return;
+    if(RCFs->nofFams < 3)
+    {/*if only 0, 1 or 2 families exist, they are all relevant and independent*/
+        for(i=0; i<uInfo->nofWeights; ++i)
+        {
+            for(j=0; j<uInfo->nofProtos[i]; ++j)
+            {
+                uInfo->URFrel[i][j][j] = 1; /*URf-related to itfelf*/
+            }
+        }
+        for(i=0; i<RCFs->nofFams; ++i)
+        {
+            RCFs->fams[i]->mark = 1;
+        }
+        return;
+    }
 
     matrix = malloc(RCFs->nofFams * sizeof(*matrix));
     currRow = 0;

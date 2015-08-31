@@ -106,6 +106,7 @@ int countURFs(cfURF *cFams, URFinfo *uInfo)
             ++RCFcount;
         }
     }
+printf("RCFcount is %d\n",RCFcount);
     /*count number of 1s indicating URF-relation*/
     for(weightIdx=0; weightIdx<uInfo->nofWeights; ++weightIdx)
     {
