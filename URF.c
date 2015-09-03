@@ -24,8 +24,15 @@ urfdata *calculateURFs(GraphURF *gra)
     findShortestPaths(udata, gra);
     udata->CFs = findCycleFams(gra, udata->spi);
     udata->graph = gra;
-    udata->urfInfo = checkURFRelation(udata->CFs, udata->graph, udata->spi);
-    udata->nofURFs = udata->urfInfo->nofURFs;
+    if(udata->CFs->nofFams > 0)
+    {
+        udata->urfInfo = checkURFRelation(udata->CFs, udata->graph, udata->spi);
+        udata->nofURFs = udata->urfInfo->nofURFs;
+    }
+    else
+    {
+        udata->nofURFs = 0;
+    }
     return udata;
 }
 
@@ -33,7 +40,10 @@ void deleteURFdata(urfdata *udata)
 {
     deleteAPSP(udata->spi, udata->graph->V);
     deleteCycleFams(udata->CFs);
-    deleteURFInfo(udata->urfInfo);
+    if(udata->nofURFs > 0)
+    {
+        deleteURFInfo(udata->urfInfo);
+    }
     free(udata);
 }
 
