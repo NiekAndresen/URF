@@ -106,7 +106,6 @@ int countURFs(cfURF *cFams, URFinfo *uInfo)
             ++RCFcount;
         }
     }
-printf("RCFcount is %d\n",RCFcount);
     /*count number of 1s indicating URF-relation*/
     for(weightIdx=0; weightIdx<uInfo->nofWeights; ++weightIdx)
     {
@@ -188,17 +187,8 @@ void fillURFs(URFinfo *uInfo, cfURF *CFs)
                     if(uInfo->URFrel[i][j][k] == 1)
                     {
                         addRCFtoURF(idxWeight(uInfo,i,k),currURFIdx,nofRCFs[currURFIdx],URFs,CFs);/*add to current URF the CFs with the given Idx*/
-if(i==1 && j==1 && k==1)
-{
-    printf("nofCFs of the URF 2 should be increased now\n");
-}
                         ++nofRCFs[currURFIdx];
                         alreadyInURF[i][k] = 1;
-                        
-if(i==1 && j==1 && k==1)
-{
-    printf("nofRCFs[%d] = %d\n",currURFIdx, nofRCFs[currURFIdx]);
-}
                     }
                 }
                 ++currURFIdx;
@@ -212,18 +202,6 @@ if(i==1 && j==1 && k==1)
     }
     free(alreadyInURF);
     uInfo->URFs=URFs;
-for(i=0; i<uInfo->nofWeights; ++i)
-{
-    for(j=0; j<uInfo->nofProtos[i]; ++j)
-    {
-        for(k=0; k<uInfo->nofProtos[i]; ++k)
-        {
-            printf("%d ",uInfo->URFrel[i][j][k]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-}
     uInfo->nofCFsPerURF = nofRCFs;
 }
 
