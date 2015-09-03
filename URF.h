@@ -11,7 +11,7 @@
 /** struct that contains all data that was accumulated during the calculation of the URF-structure */
 typedef struct{
     GraphURF *graph;
-    int nofURFs;//number of URFs
+    unsigned int nofURFs;//number of URFs
     cfURF *CFs; //the cycle families (found by Vismara's algorithm)
     URFinfo *urfInfo; //stores which RCF are URF related and belong to the same URF
     sPathInfo *spi;//shortest paths info
