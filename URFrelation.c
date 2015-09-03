@@ -166,6 +166,7 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
     for(i=0; i<uInfo->nofWeights; ++i)/*for each weight (index)*/
     {
         numAdded = 0;
+        indepOfAll = 'n';
         for(j=0; j<uInfo->nofProtos[i]; ++j)/*for each CF with this weight*/
         {
             matrix[currRow] = RCFs->fams[idxWeights(uInfo, i, j)]->prototype;/*add prototype to matrix*/

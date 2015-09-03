@@ -181,15 +181,24 @@ void fillURFs(URFinfo *uInfo, cfURF *CFs)
     {
         for(j=0; j<uInfo->nofProtos[i]; ++j)
         {
-            if(alreadyInURF[i][j] == 0)/*this family is not already part of a URF*/
+            if((uInfo->URFrel[i][j][j] == 1) && (alreadyInURF[i][j] == 0))/*this family is not already part of a URF*/
             {
                 for(k=j; k<uInfo->nofProtos[i]; ++k)
                 {
                     if(uInfo->URFrel[i][j][k] == 1)
                     {
                         addRCFtoURF(idxWeight(uInfo,i,k),currURFIdx,nofRCFs[currURFIdx],URFs,CFs);/*add to current URF the CFs with the given Idx*/
+if(i==1 && j==1 && k==1)
+{
+    printf("nofCFs of the URF 2 should be increased now\n");
+}
                         ++nofRCFs[currURFIdx];
                         alreadyInURF[i][k] = 1;
+                        
+if(i==1 && j==1 && k==1)
+{
+    printf("nofRCFs[%d] = %d\n",currURFIdx, nofRCFs[currURFIdx]);
+}
                     }
                 }
                 ++currURFIdx;
@@ -203,6 +212,18 @@ void fillURFs(URFinfo *uInfo, cfURF *CFs)
     }
     free(alreadyInURF);
     uInfo->URFs=URFs;
+for(i=0; i<uInfo->nofWeights; ++i)
+{
+    for(j=0; j<uInfo->nofProtos[i]; ++j)
+    {
+        for(k=0; k<uInfo->nofProtos[i]; ++k)
+        {
+            printf("%d ",uInfo->URFrel[i][j][k]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
     uInfo->nofCFsPerURF = nofRCFs;
 }
 
