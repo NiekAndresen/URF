@@ -36,6 +36,11 @@ The array returned is ended with INT_MAX on its last position and has to be deal
 /*alternative: return arrays of {0,1}^n and {0,1}^m*/
 int *giveURF(urfdata *, int index, char mode);
 
+/** Gives the bonds of a URF identified with it's index.
+Returns an array of bonds which ends on a terminating NULL pointer. A bond is represented by two integers which are the indices of the atoms the bond connects.
+Return value has to be deallocated using 'deleteArr()'.*/
+int **giveURFBonds(urfdata *, int index);
+
 /** Gives all cycles of the URF with the given index. Returns an array of cycles.
 modes:
     - 'a': A cycle is represented by an array of {0,1}^n which contains a 1 at position i if the vertex i is part of the cycle or 0 otherwise (n: number of vertices).
@@ -73,5 +78,8 @@ void deleteCycles(char **);
 
 /** Deallocates the structure returned by 'findBasis()' and 'giveRCprototypes()' if called on their return values. */
 void deleteArr(char **);
+
+/** Deallocates the structure returned by 'giveURFBonds()' if called on it's return value. */
+void deleteBondArr(int **);
 
 #endif

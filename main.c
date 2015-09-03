@@ -104,6 +104,15 @@ int main(int argc, char **argv)
         }
         printf("\n");
         deleteCycles(cycles);*/
+        
+        /*int **URFedges;
+        URFedges = giveURFBonds(udata, i);
+        printf("edges of URF %d:\n",i);
+        for(j=0; URFedges[j]!=NULL; ++j)
+        {
+            printf("%d: [%d,%d]\n", j, URFedges[j][0], URFedges[j][1]);
+        }
+        deleteBondArr(URFedges);*/
     }
     
     char **basis = findBasis(udata);
@@ -156,6 +165,8 @@ int main(int argc, char **argv)
         printf("\n");
     }
     deleteCycles(relCycles);*/
+    
+    
     
     deleteURFdata(udata);
     deleteGraph(graph);

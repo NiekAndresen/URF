@@ -176,6 +176,42 @@ int *giveURF(urfdata *uData, int URFindex, char mode)
     return result;
 }
 
+int **giveURFBonds(urfdata *uData, int URFindex)
+{
+    int *bondIndices;
+    int **result;
+    unsigned int nextfree, alloced;
+    unsigned int i,j;
+    
+    nextfree = 0;
+    alloced = 3;
+    result = alloc2DIntArray(alloced, 2);
+    bondIndices = giveBonds(uData, URFindex);
+    for(i=0; bondIndices[i]<INT_MAX; ++i)
+    {
+        if(nextfree == alloced)/*more space needed in result*/
+        {
+            alloced *= 2; /* double the space */
+            result = realloc(result, alloced * sizeof(*result));
+            *result = realloc(*result, alloced * 2 * sizeof(**result));
+            for(j=0; j<alloced; ++j)
+            {
+                result[j] = result[0] + 2 * j;
+            }
+        }
+        result[nextfree][0] = uData->graph->edges[bondIndices[i]][0];
+        result[nextfree][1] = uData->graph->edges[bondIndices[i]][1];
+        ++nextfree;
+    }
+    if(nextfree == alloced) /* space needed for terminating NULL pointer */
+    {
+        result = realloc(result, (alloced+1) * sizeof(*result));
+    }
+    result[nextfree] = NULL;
+    free(bondIndices);
+    return result;
+}
+
 char **giveURFCycles(urfdata *udata, int index, char mode)
 {
     int i;
@@ -366,4 +402,9 @@ char **giveRCcycles(urfdata *udata)
     }
     result[currIdx] = NULL;
     return result;
+}
+
+void deleteBondArr(int **arr)
+{
+    delete2DArray((void **)arr);
 }
