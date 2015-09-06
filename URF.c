@@ -191,6 +191,7 @@ int *giveURFAtoms(urfdata *udata, int index)
     {
         result[atomIndices[i]] = 1;
     }
+    free(atomIndices);
     return result;    
 }
 
