@@ -36,6 +36,11 @@ The array returned is ended with INT_MAX on its last position and has to be deal
 /*alternative: return arrays of {0,1}^n and {0,1}^m*/
 int *giveURF(urfdata *, int index, char mode);
 
+/** Gives the atoms of a URF identified with it's index.
+Returns an array of length n (Number of atoms in the molecule) that contains 1 at position i if atom i is part of the URF.
+Return value has to be deallocated using free(). */
+int *giveURFAtoms(urfdata *, int index);
+
 /** Gives the bonds of a URF identified with it's index.
 Returns an array of bonds which ends on a terminating NULL pointer. A bond is represented by two integers which are the indices of the atoms the bond connects.
 Return value has to be deallocated using 'deleteArr()'.*/

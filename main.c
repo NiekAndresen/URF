@@ -60,7 +60,9 @@ int main(int argc, char **argv)
     }
     */
     printf("\nURFs:\n");
-    /*
+    
+    /*printf("\nURFrel:\n");
+    int k;
     for(i=0; i<udata->urfInfo->nofWeights; ++i)
     {
         printf("weight %d\n",i);
@@ -72,8 +74,8 @@ int main(int argc, char **argv)
             }
             printf("\n");
         }
-    }
-    */
+    }*/
+    
     printf("number of URFs: %d\n",udata->nofURFs);
     for(i=0; i<udata->nofURFs; ++i)
     {
@@ -115,6 +117,20 @@ int main(int argc, char **argv)
         deleteBondArr(URFedges);*/
     }
     
+    int *URFatoms;
+    printf("atoms in the URFs:\n");
+    for(i=0; i<udata->nofURFs; ++i)
+    {
+        URFatoms = giveURFAtoms(udata, i);
+        for(j=0; j<graph->V; ++j)
+        {
+            printf("%d ",URFatoms[j]);
+        }
+        printf("\n");
+        free(URFatoms);
+    }
+    
+    /*
     char **basis = findBasis(udata);
     printf("basis:\n");
     for(i=0; i<graph->E-graph->V+1; ++i)
@@ -125,7 +141,7 @@ int main(int argc, char **argv)
         }
         printf("\n");
     }
-    deleteArr(basis);
+    deleteArr(basis);*/
     
     /*int atom;
     int *URFsWithAtom;

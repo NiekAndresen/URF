@@ -8,6 +8,7 @@
 #include "CycleFamsURF.h"
 #include "io.h"
 #include "URFhandler.h"
+#include "utility.h"
 
 void swapRows(char **mat, int row1, int row2, int maxCol)
 {
@@ -87,7 +88,7 @@ int dependent(char **inMat, int maxRow, int maxCol)
             }
         }
         if(row2 == maxRow + 1)/*there is no row with an entry in this column*/
-        {
+        {/*skip this column*/
             ++col;
             --row;
             continue;
@@ -144,13 +145,15 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
     int i,j,k,testRow=0,idx;
     int numAdded; /*how many cycles were added to 'B' within the currently considered weight*/
     char indepOfAll; /*flag storing if a cycle was independet of all combinations of 'B<' with one of 'B='*/
+    char *temp;
+    
     if(RCFs->nofFams < 3)
     {/*if only 0, 1 or 2 families exist, they are all relevant and independent*/
         for(i=0; i<uInfo->nofWeights; ++i)
         {
             for(j=0; j<uInfo->nofProtos[i]; ++j)
             {
-                uInfo->URFrel[i][j][j] = 1; /*URf-related to itfelf*/
+                uInfo->URFrel[i][j][j] = 1; /*URF-related to itself*/
             }
         }
         for(i=0; i<RCFs->nofFams; ++i)
@@ -166,9 +169,9 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
     for(i=0; i<uInfo->nofWeights; ++i)/*for each weight (index)*/
     {
         numAdded = 0;
-        indepOfAll = 'n';
         for(j=0; j<uInfo->nofProtos[i]; ++j)/*for each CF with this weight*/
         {
+            indepOfAll = 'n';
             matrix[currRow] = RCFs->fams[idxWeights(uInfo, i, j)]->prototype;/*add prototype to matrix*/
             if(dependent(matrix, currRow, graph->E-1) == 0)/*independent of "B<" (see e.g. Vismara)*/
             {/* check potential URF-relations to other cycles of the same length ("weight") */
@@ -192,7 +195,8 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
             if(indepOfAll == 'y')/*if the cycle was independent of all combinations of 'B<' with one of 'B='*/
             {
                 /*attach all of 'B=' to the matrix*/
-                testRow = currRow+1;
+                temp = matrix[currRow];
+                testRow = currRow;
                 for(k=0; k<uInfo->nofProtos[i]; ++k)
                 {
                     if(RCFs->fams[idxWeights(uInfo, i, k)]->mark == 2)
@@ -200,6 +204,7 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
                         matrix[testRow++] = RCFs->fams[idxWeights(uInfo, i, k)]->prototype;
                     }
                 }
+                matrix[testRow++] = temp;
                 /*check if the new cycle is indep of all of 'B<' and 'B=' combined*/
                 if(dependent(matrix, testRow-1, graph->E-1) == 0)
                 {

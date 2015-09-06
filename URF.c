@@ -176,6 +176,24 @@ int *giveURF(urfdata *uData, int URFindex, char mode)
     return result;
 }
 
+int *giveURFAtoms(urfdata *udata, int index)
+{
+    int *atomIndices;
+    int *result;
+    unsigned int i;
+    result = malloc(udata->graph->V * sizeof(*result));
+    for(i=0; i<udata->graph->V; ++i)
+    {
+        result[i] = 0;
+    }
+    atomIndices = giveAtoms(udata, index);
+    for(i=0; atomIndices[i]<INT_MAX; ++i)
+    {
+        result[atomIndices[i]] = 1;
+    }
+    return result;    
+}
+
 int **giveURFBonds(urfdata *uData, int URFindex)
 {
     int *bondIndices;
@@ -320,7 +338,8 @@ char **findBasis(urfdata *udata)
     /*take a prototype out of each URF ordered by weight until |E|-|V|+1 cycles are collected*/
     int i,j;
     char **result;
-    GraphURF *gra = udata->graph;
+    GraphURF *gra;
+    gra = udata->graph;
     result = alloc2DCharArray(gra->E-gra->V+1, gra->V);
     for(i=0; i<gra->E-gra->V+1; ++i)
     {
