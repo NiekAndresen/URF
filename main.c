@@ -61,7 +61,7 @@ int main(int argc, char **argv)
     */
     printf("\nURFs:\n");
     
-    printf("\nURFrel:\n");
+    /*printf("\nURFrel:\n");
     int k;
     for(i=0; i<udata->urfInfo->nofWeights; ++i)
     {
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
             }
             printf("\n");
         }
-    }
+    }*/
     
     printf("number of URFs: %d\n",udata->nofURFs);
     for(i=0; i<udata->nofURFs; ++i)
