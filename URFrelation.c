@@ -107,6 +107,11 @@ int dependent(char **inMat, int maxRow, int maxCol)
                 }
             }
         }
+if(0)//maxRow == 6)
+{
+    printf("after elimination\n");
+    print2DCharArray(mat,maxRow+1,maxCol+1);
+}
         if(indep == 0)
         {
             break;
@@ -143,7 +148,7 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
     char **matrix;
     int currRow; /*index of the first row that does NOT contain a cycle that is part of "B=" (see Vismara)*/
     int i,j,k,testRow=0,idx;
-    int numAdded; /*how many cycles were added to 'B' within the currently considered weight*/
+    //int numAdded; /*how many cycles were added to 'B' within the currently considered weight*/
     char indepOfAll; /*flag storing if a cycle was independet of all combinations of 'B<' with one of 'B='*/
     char *temp;
     
@@ -168,13 +173,30 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
 
     for(i=0; i<uInfo->nofWeights; ++i)/*for each weight (index)*/
     {
-        numAdded = 0;
+if(RCFs->fams[idxWeights(uInfo,i,0)]->weight == 6)
+{
+    printf("looking at weight %d\n",RCFs->fams[idxWeights(uInfo,i,0)]->weight);
+}
+        //numAdded = 0;
         for(j=0; j<uInfo->nofProtos[i]; ++j)/*for each CF with this weight*/
         {
+if(RCFs->fams[idxWeights(uInfo,i,0)]->weight == 6 && j==0)
+{
+    printf("in weight 6 - 0\n");
+}
             indepOfAll = 'n';
             matrix[currRow] = RCFs->fams[idxWeights(uInfo, i, j)]->prototype;/*add prototype to matrix*/
+if(1)//RCFs->fams[idxWeights(uInfo,i,0)]->weight == 6)
+{
+    printf("checking dependency on:\n");
+    print2DCharArray(matrix, currRow+1, graph->E);
+}
             if(dependent(matrix, currRow, graph->E-1) == 0)/*independent of "B<" (see e.g. Vismara)*/
             {/* check potential URF-relations to other cycles of the same length ("weight") */
+if(1)//RCFs->fams[idxWeights(uInfo,i,0)]->weight == 6)
+{
+    printf("was indep\n");
+}
                 uInfo->URFrel[i][j][j] = 1; /*URF-related to itself*/
                 for(k=0; k<uInfo->nofProtos[i]; ++k)
                 {
@@ -209,7 +231,7 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
                 if(dependent(matrix, testRow-1, graph->E-1) == 0)
                 {
                     RCFs->fams[idxWeights(uInfo, i, j)]->mark = 2;
-                    ++numAdded;
+          //          ++numAdded;
                 }
             }
         }
@@ -219,10 +241,12 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
             idx = idxWeights(uInfo, i, j);
             if(RCFs->fams[idx]->mark == 2)
             {
+                matrix[currRow++] = RCFs->fams[idx]->prototype;
                 RCFs->fams[idx]->mark = 1;
             }
         }
-        currRow += numAdded;
+        //currRow += numAdded;
+//printf("numadded was %d\n",numAdded);
     }
     
     free(matrix);
