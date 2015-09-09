@@ -25,15 +25,12 @@ GraphURF *initNewURFGraph(int V);
 
 /** adds an undirected edge to the graph. */
 void addUEdgeURF(GraphURF *, int from, int to);
-
-/** frees all allocated space. */
-void deleteURFGraph(GraphURF *gra);
 /*===================================================================================*/
 
 /** Calculates the URF-structure of the given graph and returns it (includes have provided "typedef struct{...} urfdata" so one can declare a urfdata *). The graph has to be a correct undirected graph.*/
 urfdata *calculateURFs(GraphURF *);
 
-/** Deletes urfdata from memory. Does not delete the graph.*/
+/** Deletes urfdata from memory including the graph.*/
 void deleteURFdata(urfdata *);
 
 /** Returns the number of URFs. */

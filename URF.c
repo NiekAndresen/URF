@@ -20,11 +20,6 @@ void addUEdgeURF(GraphURF *gra, int from, int to)
     addUEdge(gra, from, to);
 }
 
-void deleteURFGraph(GraphURF *gra)
-{
-    deleteGraph(gra);
-}
-
 void findShortestPaths(urfdata *udata, GraphURF *gra)
 {
     udata->spi = AllPairsShortestPaths(gra);
@@ -60,6 +55,7 @@ void deleteURFdata(urfdata *udata)
     {
         deleteURFInfo(udata->urfInfo);
     }
+    deleteGraph(udata->graph);
     free(udata);
 }
 

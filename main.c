@@ -185,7 +185,6 @@ int main(int argc, char **argv)
     
     
     deleteURFdata(udata);
-    deleteURFGraph(graph);
     printf("Niek ist die Nummer %d\n",1);
     return EXIT_SUCCESS;
 }
