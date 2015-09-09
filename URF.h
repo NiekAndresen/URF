@@ -3,21 +3,34 @@
 #ifndef URF_H
 #define URF_H
 
-#include "graphURF.h"
 #include "apsp.h"
 #include "CycleFamsURF.h"
 #include "URFInfo.h"
+#include "graphURF.h"
+#include "URFdataStruct.h"
 
-/** struct that contains all data that was accumulated during the calculation of the URF-structure */
-typedef struct{
-    GraphURF *graph;
-    unsigned int nofURFs;//number of URFs
-    cfURF *CFs; //the cycle families (found by Vismara's algorithm)
-    URFinfo *urfInfo; //stores which RCF are URF related and belong to the same URF
-    sPathInfo *spi;//shortest paths info
-}urfdata;
+/*===================================================================================*/
+/** build graph data structure that is used for the URF calculation. The vertices are numbered from 0 to |V|-1. Call the following functions:
 
-/** Calculates the URF-structure of the given graph and returns it. The graph has to be a correct undirected graph.*/
+ - initNewGraph(int V) to initialize a new graph with V vertices (returns GraphURF pointer: includes have provided "typedef struct{...} GraphURF" so one can declare a GraphURF *)
+ 
+ - addUEdge(GraphURF *, int from, int to) to add a new (undirected) edge from the vertex with index "from" to the vertex with index "to". It is NO problem to add an edge twice - even with different order of vertices (will be ignored).
+ 
+now calculateURFs (from URF.h) can be called on it 
+
+ - deleteGraph to free all allocated space */
+ 
+/** initializes a new Graph that edges can be added to (allocates space for it) */
+GraphURF *initNewURFGraph(int V);
+
+/** adds an undirected edge to the graph. */
+void addUEdgeURF(GraphURF *, int from, int to);
+
+/** frees all allocated space. */
+void deleteURFGraph(GraphURF *gra);
+/*===================================================================================*/
+
+/** Calculates the URF-structure of the given graph and returns it (includes have provided "typedef struct{...} urfdata" so one can declare a urfdata *). The graph has to be a correct undirected graph.*/
 urfdata *calculateURFs(GraphURF *);
 
 /** Deletes urfdata from memory. Does not delete the graph.*/

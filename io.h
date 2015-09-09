@@ -10,9 +10,6 @@ The vertices are saved with their index (0 - |V|-1).
 File must not contain empty lines in between lines with adjacency lists. */
 GraphURF *readInList(char *path);
 
-/** exits the program and writes instructions to stderr */
-void usage();
-
 /** prints a 2D char matrix to stdout. */
 void printmat(char **, int, int);
 

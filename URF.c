@@ -8,6 +8,22 @@
 #include "CycleFamsURF.h"
 #include "URFhandler.h"
 #include "utility.h"
+#include "graphURF.h"
+
+GraphURF *initNewURFGraph(int V)
+{
+    return initNewGraph(V);
+}
+
+void addUEdgeURF(GraphURF *gra, int from, int to)
+{
+    addUEdge(gra, from, to);
+}
+
+void deleteURFGraph(GraphURF *gra)
+{
+    deleteGraph(gra);
+}
 
 void findShortestPaths(urfdata *udata, GraphURF *gra)
 {

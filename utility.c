@@ -58,3 +58,11 @@ void print2DCharArray(char **arr, int n, int m)
         printf("\n");
     }
 }
+
+void usage()
+{
+    fprintf(stderr, "The input must be an undirected graph.\n");
+    fprintf(stderr, "Read interface comment in GraphURF.h for help.\n");
+    fprintf(stderr, "-program exits-\n");
+    exit(EXIT_FAILURE);
+}

@@ -13,14 +13,7 @@ now calculateURFs (from URF.h) can be called on it
 #ifndef GRAPHURF_H
 #define GRAPHURF_H
 
-typedef struct{
-    int V, E; /*number of vertices/edges*/
-    int *degree; /*array storing how many vertices are adjacent to each vertex*/
-    int **adjList; /*the vertices are stored with their index (0 to |V|-1)*/
-    char edgesEnumerated; /*flag that stores if edges are enumerated (if so: 'y' or any character otherwise)*/
-    int **edges; /*array containing pairs of vertices as edges*/
-    int *startIdxEdges; /*to navigate the edges array quicker: array containing the index at which the edges from a vertex start in the edges array*/
-} GraphURF;
+#include "graphURFStruct.h"
 
 /** initializes a new Graph that edges can be added to (allocates space for it) */
 GraphURF *initNewGraph(int V);

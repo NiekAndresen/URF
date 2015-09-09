@@ -5,6 +5,8 @@
 #include <assert.h>
 #include <ctype.h>
 #include "graphURF.h"
+#include "URF.h"
+#include "utility.h"
 
 /*for debugging purposes*/
 void printmat(char **mat, int maxRow, int maxCol)
@@ -18,14 +20,6 @@ void printmat(char **mat, int maxRow, int maxCol)
         }
         printf("\n");
     }
-}
-
-void usage()
-{
-    fprintf(stderr, "The input must be an undirected graph.\n");
-    fprintf(stderr, "Read interface comment in GraphURF.h for help.\n");
-    fprintf(stderr, "-program exits-\n");
-    exit(EXIT_FAILURE);
 }
 
 GraphURF *readInList(char *path)
@@ -53,7 +47,7 @@ GraphURF *readInList(char *path)
         cha = fgetc(fp);
     }
     V = currLine;
-    gra = initNewGraph(V);
+    gra = initNewURFGraph(V);
     
     rewind(fp);
     currLine = 0;
@@ -63,7 +57,7 @@ GraphURF *readInList(char *path)
         if(cha == ' ')
         {
             fscanf(fp, "%d", &temp);
-            addUEdge(gra, currLine, temp-1);
+            addUEdgeURF(gra, currLine, temp-1);
         }
         else if(cha == '\n')
         {
