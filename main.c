@@ -3,9 +3,9 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "./code/io.h"
-#include "./code/graphURF.h"
-#include "./code/utility.h"
+#include "./URFcode/io.h"
+#include "./URFcode/graphURF.h"
+#include "./URFcode/utility.h"
 #include "URF.h"
 
 int main(int argc, char **argv)
