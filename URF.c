@@ -27,6 +27,9 @@ void findShortestPaths(urfdata *udata, GraphURF *gra)
 
 urfdata *calculateURFs(GraphURF *gra)
 {
+    char correctGraph;
+    correctGraph = checkGraphCorrect(gra);
+    if(correctGraph == 0) usage('c');
     if(gra->edgesEnumerated != 'y')
     {
         enumerateEdges(gra);

@@ -170,7 +170,7 @@ void enumerateEdges(GraphURF *gra)
         prepareEnumeration(gra, gra->V, gra->E);
         gra->edgesEnumerated = 'y';
     }
-    //read over all of the adjLists
+    /*read over all of the adjLists*/
     for(li=0; li<gra->V; ++li)
     {
         gra->startIdxEdges[li] = ed;
@@ -184,4 +184,85 @@ void enumerateEdges(GraphURF *gra)
             }
         }
     }
+}
+
+void DFSvisit(GraphURF *gra, int vertex, char *visited)
+{
+    int i,j;
+    for(i=0; i<gra->degree[vertex]; ++i)
+    {
+        j = gra->adjList[vertex][i];
+        if(visited[j] == 0)
+        {
+            visited[j] = 1;
+            DFSvisit(gra,j,visited);
+        }
+    }
+}
+
+/** returns 1 if the graph is connected, 0 otherwise. uses DFS */
+char checkGraphConnected(GraphURF *gra)
+{
+    int i;
+    char *visited;
+    char result;
+    result = 1;
+    visited = malloc(gra->V * sizeof(*visited));
+    visited[0] = 1; /*start vertex*/
+    for(i=1; i<gra->V; ++i)
+    {
+        visited[i] = 0; /*unvisited*/
+    }
+    DFSvisit(gra, 0, visited);
+    for(i=0; i<gra->V; ++i)
+    {
+        if(visited[i] == 0) /*one was unvisited*/
+        {
+            result = 0;
+            break;
+        }
+    }
+        
+    free(visited);
+    return result;
+}
+
+char checkGraphCorrect(GraphURF *gra)
+{
+    /*int i,j;
+    int from, to;*/
+    char edgeUndir;
+    char connected;
+    connected = 0;
+    edgeUndir = 1;
+    /*edgeUndir = 0;
+    for(from=0; from<gra->V; ++from)
+    {
+        for(j=0; j<gra->degree[from]; ++j)
+        {
+            to = gra->adjList[from][j];
+            if(from < to)
+            {
+                edgeUndir = 0;
+                for(i=0; i<gra->degree[to]; ++i)
+                {
+                    if(gra->adjList[to][i] == from)
+                    {
+                        edgeUndir = 1;
+                        break;
+                    }
+                }
+            }
+            if(edgeUndir == 0) break;
+        }
+        if(edgeUndir == 0) break;
+    }*/
+    
+    connected = checkGraphConnected(gra);
+
+    if(edgeUndir == 0 || connected == 0)
+    {
+        return 0;
+    }
+    return 1;
 }

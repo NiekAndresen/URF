@@ -59,10 +59,11 @@ void print2DCharArray(char **arr, int n, int m)
     }
 }
 
-void usage()
+void usage(char errType)
 {
-    fprintf(stderr, "The input must be an undirected graph.\n");
-    fprintf(stderr, "Read interface comment in GraphURF.h for help.\n");
-    fprintf(stderr, "-program exits-\n");
-    exit(EXIT_FAILURE);
+    if(errType == 'c')
+    {
+        fprintf(stderr, "WARNING: The given molecule was not connected.\n");
+        fprintf(stderr, "Read interface comment in URF.h for usage help.\n");
+    }
 }

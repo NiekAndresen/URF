@@ -16,9 +16,7 @@
  
  - addUEdge(GraphURF *, int from, int to) to add a new (undirected) edge from the vertex with index "from" to the vertex with index "to". It is NO problem to add an edge twice - even with different order of vertices (will be ignored).
  
-now calculateURFs (from URF.h) can be called on it 
-
- - deleteGraph to free all allocated space */
+now calculateURFs (from URF.h) can be called on it*/
  
 /** initializes a new Graph that edges can be added to (allocates space for it) */
 GraphURF *initNewURFGraph(int V);
@@ -35,16 +33,6 @@ void deleteURFdata(urfdata *);
 
 /** Returns the number of URFs. */
 int numberOfURFs(urfdata *);
-
-/** Gives a specific URF identified with it's index
- modes:
-  - 'a': atoms
-    returns an array of integers containing all indices of atoms (vertices of the graph) that are part of the URF
-  - 'b': bonds
-    returns an array of integers containing all indices of bonds (edges of the graph) that are part of the URF
-The array returned is ended with INT_MAX on its last position and has to be deallocated with 'free()'.*/
-/*alternative: return arrays of {0,1}^n and {0,1}^m*/
-int *giveURF(urfdata *, int index, char mode);
 
 /** Gives the atoms of a URF identified with it's index.
 Returns an array of length n (Number of atoms in the molecule) that contains 1 at position i if atom i is part of the URF.
