@@ -4,13 +4,14 @@ CC=clang
 CFLAGS=-Wall -Werror
 
 BIN = testURF.x
-SOURCE = main.c URF.c io.c graphURF.c utility.c apsp.c CycleFamsURF.c CFquicksort.c URFInfo.c URFrelation.c URFhandler.c
-OBJ = $(SOURCE:.c=.o)
+MAIN = main.c
+SOURCE = URF.c io.c graphURF.c utility.c apsp.c CycleFamsURF.c CFquicksort.c URFInfo.c URFrelation.c URFhandler.c
+URFOBJ = $(SOURCE:%.c=%.o)
 
-$(BIN): $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $(OBJ)
-	
-%.o: %.c
+$(BIN): $(URFOBJ)
+	$(CC) $(CFLAGS) -o $@ $(URFOBJ) $(MAIN)
+
+%.o: ./URFcode/%.c
 	$(CC) $(CFLAGS) -c $<
 	
 clean:

@@ -3,11 +3,11 @@
 #ifndef URF_H
 #define URF_H
 
-#include "apsp.h"
-#include "CycleFamsURF.h"
-#include "URFInfo.h"
-#include "graphURF.h"
-#include "URFdataStruct.h"
+#include "./code/apsp.h"
+#include "./code/CycleFamsURF.h"
+#include "./code/URFInfo.h"
+#include "./code/graphURF.h"
+#include "./code/URFdataStruct.h"
 
 /*===================================================================================*/
 /** build graph data structure that is used for the URF calculation. The vertices are numbered from 0 to |V|-1. Call the following functions:
