@@ -44,13 +44,14 @@ Returns an array of bonds which ends on a terminating NULL pointer. A bond is re
 Return value has to be deallocated using 'deleteArr()'.*/
 int **giveURFBonds(urfdata *, int index);
 
-/** Gives all cycles of the URF with the given index. Returns an array of cycles.
-modes:
-    - 'a': A cycle is represented by an array of {0,1}^n which contains a 1 at position i if the vertex i is part of the cycle or 0 otherwise (n: number of vertices).
-    - 'b': A cycle is represented by an array of {0,1}^m which contains a 1 at position i if the edge i is part of the cycle or 0 otherwise (m: number of edges). [problem here: user doesn't know which edge 'the edge with index i' is; the indices of the edges follow an order: go trough the input adjacency lists (ordered by vertex index) and add an edge at next index if it's not been added before]
-The array of cycles is ended with a terminating NULL pointer.
-This structure has to be deallocated using 'deleteURFCycles(<return value>)'.*/
-char **giveURFCycles(urfdata *, int index, char mode);
+/** Gives all cycles of the URF with the given index.
+@return the number of cycles found
+@note ptr has to be deallocated using 'deleteCycles(ptr)'
+@note A cycle is represented by an array of bonds which are arrays of length two of integers storing the indices of the atoms involved in the bond.
+@note For iteration over a cycle, it's array is ended with a NULL pointer.
+@param ptr pointer that points to the result array of cycles
+@param index index of the URF*/
+int giveURFCycles(urfdata *, int ***ptr, int index);
 
 /** Gives all URFs containing the object, which can be an atom or a bond.
 mode:
@@ -76,8 +77,9 @@ char **giveRCprototypes(urfdata *);
 The return value is an array of cycles. A cycle is represented by an array of {0,1}^n with a 1 at position i if vertex i is part of the cycle or 0 otherwise. The array is ended with a terminating NULL-pointer. */
 char **giveRCcycles(urfdata *);
 
-/** Deallocates the structure returned by 'giveURFCycles()' and 'giveRCcycles()' if called on its return value (arrays that are ended with a NULL pointer) */
-void deleteCycles(char **);
+/** Deallocates the structure returned by 'giveURFCycles()' if called on its return value */
+/* giveRCcycles() */
+void deleteCycles(int ***cycles, int number);
 
 /** Deallocates the structure returned by 'findBasis()' and 'giveRCprototypes()' if called on their return values. */
 void deleteArr(char **);

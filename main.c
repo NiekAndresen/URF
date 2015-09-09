@@ -87,25 +87,22 @@ int main(int argc, char **argv)
         }
         printf("\n");
 
-        /*int l,number;
-        char **cycles;
-        char *k;
-        char mode = 'a';
-        number = (mode=='a')?graph->V:graph->E;
+        int l,number;
+        int ***cycles; //TODO better: ptr on some struct maybe
+//        cycles = NULL;
         printf("cycles:");
-        cycles = giveURFCycles(udata, i, mode);
-        k=cycles[0];
-        for(j=0; k!=NULL; ++j)
+        number = giveURFCycles(udata, cycles, i);
+        for(j=0; j<number; ++j)
         {
             printf("\n");
-            for(l=0; l<number; ++l)
+            for(l=0; cycles[j][l]!=NULL; ++l)
             {
-                printf("%d ",k[l]);
+                printf("(%d ",cycles[j][l][0]);
+                printf("%d), ",cycles[j][l][1]);
             }
-            k=cycles[j+1];
         }
         printf("\n");
-        deleteCycles(cycles);*/
+        deleteCycles(cycles, number);
         
         /*int **URFedges;
         URFedges = giveURFBonds(udata, i);

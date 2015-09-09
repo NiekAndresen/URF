@@ -246,7 +246,13 @@ int **giveURFBonds(urfdata *uData, int URFindex)
     return result;
 }
 
-char **giveURFCycles(urfdata *udata, int index, char mode)
+/** Gives all cycles of the URF with the given index. Returns an array of cycles.
+modes:
+    - 'a': A cycle is represented by an array of {0,1}^n which contains a 1 at position i if the vertex i is part of the cycle or 0 otherwise (n: number of vertices).
+    - 'b': A cycle is represented by an array of {0,1}^m which contains a 1 at position i if the edge i is part of the cycle or 0 otherwise (m: number of edges). [problem here: user doesn't know which edge 'the edge with index i' is; the indices of the edges follow an order: go trough the input adjacency lists (ordered by vertex index) and add an edge at next index if it's not been added before]
+The array of cycles is ended with a terminating NULL pointer.
+This structure has to be deallocated using 'deleteCycles(<return value>)'.*/
+char **giveURFCyclesChar(urfdata *udata, int index, char mode)
 {
     int i;
     int currIdx=0; /*index of next free space in result array*/
@@ -276,11 +282,68 @@ char **giveURFCycles(urfdata *udata, int index, char mode)
     return result;
 }
 
-void deleteCycles(char **cycles)
+void deleteCyclesChar(char **cycles)
 {
     int i;
     for(i=0; cycles[i]!=NULL; ++i)
     {
+        free(cycles[i]);
+    }
+    free(cycles);
+}
+
+//TODO in progress
+int giveURFCycles(urfdata *udata, int ***result, int index)
+{
+    char **URFCycles;
+    int i,j;
+    unsigned int alloced, nextfree, nextBond;
+    unsigned int edgeCount;
+
+    alloced = 4;
+    nextfree = 0;
+    result = malloc(alloced * sizeof(*result));
+    URFCycles = giveURFCyclesChar(udata, index, 'b');
+    for(i=0; URFCycles[i]!=NULL; ++i)
+    {
+        edgeCount = 0; /*count number of edges in this cycle*/
+        for(j=0; j<udata->graph->E; ++j)
+        {
+            if(URFCycles[i][j] == 1)
+            {
+                ++edgeCount;
+            }
+        }
+        if(nextfree == alloced) /*allocate more space*/
+        {
+            alloced *= 2;
+            result = realloc(result, alloced * sizeof(*result));
+        }
+        result[nextfree] = alloc2DIntArray(edgeCount+1, 2);
+        nextBond = 0;
+        for(j=0; j<udata->graph->E; ++j)
+        {
+            if(URFCycles[i][j] == 1) /*copy edge into new structure*/
+            {
+                result[nextfree][nextBond][0] = udata->graph->edges[j][0];
+                result[nextfree][nextBond][1] = udata->graph->edges[j][1];
+                ++nextBond;
+            }
+        }
+        result[nextfree][nextBond] = NULL;
+        ++nextfree;
+    }
+
+    deleteCyclesChar(URFCycles);
+    return i;
+}
+
+void deleteCycles(int ***cycles, int number)
+{
+    int i;
+    for(i=0; i<number; ++i)
+    {
+        free(*cycles[i]);
         free(cycles[i]);
     }
     free(cycles);
