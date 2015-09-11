@@ -61,7 +61,7 @@ int main(int argc, char **argv)
     */
     printf("\nURFs:\n");
     
-    /*printf("\nURFrel:\n");
+    printf("\nURFrel:\n");
     int k;
     for(i=0; i<udata->urfInfo->nofWeights; ++i)
     {
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
             }
             printf("\n");
         }
-    }*/
+    }
     
     printf("number of URFs: %d\n",udata->nofURFs);
     for(i=0; i<udata->nofURFs; ++i)
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
         }
         printf("\n");
 
-        int l,number;
+        /*int l,number;
         int ***cycles; //TODO better: ptr on some struct maybe
 //        cycles = NULL;
         printf("cycles:");
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
             }
         }
         printf("\n");
-        deleteCycles(cycles, number);
+        deleteCycles(cycles, number);*/
         
         /*int **URFedges;
         URFedges = giveURFBonds(udata, i);
