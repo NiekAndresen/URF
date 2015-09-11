@@ -95,32 +95,53 @@ void deleteURFInfo(URFinfo *uInfo)
 }
 
 /** returns the number of URFs. */
-int countURFs(cfURF *cFams, URFinfo *uInfo)
+int countURFs(URFinfo *uInfo)
 {
-    int RCFcount=0, URFRelCount=0, weightIdx, i, j;
-    /*count number of cycles families that are marked as relevant*/
-    for(i=0; i<cFams->nofFams; ++i)
+    int URFRelCount=0, weightIdx, i, j;
+    char **alreadyInURF; /*for each weight: an array storing if a RCF is already part of a URF*/
+    char increase;
+    
+    alreadyInURF = malloc(uInfo->nofWeights * sizeof(*alreadyInURF));
+    for(i=0; i<uInfo->nofWeights; ++i)
     {
-        if(cFams->fams[i]->mark > 0)
+        alreadyInURF[i] = malloc(uInfo->nofProtos[i] * sizeof(*alreadyInURF[i]));
+    }
+    for(i=0; i<uInfo->nofWeights; ++i)
+    {
+        for(j=0; j<uInfo->nofProtos[i]; ++j)
         {
-            ++RCFcount;
+            alreadyInURF[i][j] = 0;
         }
     }
+    
     /*count number of 1s indicating URF-relation*/
     for(weightIdx=0; weightIdx<uInfo->nofWeights; ++weightIdx)
     {
         for(i=0; i<uInfo->nofProtos[weightIdx]; ++i)
         {
-            for(j=i+1; j<uInfo->nofProtos[weightIdx]; ++j)
+            if(alreadyInURF[weightIdx][i] == 1 || uInfo->URFrel[weightIdx][i][i] == 0) continue;
+            increase = 0;
+            for(j=i; j<uInfo->nofProtos[weightIdx]; ++j)
             {
                 if(uInfo->URFrel[weightIdx][i][j] == 1)
                 {
-                    ++URFRelCount;
+                    alreadyInURF[weightIdx][j] = 1;
+                    if(increase == 0)
+                    {
+                        ++URFRelCount;
+                        increase = 1;
+                    }
                 }
             }
         }
     }
-    return RCFcount - URFRelCount;
+    
+    for(i=0; i<uInfo->nofWeights; ++i)
+    {
+        free(alreadyInURF[i]);
+    }
+    free(alreadyInURF);
+    return URFRelCount;
 }
 
 /** returns the index in the array of RCFs (fams) that the RCF with the weight at the index "weight" and position j has */
@@ -209,7 +230,8 @@ URFinfo *checkURFRelation(cfURF *RCFs, GraphURF *graph, sPathInfo *spi)
 {
     URFinfo *uInfo = initUrfInfo(RCFs, graph);
     findRelations(RCFs, graph, uInfo, spi);
-    uInfo->nofURFs = countURFs(RCFs, uInfo);
+    
+    uInfo->nofURFs = countURFs(uInfo);
     fillURFs(uInfo, RCFs);
     return uInfo;
 }
