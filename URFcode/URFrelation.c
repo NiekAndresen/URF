@@ -171,6 +171,11 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
         for(j=0; j<uInfo->nofProtos[i]; ++j)/*for each CF with this weight*/
         {
             matrix[currRow] = RCFs->fams[idxWeights(uInfo, i, j)]->prototype;/*add prototype to matrix*/
+if(RCFs->fams[idxWeights(uInfo,i,j)]->weight == 7)
+{
+    printf("checking dep on:\n");
+    print2DCharArray(matrix,currRow+1,graph->E);
+}
             if(dependent(matrix, currRow, graph->E-1) == 0)/*independent of "B<" (see e.g. Vismara)*/
             {/* check potential URF-relations to other cycles of the same length ("weight") */
                 uInfo->URFrel[i][j][j] = 1; /*URF-related to itself*/
@@ -214,7 +219,7 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
         for(j=0; j<uInfo->nofProtos[i]; ++j)
         {
             idx = idxWeights(uInfo, i, j);
-            if(RCFs->fams[idx]->mark == 2)
+            if(RCFs->fams[idx]->mark > 1)
             {
                 matrix[currRow++] = RCFs->fams[idx]->prototype;
                 RCFs->fams[idx]->mark = 1;
