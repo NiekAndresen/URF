@@ -162,7 +162,7 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
         }
         return;
     }
-
+    
     matrix = malloc(RCFs->nofFams * sizeof(*matrix));
     currRow = 0;
 
@@ -171,11 +171,6 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
         for(j=0; j<uInfo->nofProtos[i]; ++j)/*for each CF with this weight*/
         {
             matrix[currRow] = RCFs->fams[idxWeights(uInfo, i, j)]->prototype;/*add prototype to matrix*/
-if(RCFs->fams[idxWeights(uInfo,i,j)]->weight == 7)
-{
-    printf("checking dep on:\n");
-    print2DCharArray(matrix,currRow+1,graph->E);
-}
             if(dependent(matrix, currRow, graph->E-1) == 0)/*independent of "B<" (see e.g. Vismara)*/
             {/* check potential URF-relations to other cycles of the same length ("weight") */
                 uInfo->URFrel[i][j][j] = 1; /*URF-related to itself*/
@@ -315,9 +310,33 @@ void checkEdges(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo, sPathInfo *spi)
     }
 }
 
+/** Takes the matrices in "URFrel" which contain the URF-pair-relation and finds the transitive closure - the URF-relation. */
+void findTransitiveClosure(URFinfo *uInfo)
+{
+    int i,j,k,l;
+    for(i=0; i<uInfo->nofWeights; ++i)
+    {
+        for(j=0; j<uInfo->nofProtos[i]; ++j)
+        {/*for each pair of 1s in a line, the two families have to be marked as URF-related*/
+            for(k=0; k<uInfo->nofProtos[i]; ++k)
+            {
+                for(l=k+1; l<uInfo->nofProtos[i]; ++l)
+                {
+                    if(uInfo->URFrel[i][j][k] == 1 && uInfo->URFrel[i][j][l] == 1)
+                    {
+                        uInfo->URFrel[i][k][l] = 1;
+                        uInfo->URFrel[i][l][k] = 1;
+                    }
+                }
+            }
+        }
+    }
+}
+
 void findRelations(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo, sPathInfo *spi)
 {
     checkDependencies(RCFs, graph, uInfo);
     checkEdges(RCFs, graph, uInfo, spi);
+    findTransitiveClosure(uInfo);
 }
 
