@@ -258,6 +258,10 @@ void findEdges(int *edges, cfam *RCF, GraphURF *gra, sPathInfo *spi)
         edges[edgeIdx(RCF->x, RCF->p, gra)] = 1;
         edges[edgeIdx(RCF->x, RCF->q, gra)] = 1;
     }
+    else
+    {
+        edges[edgeIdx(RCF->p, RCF->q, gra)] = 1;
+    }
 } 
 
 /** Checks if the RCFs with indices idx1 and idx2 share at least one edge. returns 1 if yes and 0 otherwise. */
@@ -276,7 +280,7 @@ char shareEdges(cfURF *RCFs, int idx1, int idx2, GraphURF *graph, sPathInfo *spi
     }
     findEdges(edges1, RCFs->fams[idx1], graph, spi);
     findEdges(edges2, RCFs->fams[idx2], graph, spi);
-    
+
     for(i=0; i<graph->E; ++i)
     {
         if(edges1[i] == 1 && edges2[i] == 1)
@@ -328,7 +332,7 @@ void findTransitiveClosure(URFinfo *uInfo)
                         uInfo->URFrel[i][l][k] = 1;
                     }
                 }
-            }
+            } 
         }
     }
 }
