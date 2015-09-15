@@ -201,7 +201,7 @@ if(RCFs->fams[idxWeights(uInfo,i,j)]->weight == 7)
                     testRow = currRow;
                     for(k=0; k<uInfo->nofProtos[i]; ++k)
                     {
-                        if(k!=j && RCFs->fams[idxWeights(uInfo, i, k)]->mark > 1)
+                        if(k!=j && RCFs->fams[idxWeights(uInfo, i, k)]->mark == 2)
                         {
                             matrix[testRow++] = RCFs->fams[idxWeights(uInfo, i, k)]->prototype;
                         }
@@ -219,7 +219,7 @@ if(RCFs->fams[idxWeights(uInfo,i,j)]->weight == 7)
         for(j=0; j<uInfo->nofProtos[i]; ++j)
         {
             idx = idxWeights(uInfo, i, j);
-            if(RCFs->fams[idx]->mark > 1)
+            if(RCFs->fams[idx]->mark == 2)
             {
                 matrix[currRow++] = RCFs->fams[idx]->prototype;
                 RCFs->fams[idx]->mark = 1;
