@@ -73,9 +73,10 @@ int *giveAtoms(urfdata *uData, int index)
     int i,nofFams,nextfree=0,alloced;
     char *atoms;
     int *result;
+    cfam **URF;
     
     nofFams = uData->urfInfo->nofCFsPerURF[index];
-    cfam **URF = uData->urfInfo->URFs[index];
+    URF = uData->urfInfo->URFs[index];
     atoms = malloc(uData->graph->V * sizeof(*atoms));
     result = malloc(8 * sizeof(*result));
     alloced = 8;

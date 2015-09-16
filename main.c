@@ -7,6 +7,16 @@
 #include "./URFcode/graphURF.h"
 #include "./URFcode/utility.h"
 #include "URF.h"
+/** returns the index in the array of RCFs (fams) that the RCF with the weight at the index "weight" and position j has */
+int idxWeightsMain(URFinfo *uInfo, int weight, int j)
+{
+    int i, sum = 0;
+    for(i=0; i<weight; ++i)
+    {
+        sum += uInfo->nofProtos[i];
+    }
+    return sum + j;
+}
 
 int main(int argc, char **argv)
 {
@@ -65,7 +75,7 @@ int main(int argc, char **argv)
     int k;
     for(i=0; i<udata->urfInfo->nofWeights; ++i)
     {
-        printf("weight %d\n",i);
+        printf("weight %d (index %d)\n",udata->urfInfo->URFs[idxWeightsMain(udata->urfInfo,i,0)][0]->weight,i);
         for(j=0; j<udata->urfInfo->nofProtos[i]; ++j)
         {
             for(k=0; k<udata->urfInfo->nofProtos[i]; ++k)
@@ -178,6 +188,65 @@ int main(int argc, char **argv)
         printf("\n");
     }
     deleteCycles(relCycles);*/
+    
+    /*int *URFatoms;
+    printf("I've got the cycles:\n");
+    for(i=0; i<udata->nofURFs; ++i)
+    {
+        URFatoms = giveURFAtoms(udata, i);
+        for(j=0; j<graph->V; ++j)
+        {
+            if(URFatoms[j] == 1)
+            {
+                printf("%d ",j);
+            }
+        }
+        printf("\n");
+        free(URFatoms);
+    }
+    
+    printf("path from 139 to 54:\n");
+    printf("dist = %d\n",udata->spi->dist[139][54]);
+    j=54;
+    while(j!=139)
+    {
+        printf("%d ",j);
+        j = udata->spi->pred[139][j];
+    }
+    printf("\n");
+    
+    j=64;
+    printf("path from 139 to %d:\n",j);
+    printf("dist = %d\n",udata->spi->dist[139][j]);
+    while(j!=139)
+    {
+        printf("%d ",j);
+        j = udata->spi->pred[139][j];
+    }
+    printf("\n");
+    
+    j=114;
+    printf("path from 139 to %d:\n",j);
+    printf("dist = %d\n",udata->spi->dist[139][j]);
+    while(j!=139)
+    {
+        printf("%d ",j);
+        j = udata->spi->pred[139][j];
+    }
+    printf("\n");
+    
+    j=24;
+    printf("path from 139 to %d:\n",j);
+    printf("dist = %d\n",udata->spi->dist[139][j]);
+    while(j!=139)
+    {
+        printf("%d ",j);
+        j = udata->spi->pred[139][j];
+    }
+    printf("\n");*/
+    
+    /*printf("dPaths[139]:\n");
+    printGraph(udata->spi->dPaths[139]);*/
     
     deleteURFdata(udata);
     printf("Niek ist die Nummer %d\n",1);
