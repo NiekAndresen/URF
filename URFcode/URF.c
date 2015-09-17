@@ -436,7 +436,11 @@ int numOfURFsContaining(urfdata *udata, int atom)
     return count;
 }
 
-char **findBasis(urfdata *udata)
+/** returns a set of cycles that forms a MCB of the graph.
+A cycle is represented by an array of {0,1}^n with a 1 at position i if vertex i is part of the cycle. The result is an array of these cycles. The result contains |E|-|V|+1 cycles. This does not return a correct basis on an unconnected graph.*/
+/*alternatives: return array of vertex indices; give option to call function only on the graph.*/
+/*TODO currently not needed*/
+char **findCharBasis(urfdata *udata)
 {
     /*take a prototype out of each URF ordered by weight until |E|-|V|+1 cycles are collected*/
     int i,j;
@@ -460,6 +464,56 @@ char **findBasis(urfdata *udata)
         }
     }
     return result;
+}
+
+int findBasis(urfdata *udata, int ****ptr)
+{
+    int i,j;
+    int ***result;
+    int size;
+    int *numOfBonds;
+    int currBond;
+
+    size=udata->graph->E-udata->graph->V+1;
+    numOfBonds = malloc(size * sizeof(*numOfBonds)); /*number of bonds for each cycle*/
+    for(i=0; i<size; ++i)
+    {
+        numOfBonds[i] = 0;
+    }
+    for(i=0; i<size; ++i)/*count number of bonds*/
+    {
+        for(j=0; j<udata->graph->E; ++j)
+        {
+            if(udata->urfInfo->URFs[i][0]->prototype[j] == 1)
+            {
+                ++numOfBonds[i];
+            }
+        }
+    }
+    /*allocate space*/
+    result = malloc(size * sizeof(*result));
+    for(i=0; i<size; ++i)
+    {
+        result[i] = alloc2DIntArray(numOfBonds[i]+1, 2);
+    }
+    free(numOfBonds);
+    for(i=0; i<size; ++i)
+    {
+        currBond = 0;
+        for(j=0; j<udata->graph->E; ++j)
+        {
+            if(udata->urfInfo->URFs[i][0]->prototype[j] == 1)
+            {
+                result[i][currBond][0] = udata->graph->edges[j][0];
+                result[i][currBond][1] = udata->graph->edges[j][1];
+                ++currBond;
+            }
+        }
+        result[i][currBond] = NULL;
+    }
+    
+    (*ptr) = result;
+    return size;
 }
 
 void deleteArr(char **arr)

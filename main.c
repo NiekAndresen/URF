@@ -144,18 +144,21 @@ int main(int argc, char **argv)
         free(URFatoms);
     }
     
-    /*
-    char **basis = findBasis(udata);
+    
+    int ***basis;
+    int number;
+    number = findBasis(udata, &basis);
     printf("basis:\n");
-    for(i=0; i<graph->E-graph->V+1; ++i)
+    for(i=0; i<number; ++i)
     {
-        for(j=0; j<graph->V;  ++j)
+        for(j=0; basis[i][j]!=NULL;  ++j)
         {
-            printf("%d ",basis[i][j]);
+            printf("(%d ",basis[i][j][0]);
+            printf("%d), ",basis[i][j][1]);
         }
         printf("\n");
     }
-    deleteArr(basis);*/
+    deleteCycles(basis, number);
     
     /*int atom,number;
     int *URFsWithAtom;

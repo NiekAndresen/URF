@@ -51,6 +51,7 @@ int **giveURFBonds(urfdata *, int index);
 @note For iteration over a cycle, it's array is ended with a NULL pointer.
 @param ptr pointer that points to the result array of cycles (declare 'int ***' and give address as parameter)
 @param index index of the URF*/
+/*TODO write an example for iteration over a cycle somewhere*/
 int giveURFCycles(urfdata *, int ****ptr, int index);
 
 /** Gives all URFs containing the atom.
@@ -71,10 +72,12 @@ int listURFsWithBond(urfdata *, int **ptr, int a1, int a2);
 /** Returns the number of URFs that contain the given atom. */
 int numOfURFsContaining(urfdata *, int atom);
 
-/** returns a set of cycles that forms a MCB of the graph.
-A cycle is represented by an array of {0,1}^n with a 1 at position i if vertex i is part of the cycle. The result is an array of these cycles. The result contains |E|-|V|+1 cycles. This does not return a correct basis on an unconnected graph.*/
-/*alternatives: return array of vertex indices; give option to call function only on the graph.*/
-char **findBasis(urfdata *);
+/** Returns a set of cycles that forms a Minimal Cycle Basis of the graph.
+ @return the number of cycles returned (|E|-|V|+1)
+ @param ptr pointer that points to the result array
+ The result is an array of cycles. A cycle is represented by an array of bonds. A bond is represented by two integers which are the indices of the atoms involved in the bond.*/
+ /*TODO note somewhere that this does not return a correct basis for an unconnected graph*/
+int findBasis(urfdata *, int ****ptr);
 
 /** Gives a list of relevant cycle prototypes (one for each RCF).
 Returns an array of prototypes which are represented by arrays of {0,1}^n containing a 1 at position i if vertex i is part of the cycle or 0 otherwise. The array is ended with a terminating NULL-pointer.*/
@@ -84,11 +87,11 @@ char **giveRCprototypes(urfdata *);
 The return value is an array of cycles. A cycle is represented by an array of {0,1}^n with a 1 at position i if vertex i is part of the cycle or 0 otherwise. The array is ended with a terminating NULL-pointer. */
 char **giveRCcycles(urfdata *);
 
-/** Deallocates the structure returned by 'giveURFCycles()' if called on its return value */
+/** Deallocates the structure returned by 'giveURFCycles()' and 'findBasis()' if called on its return value */
 /* giveRCcycles() */
 void deleteCycles(int ***cycles, int number);
 
-/** Deallocates the structure returned by 'findBasis()' and 'giveRCprototypes()' if called on their return values. */
+/** Deallocates the structure returned by 'giveRCprototypes()' if called on their return values. */
 void deleteArr(char **);
 
 /** Deallocates the structure returned by 'giveURFBonds()' if called on it's return value. */
