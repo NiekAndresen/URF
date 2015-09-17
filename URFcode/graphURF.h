@@ -41,5 +41,8 @@ void printGraph(GraphURF *graph);
 /** Checks if the graph is connected. Returns 1 if it is, 0 otherwise. */
 char checkGraphCorrect(GraphURF *gra);
 
+/** Returns the index of the bond connecting the atoms 'from' and 'to' */
+int edgeId(GraphURF *gra, int from, int to);
+
 /*for undirected graphs the degree is the OUT-degree only.*/
 #endif

@@ -53,15 +53,22 @@ int **giveURFBonds(urfdata *, int index);
 @param index index of the URF*/
 int giveURFCycles(urfdata *, int ****ptr, int index);
 
-/** Gives all URFs containing the object, which can be an atom or a bond.
-mode:
-    - 'a': atom
-    - 'b': bond
-returns an array of integers containing all indices of URFs containing the object.
-The array ends with a terminating INT_MAX on its last position and has to be deallocated with 'free()' */
-int *listURFs(urfdata *, int object, char mode);
+/** Gives all URFs containing the atom.
+@return the number of URFs containing the atom
+@param ptr pointer that points to the result array of integers containing all indices of URFs containing the atom. (declare 'int *' and give address as parameter)
+@param atom the index of the atom
+@note The array ptr has to be to be deallocated with 'free(*ptr)' */
+int listURFsWithAtom(urfdata *, int **ptr, int atom);
 
-/** returns the number of URFs that contain the given atom */
+/** Gives all URFs containing the bond.
+@return the number of URFs containing the bond
+@param ptr pointer that points to the result array of integers containing all indices of URFs containing the bond. (declare 'int *' and give address as parameter)
+@param a1 the index of one of the atoms adjacent to the bond
+@param a2 the index of one of the atoms adjacent to the bond
+@note The array ptr has to be to be deallocated with 'free(*ptr)' */
+int listURFsWithBond(urfdata *, int **ptr, int a1, int a2);
+
+/** Returns the number of URFs that contain the given atom. */
 int numOfURFsContaining(urfdata *, int atom);
 
 /** returns a set of cycles that forms a MCB of the graph.

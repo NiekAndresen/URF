@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "graphURF.h"
+#include "utility.h"
 
 /** allocates space for the arrays edges and startIdxEdges */
 void prepareEnumeration(GraphURF *gra, int V, int E)
@@ -265,4 +266,33 @@ char checkGraphCorrect(GraphURF *gra)
         return 0;
     }
     return 1;
+}
+
+int edgeId(GraphURF *gra, int from, int to)
+{
+    int edge;
+    char found;
+    
+    found = 'f';
+    if(from > to)
+    {/*swap order to make from < to*/
+        edge = to;
+        to = from;
+        from = edge;
+    }
+
+    for(edge=gra->startIdxEdges[from]; edge<gra->E; ++edge)
+    {
+        if((gra->edges[edge][0] == from) && (gra->edges[edge][1] == to))
+        {
+            found = 't';
+            break;
+        }
+    }
+    if(found == 'f')
+    {
+        fprintf(stderr, "Could not find edge [%d,%d]\n",from,to);
+        usage('e');
+    }
+    return edge;
 }

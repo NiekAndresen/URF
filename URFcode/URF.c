@@ -351,6 +351,12 @@ void deleteCycles(int ***cycles, int number)
     free(cycles);
 }
 
+/** Gives all URFs containing the object, which can be an atom or a bond.
+mode:
+    - 'a': atom
+    - 'b': bond
+returns an array of integers containing all indices of URFs containing the object.
+The array ends with a terminating INT_MAX on its last position and has to be deallocated with 'free()' */
 int *listURFs(urfdata *udata, int object, char mode)
 {
     int *result;
@@ -403,6 +409,22 @@ int *listURFs(urfdata *udata, int object, char mode)
     result[nextfree] = INT_MAX;
     free(URFs);
     return result;
+}
+
+int listURFsWithAtom(urfdata *udata, int **ptr, int object)
+{
+    int i;
+    *ptr = listURFs(udata, object, 'a');
+    for(i=0; (*ptr)[i]<INT_MAX; ++i);
+    return i;
+}
+
+int listURFsWithBond(urfdata *udata, int **ptr, int a1, int a2)
+{
+    int i;
+    *ptr = listURFs(udata, edgeId(udata->graph, a1, a2),'b');
+    for(i=0; (*ptr)[i]<INT_MAX; ++i);
+    return i;
 }
 
 int numOfURFsContaining(urfdata *udata, int atom)

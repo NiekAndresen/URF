@@ -157,12 +157,12 @@ int main(int argc, char **argv)
     }
     deleteArr(basis);*/
     
-    /*int atom;
+    /*int atom,number;
     int *URFsWithAtom;
     atom=1;
-    URFsWithAtom = listURFs(udata, atom, 'a');
+    number = listURFsWithAtom(udata, &URFsWithAtom, atom);
     printf("listing all URFs with atom %d: ",atom);
-    for(i=0; URFsWithAtom[i]<INT_MAX; ++i)
+    for(i=0; i<number; ++i)
     {
         printf("%d ",URFsWithAtom[i]);
     }
