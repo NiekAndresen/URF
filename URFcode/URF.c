@@ -250,9 +250,9 @@ int **giveURFBonds(urfdata *uData, int URFindex)
 /** Gives all cycles of the URF with the given index. Returns an array of cycles.
 modes:
     - 'a': A cycle is represented by an array of {0,1}^n which contains a 1 at position i if the vertex i is part of the cycle or 0 otherwise (n: number of vertices).
-    - 'b': A cycle is represented by an array of {0,1}^m which contains a 1 at position i if the edge i is part of the cycle or 0 otherwise (m: number of edges). [problem here: user doesn't know which edge 'the edge with index i' is; the indices of the edges follow an order: go trough the input adjacency lists (ordered by vertex index) and add an edge at next index if it's not been added before]
+    - 'b': A cycle is represented by an array of {0,1}^m which contains a 1 at position i if the edge i is part of the cycle or 0 otherwise (m: number of edges).
 The array of cycles is ended with a terminating NULL pointer.
-This structure has to be deallocated using 'deleteCycles(<return value>)'.*/
+This structure has to be deallocated using 'deleteCyclesChar(<return value>)'.*/
 char **giveURFCyclesChar(urfdata *udata, int index, char mode)
 {
     int i;
@@ -293,10 +293,10 @@ void deleteCyclesChar(char **cycles)
     free(cycles);
 }
 
-//TODO in progress
-int giveURFCycles(urfdata *udata, int ***result, int index)
+int giveURFCycles(urfdata *udata, int ****ptr, int index)
 {
     char **URFCycles;
+    int ***result;
     int i,j;
     unsigned int alloced, nextfree, nextBond;
     unsigned int edgeCount;
@@ -336,6 +336,7 @@ int giveURFCycles(urfdata *udata, int ***result, int index)
     }
 
     deleteCyclesChar(URFCycles);
+    *ptr = result;
     return i;
 }
 

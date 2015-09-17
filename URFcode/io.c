@@ -34,7 +34,7 @@ GraphURF *readInList(char *path)
     if(fp == NULL)
     {
         fprintf(stderr, "Could not open file %s\n",path);
-        usage();
+        usage('f');
     }
     
     cha = fgetc(fp);

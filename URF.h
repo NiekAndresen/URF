@@ -49,9 +49,9 @@ int **giveURFBonds(urfdata *, int index);
 @note ptr has to be deallocated using 'deleteCycles(ptr)'
 @note A cycle is represented by an array of bonds which are arrays of length two of integers storing the indices of the atoms involved in the bond.
 @note For iteration over a cycle, it's array is ended with a NULL pointer.
-@param ptr pointer that points to the result array of cycles
+@param ptr pointer that points to the result array of cycles (declare 'int ***' and give address as parameter)
 @param index index of the URF*/
-int giveURFCycles(urfdata *, int ***ptr, int index);
+int giveURFCycles(urfdata *, int ****ptr, int index);
 
 /** Gives all URFs containing the object, which can be an atom or a bond.
 mode:

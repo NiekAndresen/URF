@@ -100,8 +100,8 @@ void listPaths(int r, int p, char ***paths, int *currPath, int *alloced, char mo
                     *alloced *= 2;
                     for(j=*currPath; j<*alloced; ++j)
                     {
-                        (*paths)[j] = malloc(gra->V * sizeof(*(*paths)[j]));
-                        for(k=0; k<gra->V; ++k)
+                        (*paths)[j] = malloc(number * sizeof(*(*paths)[j]));
+                        for(k=0; k<number; ++k)
                         {
                             (*paths)[j][k] = 0;
                         }
@@ -148,7 +148,7 @@ void getPaths(int r, int p, char ***paths, int alloced, char mode, GraphURF *gra
         {
             number = gra->E;
         }
-        (*paths)[i] = malloc(number * sizeof(*(*paths)[i]));
+        (*paths)[i] = malloc(number * sizeof(*((*paths)[i])));
         for(j=0; j<number; ++j)
         {
             (*paths)[i][j] = 0;

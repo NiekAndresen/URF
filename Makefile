@@ -16,10 +16,10 @@ BIN = testURF.x
 MAIN = main.c
 SOURCE =
 
-OBJ = $(SOURCE:%.c=%.o) 
+OBJ = $(SOURCE:%.c=%.o)
 URFSRC = URF.c io.c graphURF.c utility.c apsp.c CycleFamsURF.c CFquicksort.c URFInfo.c URFrelation.c URFhandler.c
 URFOBJ = $(URFSRC:%.c=%.o)
-URFOBJDIR = $(URFSRC:%.c=$(URFCODEDIR)/%.o)
+URFOBJDIR = $(URFSRC:%.c=$(URFCODEDIR)/%.o) #attach directory to be able to use "%.o: %.c"
 
 $(BIN): $(URFOBJDIR) $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $(URFOBJ) $(MAIN)

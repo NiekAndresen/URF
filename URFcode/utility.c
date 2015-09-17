@@ -66,4 +66,10 @@ void usage(char errType)
         fprintf(stderr, "WARNING: The given molecule was not connected.\n");
         fprintf(stderr, "Read interface comment in URF.h for usage help.\n");
     }
+    if(errType == 'f')
+    {
+        fprintf(stderr, "ERROR: Could not open the file specified in argv[1].\n");
+        fprintf(stderr, "Exiting program.\n");
+        exit(EXIT_FAILURE);
+    }
 }

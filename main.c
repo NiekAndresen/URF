@@ -23,7 +23,15 @@ int main(int argc, char **argv)
     GraphURF *graph;
     int i,j;
     
-    graph = readInList("adjlist");
+    if(argc == 1)
+    {
+        graph = readInList("adjlist");
+    }
+    else
+    {
+        graph = readInList(argv[1]);
+    }
+    
     printGraph(graph);
 
     urfdata *udata = calculateURFs(graph);
@@ -75,7 +83,7 @@ int main(int argc, char **argv)
     int k;
     for(i=0; i<udata->urfInfo->nofWeights; ++i)
     {
-        printf("weight %d (index %d)\n",udata->urfInfo->URFs[idxWeightsMain(udata->urfInfo,i,0)][0]->weight,i);
+        printf("weight %d (index %d)\n",udata->CFs->fams[idxWeightsMain(udata->urfInfo,i,0)]->weight,i);
         for(j=0; j<udata->urfInfo->nofProtos[i]; ++j)
         {
             for(k=0; k<udata->urfInfo->nofProtos[i]; ++k)
@@ -98,18 +106,17 @@ int main(int argc, char **argv)
         printf("\n");
 
         /*int l,number;
-        int ***cycles; //TODO better: ptr on some struct maybe
-//        cycles = NULL;
-        printf("cycles:");
-        number = giveURFCycles(udata, cycles, i);
+        int ***cycles;
+        number = giveURFCycles(udata, &cycles, i);
+        printf("cycles (%d):\n",number);
         for(j=0; j<number; ++j)
         {
-            printf("\n");
             for(l=0; cycles[j][l]!=NULL; ++l)
             {
                 printf("(%d ",cycles[j][l][0]);
                 printf("%d), ",cycles[j][l][1]);
             }
+            printf("\n");
         }
         printf("\n");
         deleteCycles(cycles, number);*/
