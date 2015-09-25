@@ -38,7 +38,7 @@ GraphURF *readInList(char *path)
     }
     
     cha = fgetc(fp);
-    while(cha != EOF) //first run through the file to find |V|
+    while(cha != EOF) /*first run through the file to find |V|*/
     {
         if(cha == '\n')
         {
@@ -52,7 +52,7 @@ GraphURF *readInList(char *path)
     rewind(fp);
     currLine = 0;
     cha=fgetc(fp);
-    while(cha != EOF) //second run through the file to fill the adjacency lists
+    while(cha != EOF) /*second run through the file to fill the adjacency lists*/
     {
         if(cha == ' ')
         {

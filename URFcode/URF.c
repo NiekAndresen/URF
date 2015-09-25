@@ -28,13 +28,14 @@ void findShortestPaths(urfdata *udata, GraphURF *gra)
 urfdata *calculateURFs(GraphURF *gra)
 {
     char correctGraph;
+    urfdata *udata;
     correctGraph = checkGraphCorrect(gra);
     if(correctGraph == 0) usage('c');
     if(gra->edgesEnumerated != 'y')
     {
         enumerateEdges(gra);
     }
-    urfdata *udata = malloc(sizeof(*udata));
+    udata = malloc(sizeof(*udata));
     findShortestPaths(udata, gra);
     udata->CFs = findCycleFams(gra, udata->spi);
     udata->graph = gra;
@@ -123,9 +124,10 @@ int *giveBonds(urfdata *uData, int index)
     int i,nofFams,nextfree=0,alloced;
     char *bonds;
     int *result;
+    cfam **URF;
     
     nofFams = uData->urfInfo->nofCFsPerURF[index];
-    cfam **URF = uData->urfInfo->URFs[index];
+    URF = uData->urfInfo->URFs[index];
     bonds = malloc(uData->graph->E * sizeof(*bonds));
     result = malloc(8 * sizeof(*result));
     alloced = 8;
@@ -295,12 +297,12 @@ void deleteCyclesChar(char **cycles)
 
 int giveURFCycles(urfdata *udata, int ****ptr, int index)
 {
-    if(udata->nofURFs < 1) return 0;
     char **URFCycles;
     int ***result;
     int i,j;
     unsigned int alloced, nextfree, nextBond;
     unsigned int edgeCount;
+    if(udata->nofURFs < 1) return 0;
 
     alloced = 4;
     nextfree = 0;
@@ -343,8 +345,8 @@ int giveURFCycles(urfdata *udata, int ****ptr, int index)
 
 void deleteCycles(int ***cycles, int number)
 {
-    if(number < 1) return;
     int i;
+    if(number < 1) return;
     for(i=0; i<number; ++i)
     {
         delete2DArray((void **)cycles[i]);
@@ -414,13 +416,13 @@ int *listURFs(urfdata *udata, int object, char mode)
 
 int listURFsWithAtom(urfdata *udata, int **ptr, int object)
 {
+    int i;
     if(udata->nofURFs < 1)
     {
         /*to still be able to call free on result*/
         (*ptr) = malloc(sizeof(**ptr));
         return 0;
     }
-    int i;
     *ptr = listURFs(udata, object, 'a');
     for(i=0; (*ptr)[i]<INT_MAX; ++i);
     return i;
@@ -428,13 +430,13 @@ int listURFsWithAtom(urfdata *udata, int **ptr, int object)
 
 int listURFsWithBond(urfdata *udata, int **ptr, int a1, int a2)
 {
+    int i;
     if(udata->nofURFs < 1)
     {
         /*to still be able to call free on result*/
         (*ptr) = malloc(sizeof(**ptr));
         return 0;
     }
-    int i;
     *ptr = listURFs(udata, edgeId(udata->graph, a1, a2),'b');
     for(i=0; (*ptr)[i]<INT_MAX; ++i);
     return i;
@@ -442,9 +444,9 @@ int listURFsWithBond(urfdata *udata, int **ptr, int a1, int a2)
 
 int numOfURFsContaining(urfdata *udata, int atom)
 {
-    if(udata->nofURFs < 1) return 0;
     int *list = listURFs(udata, atom, 'a');
     int count;
+    if(udata->nofURFs < 1) return 0;
     for(count=0; list[count]<INT_MAX; ++count);
     free(list);
     return count;
@@ -482,12 +484,12 @@ char **findCharBasis(urfdata *udata)
 
 int findBasis(urfdata *udata, int ****ptr)
 {
-    if(udata->nofURFs < 1) return 0;
     int i,j;
     int ***result;
     int size;
     int *numOfBonds;
     int currBond;
+    if(udata->nofURFs < 1) return 0;
 
     size=udata->graph->E-udata->graph->V+1;
     numOfBonds = malloc(size * sizeof(*numOfBonds)); /*number of bonds for each cycle*/
@@ -533,12 +535,12 @@ int findBasis(urfdata *udata, int ****ptr)
 
 int giveRCprototypes(urfdata *udata, int ****ptr)
 {
-    if(udata->nofURFs < 1) return 0;
     int ***result;
     int nofRel=0;
     int currFam=0, currEdge;
     int i,j;
     cfURF *CFs;
+    if(udata->nofURFs < 1) return 0;
     
     CFs=udata->CFs;
     /*find number of relevant cycle families*/
@@ -577,12 +579,12 @@ int giveRCprototypes(urfdata *udata, int ****ptr)
 
 int giveRCcycles(urfdata *udata, int ****ptr)
 {
-    if(udata->nofURFs < 1) return 0;
     int ***result;
     int ***URFrel; /*relevant Cycles of a URF*/
     int i,j;
     int alloced=4, nextfree=0;
     int num;
+    if(udata->nofURFs < 1) return 0;
     
     result = malloc(alloced * sizeof(*result));
     for(i=0; i<udata->nofURFs; ++i)

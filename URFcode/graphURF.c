@@ -63,8 +63,8 @@ int isAdj(GraphURF *graph, int i, int j)
 
 void deleteGraph(GraphURF *gra)
 {
-    assert(gra != NULL);
     int i;
+    assert(gra != NULL);
     for(i=0; i<gra->V; ++i)
     {
         if(gra->degree[i] > 0)

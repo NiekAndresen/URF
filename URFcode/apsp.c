@@ -27,11 +27,11 @@ void findpaths(sPathInfo *spi, GraphURF *gra)
     char *color = malloc(gra->V * sizeof(*color));
     int *queue = malloc(gra->V * sizeof(*queue));
     
-    for(run=1; run<3; ++run) //2 run throughs to get Vr correct
+    for(run=1; run<3; ++run) /*2 run throughs to get Vr correct*/
     {
         for(i=0; i<gra->V; ++i)
         {
-            //initialization
+            /*initialization*/
             q_head=0;
             q_nextfree=0;
             q_size=0;
@@ -39,51 +39,51 @@ void findpaths(sPathInfo *spi, GraphURF *gra)
             {
                 if(run==1)
                 {
-                    spi->dist[i][j] = INT_MAX; //infinity
+                    spi->dist[i][j] = INT_MAX; /*infinity*/
                     spi->pred[i][j] = INT_MAX;
                     spi->reachable[i][j] = 0;
                 }
-                color[j] = 'w'; //white
+                color[j] = 'w'; /*white*/
             }
             spi->dist[i][i] = 0;
             spi->pred[i][i] = i;
-            color[i] = 'b'; //black
-            queue[q_nextfree]=i; //enqueue
-            ++q_nextfree; //enqueue
-            ++q_size; //enqueue
+            color[i] = 'b'; /*black*/
+            queue[q_nextfree]=i; /*enqueue*/
+            ++q_nextfree; /*enqueue*/
+            ++q_size; /*enqueue*/
             
             while(q_size > 0)
             {
-                w = queue[q_head]; //dequeue
-                ++q_head; //dequeue
-                --q_size; //dequeue
-                for(adj=0; adj<gra->degree[w]; ++adj) //for each node adj to w
+                w = queue[q_head]; /*deqeue*/
+                ++q_head; /*dequeue*/
+                --q_size; /*dequeue*/
+                for(adj=0; adj<gra->degree[w]; ++adj) /*for each node adj to w*/
                 {
                     j=gra->adjList[w][adj];
-                    if(run==2 || ((gra->degree[j] == gra->degree[i]) && j<i) || gra->degree[j] < gra->degree[i]) //j precedes i in order (only first run)
-                    if(color[j] == 'w') //unvisited
+                    if(run==2 || ((gra->degree[j] == gra->degree[i]) && j<i) || gra->degree[j] < gra->degree[i]) /*j precedes i in order (only first run)*/
+                    if(color[j] == 'w') /*unvisited*/
                     {
                         if(run==2)
-                        {//if in the 2nd run a dist gets shorter
+                        {/*if in the 2nd run a dist gets shorter*/
                             if(spi->dist[i][w]+1 < spi->dist[i][j])
-                            {//not element of Vr
+                            {/*not element of Vr*/
                                 spi->reachable[i][j] = 0;
                             }
                         }
                         if(run==1 || (spi->dist[i][w]+1 < spi->dist[i][j]))
-                        {//if 2nd run and dist stays the same, pred shouldn't change to keep the shortest path along ordering
-                            spi->pred[i][j] = w; //predecessor of j on a shortest path from i to j
+                        {/*if 2nd run and dist stays the same, pred shouldn't change to keep the shortest path along ordering*/
+                            spi->pred[i][j] = w; /*predecessor of j on a shortest path from i to j*/
                         }
                         if(spi->dist[i][j] > spi->dist[i][w]+1)
                         {
                             spi->dist[i][j] = spi->dist[i][w] + 1;
                         }
                         color[j] = 'b';
-                        queue[q_nextfree] = j; //enqueue
-                        ++q_nextfree; //enqueue
-                        ++q_size; //enqueue
+                        queue[q_nextfree] = j; /*enqueue*/
+                        ++q_nextfree; /*enqueue*/
+                        ++q_size; /*enqueue*/
                         if(run==1)
-                        {//reachable should not change to 1 in the 2nd run
+                        {/*reachable should not change to 1 in the 2nd run*/
                             spi->reachable[i][j] = 1;
                         }
                     }

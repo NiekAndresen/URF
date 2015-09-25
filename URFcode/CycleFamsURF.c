@@ -124,7 +124,7 @@ void addOdd(int r, int y, int z, GraphURF *gra, sPathInfo *spi, cfURF *rc)
     new->r = r;
     new->p = y;
     new->q = z;
-    new->x = INT_MAX; //odd cycle
+    new->x = INT_MAX; /*odd cycle*/
     new->mark = 0;
     new->prototype = findPrototype(r, y, z, INT_MAX, gra, spi);
     new->weight = spi->dist[r][y] + spi->dist[r][z] + 1;
@@ -138,7 +138,7 @@ void addEven(int r, int y, int x, int z, GraphURF *gra, sPathInfo *spi, cfURF *r
     new->r = r;
     new->p = y;
     new->q = z;
-    new->x = x; //even cycle
+    new->x = x; /*even cycle*/
     new->mark = 0;
     new->prototype = findPrototype(r, y, z, x, gra, spi);
     new->weight = spi->dist[r][y] + spi->dist[r][z] + 2;

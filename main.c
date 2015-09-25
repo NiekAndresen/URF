@@ -22,6 +22,7 @@ int main(int argc, char **argv)
 {
     GraphURF *graph;
     int i,j,k;
+    urfdata *udata;
     
     if(argc == 1)
     {
@@ -34,7 +35,7 @@ int main(int argc, char **argv)
     
     printGraph(graph);
 
-    urfdata *udata = calculateURFs(graph);
+    udata = calculateURFs(graph);
     
     printf("calculated\n");
     /*
@@ -82,7 +83,6 @@ int main(int argc, char **argv)
         printf("\nURFs:\n");
         
         printf("\nURFrel:\n");
-        int k;
         for(i=0; i<udata->urfInfo->nofWeights; ++i)
         {
             printf("weight %d (index %d)\n",udata->CFs->fams[idxWeightsMain(udata->urfInfo,i,0)]->weight,i);

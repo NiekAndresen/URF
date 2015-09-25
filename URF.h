@@ -9,7 +9,7 @@
 #include "./URFcode/graphURF.h"
 #include "./URFcode/URFdataStruct.h"
 
-//TODO write something about calling these functions on a graph without cycles: advantage of returned number of cycles etc: can be 0; still possible to call delete functions; ...
+/*TODO write something about calling these functions on a graph without cycles: advantage of returned number of cycles etc: can be 0; still possible to call delete functions; ...*/
 
 /*===================================================================================*/
 /** build graph data structure that is used for the URF calculation. The vertices are numbered from 0 to |V|-1. Call the following functions:
