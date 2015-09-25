@@ -21,7 +21,7 @@ int idxWeightsMain(URFinfo *uInfo, int weight, int j)
 int main(int argc, char **argv)
 {
     GraphURF *graph;
-    int i,j;
+    int i,j,k;
     
     if(argc == 1)
     {
@@ -77,20 +77,23 @@ int main(int argc, char **argv)
         printf("  %d\n",udata->CFs->fams[i]->mark);
     }
     */
-    printf("\nURFs:\n");
-    
-    printf("\nURFrel:\n");
-    int k;
-    for(i=0; i<udata->urfInfo->nofWeights; ++i)
+    if(udata->nofURFs>0)
     {
-        printf("weight %d (index %d)\n",udata->CFs->fams[idxWeightsMain(udata->urfInfo,i,0)]->weight,i);
-        for(j=0; j<udata->urfInfo->nofProtos[i]; ++j)
+        printf("\nURFs:\n");
+        
+        printf("\nURFrel:\n");
+        int k;
+        for(i=0; i<udata->urfInfo->nofWeights; ++i)
         {
-            for(k=0; k<udata->urfInfo->nofProtos[i]; ++k)
+            printf("weight %d (index %d)\n",udata->CFs->fams[idxWeightsMain(udata->urfInfo,i,0)]->weight,i);
+            for(j=0; j<udata->urfInfo->nofProtos[i]; ++j)
             {
-                printf("%d ",udata->urfInfo->URFrel[i][j][k]);
+                for(k=0; k<udata->urfInfo->nofProtos[i]; ++k)
+                {
+                    printf("%d ",udata->urfInfo->URFrel[i][j][k]);
+                }
+                printf("\n");
             }
-            printf("\n");
         }
     }
     
@@ -121,35 +124,43 @@ int main(int argc, char **argv)
         printf("\n");
         deleteCycles(cycles, number);*/
         
-        /*int **URFedges;
-        URFedges = giveURFBonds(udata, i);
+        /*int **URFedges,number4;
+        number4 = giveURFBonds(udata, i,&URFedges);
         printf("edges of URF %d:\n",i);
-        for(j=0; URFedges[j]!=NULL; ++j)
+        for(j=0; j<number4; ++j)
         {
             printf("%d: [%d,%d]\n", j, URFedges[j][0], URFedges[j][1]);
         }
         deleteBondArr(URFedges);*/
     }
     
-    int *URFatoms;
+    int *URFatoms,number3;
     printf("atoms in the URFs:\n");
     for(i=0; i<udata->nofURFs; ++i)
     {
-        URFatoms = giveURFAtoms(udata, i);
-        for(j=0; j<graph->V; ++j)
+        number3 = giveURFAtoms(udata, i, &URFatoms);
+        j=0;
+        for(k=0; k<graph->V; ++k)
         {
-            printf("%d ",URFatoms[j]);
+            if(j<number3 && URFatoms[j] == k)
+            {
+                printf("1 ");
+                ++j;
+            }
+            else
+            {
+                printf("0 ");
+            }
         }
         printf("\n");
         free(URFatoms);
     }
     
-    
     int ***basis;
-    int number;
-    number = findBasis(udata, &basis);
+    int number1;
+    number1 = findBasis(udata, &basis);
     printf("basis:\n");
-    for(i=0; i<number; ++i)
+    for(i=0; i<number1; ++i)
     {
         for(j=0; basis[i][j]!=NULL;  ++j)
         {
@@ -158,14 +169,14 @@ int main(int argc, char **argv)
         }
         printf("\n");
     }
-    deleteCycles(basis, number);
+    deleteCycles(basis, number1);
     
-    /*int atom,number;
+    /*int atom,number2;
     int *URFsWithAtom;
     atom=1;
-    number = listURFsWithAtom(udata, &URFsWithAtom, atom);
+    number2 = listURFsWithAtom(udata, &URFsWithAtom, atom);
     printf("listing all URFs with atom %d: ",atom);
-    for(i=0; i<number; ++i)
+    for(i=0; i<number2; ++i)
     {
         printf("%d ",URFsWithAtom[i]);
     }
@@ -173,90 +184,34 @@ int main(int argc, char **argv)
     printf("number of URFs with atom %d: %d\n",atom,numOfURFsContaining(udata, atom));
     free(URFsWithAtom);*/
     
-    /*char **protos;
+    /*int ***protos;
+    int num;
     printf("RC prototypes:\n");
-    protos=giveRCprototypes(udata);
-    for(i=0; protos[i]!=NULL; ++i)
+    num = giveRCprototypes(udata, &protos);
+    for(i=0; i<num ; ++i)
     {
-        for(j=0; j<graph->V; ++j)
+        for(j=0; protos[i][j]!=NULL; ++j)
         {
-            printf("%d ",protos[i][j]);
+            printf("(%d %d), ",protos[i][j][0],protos[i][j][1]);
         }
         printf("\n");
     }
-    deleteArr(protos);*/
+    deleteCycles(protos, num);*/
     
-    /*char **relCycles;
-    printf("RC prototypes:\n");
-    relCycles=giveRCcycles(udata);
-    for(i=0; relCycles[i]!=NULL; ++i)
+    /*int ***relCycles;
+    int num1;
+    printf("RCs:\n");
+    num1=giveRCcycles(udata, &relCycles);
+    for(i=0; i<num1; ++i)
     {
-        for(j=0; j<graph->V; ++j)
+        printf("%d:  ",i+1);
+        for(j=0; relCycles[i][j]!=NULL; ++j)
         {
-            printf("%d ",relCycles[i][j]);
+            printf("(%d %d)  ",relCycles[i][j][0],relCycles[i][j][1]);
         }
         printf("\n");
     }
-    deleteCycles(relCycles);*/
-    
-    /*int *URFatoms;
-    printf("I've got the cycles:\n");
-    for(i=0; i<udata->nofURFs; ++i)
-    {
-        URFatoms = giveURFAtoms(udata, i);
-        for(j=0; j<graph->V; ++j)
-        {
-            if(URFatoms[j] == 1)
-            {
-                printf("%d ",j);
-            }
-        }
-        printf("\n");
-        free(URFatoms);
-    }
-    
-    printf("path from 139 to 54:\n");
-    printf("dist = %d\n",udata->spi->dist[139][54]);
-    j=54;
-    while(j!=139)
-    {
-        printf("%d ",j);
-        j = udata->spi->pred[139][j];
-    }
-    printf("\n");
-    
-    j=64;
-    printf("path from 139 to %d:\n",j);
-    printf("dist = %d\n",udata->spi->dist[139][j]);
-    while(j!=139)
-    {
-        printf("%d ",j);
-        j = udata->spi->pred[139][j];
-    }
-    printf("\n");
-    
-    j=114;
-    printf("path from 139 to %d:\n",j);
-    printf("dist = %d\n",udata->spi->dist[139][j]);
-    while(j!=139)
-    {
-        printf("%d ",j);
-        j = udata->spi->pred[139][j];
-    }
-    printf("\n");
-    
-    j=24;
-    printf("path from 139 to %d:\n",j);
-    printf("dist = %d\n",udata->spi->dist[139][j]);
-    while(j!=139)
-    {
-        printf("%d ",j);
-        j = udata->spi->pred[139][j];
-    }
-    printf("\n");*/
-    
-    /*printf("dPaths[139]:\n");
-    printGraph(udata->spi->dPaths[139]);*/
+    deleteCycles(relCycles, num1);*/
     
     deleteURFdata(udata);
     printf("Niek ist die Nummer %d\n",1);

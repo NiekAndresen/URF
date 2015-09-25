@@ -107,7 +107,7 @@ void listPaths(int r, int p, char ***paths, int *currPath, int *alloced, char mo
                         }
                     }
                 }
-                for(i=0; i<gra->V; ++i)/*get the path up until the split*/
+                for(i=0; i<number; ++i)/*get the path up until the split*/
                 {
                     (*paths)[*currPath][i] = copyBeforeSplit[i];
                 }

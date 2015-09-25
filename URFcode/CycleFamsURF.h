@@ -10,19 +10,19 @@ typedef struct{
     int weight; /*number of edges/vertices in the cf (length of one cycle)*/
     int r, p, q, x; /*vertices defining a cf as in Vismara's definition*/
     char *prototype; /*prototype vector {0,1}^m*/
-    int mark; /*mark CF as part of the Basis*/
+    int mark; /*mark CF as relevant*/
 }cfam;
 
-/** contains the relevant cycles */
+/** contains the Cycle Families */
 typedef struct{
     cfam **fams; /*array of CFs sorted by weight*/
     int nofFams; /*number of cycle families*/
 }cfURF;
 
-/** uses Vismara's algorithm to find relevant cycles represented by relevant cycle families. returns them sorted by weight */
+/** uses Vismara's algorithm to find (Relevant) Cycle Families. returns them sorted by weight */
 cfURF *findCycleFams(GraphURF *, sPathInfo *);
 
-/** frees all the memory used by the relevant cycles */
+/** frees all the memory used by the Cycle Families */
 void deleteCycleFams(cfURF *);
 
 #endif

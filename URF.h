@@ -9,6 +9,8 @@
 #include "./URFcode/graphURF.h"
 #include "./URFcode/URFdataStruct.h"
 
+//TODO write something about calling these functions on a graph without cycles: advantage of returned number of cycles etc: can be 0; still possible to call delete functions; ...
+
 /*===================================================================================*/
 /** build graph data structure that is used for the URF calculation. The vertices are numbered from 0 to |V|-1. Call the following functions:
 
@@ -34,24 +36,33 @@ void deleteURFdata(urfdata *);
 /** Returns the number of URFs. */
 int numberOfURFs(urfdata *);
 
-/** Gives the atoms of a URF identified with it's index.
-Returns an array of length n (Number of atoms in the molecule) that contains 1 at position i if atom i is part of the URF.
-Return value has to be deallocated using free(). */
-int *giveURFAtoms(urfdata *, int index);
+/** Gives the atoms of a URF identified with its index in an array of indices of atoms.
+ @return the number of atoms in the URF
+ @param index the index of the URF
+ @param ptr pointer that points to the result array (declare 'int *' and give address as parameter) 
+ @note Result has do be deallocated using free(*ptr).
+ @brief Gives the atoms of a URF. */
+int giveURFAtoms(urfdata *, int index, int **ptr);
 
-/** Gives the bonds of a URF identified with it's index.
-Returns an array of bonds which ends on a terminating NULL pointer. A bond is represented by two integers which are the indices of the atoms the bond connects.
-Return value has to be deallocated using 'deleteArr()'.*/
-int **giveURFBonds(urfdata *, int index);
+/** Gives the bonds of a URF identified with its index.
+ @return the number of bonds in this URF
+ @param index the index of the URF
+ @param ptr pointer that points to the result array (declare 'int **' and give address as parameter)
+ @note Result has to be deallocated using 'deleteBondArr(*ptr)'
+ Gives an array of bonds where a bond is represented by two indices of vertices that it connects. */
+int giveURFBonds(urfdata *, int index, int ***ptr);
+
+/** Deallocates the structure returned by 'giveURFBonds()' if called on its return value. */
+void deleteBondArr(int **);
 
 /** Gives all cycles of the URF with the given index.
 @return the number of cycles found
-@note ptr has to be deallocated using 'deleteCycles(ptr)'
+@note ptr has to be deallocated using 'deleteCycles(*ptr)'
 @note A cycle is represented by an array of bonds which are arrays of length two of integers storing the indices of the atoms involved in the bond.
-@note For iteration over a cycle, it's array is ended with a NULL pointer.
+@note For iteration over a cycle, its array is ended with a NULL pointer.
 @param ptr pointer that points to the result array of cycles (declare 'int ***' and give address as parameter)
 @param index index of the URF*/
-/*TODO write an example for iteration over a cycle somewhere*/
+/*TODO write an example for iteration over a cycle/an array of cycles somewhere*/
 int giveURFCycles(urfdata *, int ****ptr, int index);
 
 /** Gives all URFs containing the atom.
@@ -74,27 +85,27 @@ int numOfURFsContaining(urfdata *, int atom);
 
 /** Returns a set of cycles that forms a Minimal Cycle Basis of the graph.
  @return the number of cycles returned (|E|-|V|+1)
- @param ptr pointer that points to the result array
- The result is an array of cycles. A cycle is represented by an array of bonds. A bond is represented by two integers which are the indices of the atoms involved in the bond.*/
+ @param ptr pointer that points to the result array (declare 'int ***' and give address as parameter)
+ The result is an array of cycles. A cycle is represented by an array of bonds. A bond is represented by two integers which are the indices of the atoms involved in the bond. A cycle is terminated by a NULL pointer
+ @note Result has to be deallocated using deleteCycles(*ptr, number). */
  /*TODO note somewhere that this does not return a correct basis for an unconnected graph*/
 int findBasis(urfdata *, int ****ptr);
 
-/** Gives a list of relevant cycle prototypes (one for each RCF).
-Returns an array of prototypes which are represented by arrays of {0,1}^n containing a 1 at position i if vertex i is part of the cycle or 0 otherwise. The array is ended with a terminating NULL-pointer.*/
-char **giveRCprototypes(urfdata *);
+/** @brief Gives a list of relevant cycle prototypes (one for each RCF).
+ @return the number of prototypes
+ @param ptr pointer to the result array (declare 'int ***' and give address as parameter)
+ The result is an array of cycles. A cycle is represented by an array of bonds. A bond is represented by two integers which are the indices of the atoms involved in the bond. A cycle is terminated by a NULL pointer.
+ @note Result has to be deallocated using deleteCycles(*ptr, number). */
+int giveRCprototypes(urfdata *, int ****ptr);
 
-/** Gives a list of all relevant cycles.
-The return value is an array of cycles. A cycle is represented by an array of {0,1}^n with a 1 at position i if vertex i is part of the cycle or 0 otherwise. The array is ended with a terminating NULL-pointer. */
-char **giveRCcycles(urfdata *);
+/** @brief Gives a list of all relevant cycles
+ @return the number of cycles
+ @param ptr pointer to the result array (declare 'int ***' and give address as parameter)
+ The result is an array of cycles. A cycle is represented by an array of bonds. A bond is represented by two integers which are the indices of the atoms involved in the bond. A cycle is terminated by a NULL pointer.
+ @note Result has to be deallocated using deleteCycles(*ptr, number). */
+int giveRCcycles(urfdata *, int ****ptr);
 
-/** Deallocates the structure returned by 'giveURFCycles()' and 'findBasis()' if called on its return value */
-/* giveRCcycles() */
+/** Deallocates the structure returned by 'giveURFCycles()', 'findBasis()', 'giveRCprototypes()' and 'giveRCcycles()' if called on its result and return value (the number of cycles) */
 void deleteCycles(int ***cycles, int number);
-
-/** Deallocates the structure returned by 'giveRCprototypes()' if called on their return values. */
-void deleteArr(char **);
-
-/** Deallocates the structure returned by 'giveURFBonds()' if called on it's return value. */
-void deleteBondArr(int **);
 
 #endif

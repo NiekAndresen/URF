@@ -8,4 +8,6 @@
 /** sorts the RCFs in the array fams by weight. */
 void sortbyweight(cfURF *rc);
 
+/* qsort() of the C standard library could be used just as well */
+
 #endif
