@@ -77,14 +77,6 @@ int listURFsWithAtom(urfdata *, int **ptr, int atom);
 @note The array ptr has to be to be deallocated with 'free(*ptr)' */
 int listURFsWithBond(urfdata *, int **ptr, int atom1, int atom2);
 
-/** Gives all URFs containing the bond.
-@return the number of URFs containing the bond
-@param ptr pointer that points to the result array of integers containing all indices of URFs containing the bond. (declare 'int *' and give address as parameter)
-@param a1 the index of one of the atoms adjacent to the bond
-@param a2 the index of one of the atoms adjacent to the bond
-@note The array ptr has to be to be deallocated with 'free(*ptr)' */
-int listURFsWithBond(urfdata *, int **ptr, int a1, int a2);
-
 /** Returns the number of URFs that contain the given atom. */
 int numOfURFsContaining(urfdata *, int atom);
 
