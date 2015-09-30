@@ -10,6 +10,7 @@ int main(int argc, char **argv)
     urfdata *URFdata;
     int idx, obIdx, URFcount, count, bondCount, atomCount;
     int *atoms;
+    int **bondArray;
     int ***cycleArray;
     char **otherCycleArray;
 
@@ -37,15 +38,21 @@ int main(int argc, char **argv)
     printf("Number of Unique Ring Families: %d\n\n", URFcount);
     for(idx=0; idx<URFcount; ++idx)
     {
-        count = giveURFAtoms(URFdata, idx, &atoms);
-        printf("There are %d atoms in URF %d.\n", count, idx);
-        free(atoms);
+        printf("URF %d has weight %d.\n", idx, giveURFWeight(URFdata, idx));
     }
     /* some more output which might change when the order of the input is changed*/
     if(argc > 1)
     {
-        printf("===============================================================\n");
+        printf("\n===============================================================\n");
         printf("The rest of this output might depend on the order of the input:\n\n");
+        for(idx=0; idx<URFcount; ++idx)
+        {
+            count = giveURFBonds(URFdata, idx, &bondArray);
+            printf("There are %d bonds in URF %d.\n", count, idx);
+            deleteBondArr(bondArray);
+        }
+        printf("\n");
+        
         for(idx=0; idx<URFcount; ++idx)
         {
             printf("Atoms in URF %d: ",idx);
@@ -65,7 +72,7 @@ int main(int argc, char **argv)
         for(idx=0; idx<count; ++idx)
         {
             printf("ring %d: ",idx);
-            for(obIdx=0; cycleArray[idx][obIdx]!=NULL;  ++obIdx)
+            for(obIdx=0; cycleArray[idx][obIdx]!=NULL;  ++obIdx)/*the end of a cycle is signaled by a NULL pointer*/
             {
                 printf("(%d ",cycleArray[idx][obIdx][0]);
                 printf("%d), ",cycleArray[idx][obIdx][1]);
@@ -81,7 +88,7 @@ int main(int argc, char **argv)
         for(idx=0; idx<count; ++idx)
         {
             printf("ring %d: ",idx);
-            for(obIdx=0; cycleArray[idx][obIdx]!=NULL; ++obIdx)
+            for(obIdx=0; cycleArray[idx][obIdx]!=NULL; ++obIdx)/*the end of a cycle is signaled by a NULL pointer*/
             {
                 printf("(%d ",cycleArray[idx][obIdx][0]);
                 printf("%d), ",cycleArray[idx][obIdx][1]);

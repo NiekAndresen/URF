@@ -64,6 +64,12 @@ int numberOfURFs(urfdata *udata)
     return udata->nofURFs;    
 }
 
+int giveURFWeight(urfdata *udata, int index)
+{
+    if(udata->nofURFs < 1 || index >= udata->nofURFs) return 0;
+    return udata->urfInfo->URFs[index][0]->weight;
+}
+
 /** gives an array of indices of atoms that are contained in the URF with the given index. Array is terminated by INT_MAX */
 int *giveAtoms(urfdata *uData, int index)
 {
@@ -194,7 +200,7 @@ int *giveURF(urfdata *uData, int URFindex, char mode)
 int giveURFAtoms(urfdata *udata, int index, int **ptr)
 {
     int i;
-    if(udata->nofURFs < 1)
+    if(udata->nofURFs < 1 || index >=udata->nofURFs)
     {
         /*to still be able to call 'free()' on the result*/
         (*ptr) = malloc(sizeof(**ptr));
@@ -211,7 +217,7 @@ int giveURFBonds(urfdata *uData, int URFindex, int ***ptr)
     int **result;
     int *bondIndices;
     int i,j;
-    if(uData->nofURFs < 1)
+    if(uData->nofURFs < 1 || URFindex >=uData->nofURFs)
     {
         /*to still be able to call 'deleteBondArray()' on the result*/
         (*ptr) = malloc(sizeof(**ptr));
@@ -298,7 +304,7 @@ int giveURFCycles(urfdata *udata, int ****ptr, int index)
     int i,j;
     unsigned int alloced, nextfree, nextBond;
     unsigned int edgeCount;
-    if(udata->nofURFs < 1) return 0;
+    if(udata->nofURFs < 1 || index >=udata->nofURFs) return 0;
 
     alloced = 4;
     nextfree = 0;

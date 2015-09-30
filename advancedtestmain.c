@@ -59,6 +59,7 @@ int main(int argc, char **argv)
     urfdata *URFdata;
     int idx, obIdx, URFcount, count, bondCount;
     int *atoms;
+    int **bondArray;
     int ***cycleArray;
     char **otherCycleArray;
 
@@ -89,29 +90,45 @@ int main(int argc, char **argv)
     
     /* some output */
     URFcount = numberOfURFs(URFdata);
-    printf("=====================================================\n");
-    printf("Number of Unique Ring Families: %d\n", URFcount);
+    printf("==========================================================URF=\n");
+    printf("Number of Unique Ring Families: %d\n\n", URFcount);
     for(idx=0; idx<URFcount; ++idx)
     {
-        printf("Atoms in URF %d: ",idx);
-        count = giveURFAtoms(URFdata, idx, &atoms);
-        for(obIdx=0; obIdx<count; ++obIdx)
-        {
-            printf("%d ",atoms[obIdx]);
-        }
-        printf("\n");
-        free(atoms);
+        printf("URF %d has weight %d.\n", idx, giveURFWeight(URFdata, idx));
     }
-    /* some more output */
+    /* some more output which might change when the order of the input is changed*/
     if(argc > 2)
     {
+        printf("\n===============================================================\n");
+        printf("The rest of this output might depend on the order of the input:\n\n");
+        for(idx=0; idx<URFcount; ++idx)
+        {
+            count = giveURFBonds(URFdata, idx, &bondArray);
+            printf("There are %d bonds in URF %d.\n", count, idx);
+            deleteBondArr(bondArray);
+        }
+        printf("\n");
+        
+        for(idx=0; idx<URFcount; ++idx)
+        {
+            printf("Atoms in URF %d: ",idx);
+            count = giveURFAtoms(URFdata, idx, &atoms);
+            for(obIdx=0; obIdx<count; ++obIdx)
+            {
+                printf("%d ",atoms[obIdx]);
+            }
+            printf("\n");
+            free(atoms);
+        }
+        printf("\n");
+        
         printf("A possible MCB (SSSR) ");
         count = findBasis(URFdata, &cycleArray);
         printf("(%d rings):\n",count);
         for(idx=0; idx<count; ++idx)
         {
             printf("ring %d: ",idx);
-            for(obIdx=0; cycleArray[idx][obIdx]!=NULL;  ++obIdx)
+            for(obIdx=0; cycleArray[idx][obIdx]!=NULL;  ++obIdx)/*the end of a cycle is signaled by a NULL pointer*/
             {
                 printf("(%d ",cycleArray[idx][obIdx][0]);
                 printf("%d), ",cycleArray[idx][obIdx][1]);
@@ -119,6 +136,7 @@ int main(int argc, char **argv)
             printf("\n");
         }
         deleteCycles(cycleArray, count);
+        printf("\n");
         
         printf("The RC Prototypes with bonds as pairs of atoms ");
         count = giveRCprototypes(URFdata, &cycleArray);
@@ -126,14 +144,16 @@ int main(int argc, char **argv)
         for(idx=0; idx<count; ++idx)
         {
             printf("ring %d: ",idx);
-            for(obIdx=0; cycleArray[idx][obIdx]!=NULL; ++obIdx)
+            for(obIdx=0; cycleArray[idx][obIdx]!=NULL; ++obIdx)/*the end of a cycle is signaled by a NULL pointer*/
             {
                 printf("(%d ",cycleArray[idx][obIdx][0]);
                 printf("%d), ",cycleArray[idx][obIdx][1]);
             }
             printf("\n");
         }
-        printf("The RC Prototypes with bonds as their index ");
+        printf("\n");
+        
+        printf("The RC Prototypes as arrays ");
         count = translateCycleArray(URFdata, cycleArray, count, &otherCycleArray);
         printf("(%d rings):\n",count);
         for(idx=0; idx<count; ++idx)
@@ -148,7 +168,7 @@ int main(int argc, char **argv)
         deleteCycles(cycleArray, count);
         deleteEdgeIdxCycles(otherCycleArray);
     }
-    printf("=====================================================\n");
+    printf("==========================================================URF=\n");
 
     /* delete urfdata and the graph */
     deleteURFdata(URFdata);

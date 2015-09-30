@@ -33,6 +33,9 @@ void deleteURFdata(urfdata *);
 /** Returns the number of URFs. */
 int numberOfURFs(urfdata *);
 
+/** Returns the weight of each cycle in the URF identified by its index */
+int giveURFWeight(urfdata *, int index);
+
 /** Gives the atoms of a URF identified with its index in an array of indices of atoms.
  @return the number of atoms in the URF
  @param index the index of the URF
@@ -59,7 +62,6 @@ void deleteBondArr(int **);
 @note For iteration over a cycle, its array is ended with a NULL pointer.
 @param ptr pointer that points to the result array of cycles (declare 'int ***' and give address as parameter)
 @param index index of the URF*/
-/*TODO write an example for iteration over a cycle/an array of cycles somewhere*/
 int giveURFCycles(urfdata *, int ****ptr, int index);
 
 /** Gives all URFs containing the atom.
