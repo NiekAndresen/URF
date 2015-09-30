@@ -72,6 +72,14 @@ int listURFsWithAtom(urfdata *, int **ptr, int atom);
 /** Gives all URFs containing the bond.
 @return the number of URFs containing the bond
 @param ptr pointer that points to the result array of integers containing all indices of URFs containing the bond. (declare 'int *' and give address as parameter)
+@param atom1 the index of the first atom of the bond
+@param atom2 the index of the second atom of the bond
+@note The array ptr has to be to be deallocated with 'free(*ptr)' */
+int listURFsWithBond(urfdata *, int **ptr, int atom1, int atom2);
+
+/** Gives all URFs containing the bond.
+@return the number of URFs containing the bond
+@param ptr pointer that points to the result array of integers containing all indices of URFs containing the bond. (declare 'int *' and give address as parameter)
 @param a1 the index of one of the atoms adjacent to the bond
 @param a2 the index of one of the atoms adjacent to the bond
 @note The array ptr has to be to be deallocated with 'free(*ptr)' */
@@ -110,7 +118,8 @@ void deleteCycles(int ***cycles, int number);
  @param number The return value of the functions named above (the number of cycles given)
  @param ptr Pointer to the result array (declare 'char **' and give address as parameter)
  @return The number of cycles given (same as the parameter number)
- @brief Changes the representation of a cycle in an array of cycles. */
+ @brief Changes the representation of a cycle in an array of cycles.
+ @note The initial structure still exists afterwards and still has to be deleted. */
 int translateCycleArray(urfdata *, int ***array, int number, char ***ptr);
 
 /** Deallocates the structure given by 'translateCycleArray()' if called on its result. */

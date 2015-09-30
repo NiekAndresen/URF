@@ -424,7 +424,7 @@ int listURFsWithAtom(urfdata *udata, int **ptr, int object)
     return i;
 }
 
-int listURFsWithBond(urfdata *udata, int **ptr, int a1, int a2)
+int listURFsWithBond(urfdata *udata, int **ptr, int atom1, int atom2)
 {
     int i;
     if(udata->nofURFs < 1)
@@ -433,7 +433,7 @@ int listURFsWithBond(urfdata *udata, int **ptr, int a1, int a2)
         (*ptr) = malloc(sizeof(**ptr));
         return 0;
     }
-    *ptr = listURFs(udata, edgeId(udata->graph, a1, a2),'b');
+    *ptr = listURFs(udata, edgeId(udata->graph, atom1, atom2), 'b');
     for(i=0; (*ptr)[i]<INT_MAX; ++i);
     return i;
 }

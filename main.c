@@ -198,6 +198,18 @@ int main(int argc, char **argv)
     printf("number of URFs with atom %d: %d\n",atom,numOfURFsContaining(udata, atom));
     free(URFsWithAtom);*/
     
+    /*int bond,numberB;
+    int *URFsWithBond;
+    bond=1;
+    numberB = listURFsWithBond(udata, &URFsWithBond, udata->graph->edges[bond][0], udata->graph->edges[bond][1]);
+    printf("listing all URFs with bond %d: ",bond);
+    for(i=0; i<numberB; ++i)
+    {
+        printf("%d ",URFsWithBond[i]);
+    }
+    printf("\n");
+    free(URFsWithBond);*/
+    
     /*int ***protos;
     int num;
     printf("RC prototypes:\n");
