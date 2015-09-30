@@ -102,7 +102,18 @@ int giveRCprototypes(urfdata *, int ****ptr);
  @note Result has to be deallocated using deleteCycles(*ptr, number). */
 int giveRCcycles(urfdata *, int ****ptr);
 
-/** Deallocates the structure returned by 'giveURFCycles()', 'findBasis()', 'giveRCprototypes()' and 'giveRCcycles()' if called on its result and return value (the number of cycles) */
+/** Deallocates the structure given by 'giveURFCycles()', 'findBasis()', 'giveRCprototypes()' and 'giveRCcycles()' if called on its result and return value (the number of cycles) */
 void deleteCycles(int ***cycles, int number);
+
+/** Translates the results of 'giveURFCycles()', 'findBasis()', 'giveRCprototypes()' and 'giveRCcycles()' (arrays of cylces represented by arrays of pairs of vertices) into an array of cycles represented by arrays of {0,1}^|E|. Such an array has a 1 at position i if edge i is part of the cycle. An edge is identified by the position at which it was added to the graph starting at 0.
+ @param array The resulting structure of the functions named above
+ @param number The return value of the functions named above (the number of cycles given)
+ @param ptr Pointer to the result array (declare 'char **' and give address as parameter)
+ @return The number of cycles given (same as the parameter number)
+ @brief Changes the representation of a cycle in an array of cycles. */
+int translateCycleArray(urfdata *, int ***array, int number, char ***ptr);
+
+/** Deallocates the structure given by 'translateCycleArray()' if called on its result. */
+void deleteEdgeIdxCycles(char **cycles);
 
 #endif

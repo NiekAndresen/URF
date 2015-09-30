@@ -169,7 +169,21 @@ int main(int argc, char **argv)
         }
         printf("\n");
     }
+
+    printf("or:\n");
+    char **basis2;
+    number1 = translateCycleArray(udata, basis, number1, &basis2);
+    for(i=0; i<number1; ++i)
+    {
+        for(j=0; j<udata->graph->E; ++j)
+        {
+            printf("%d ",basis2[i][j]);
+        }
+        printf("\n");
+    }
+    deleteEdgeIdxCycles(basis2);
     deleteCycles(basis, number1);
+    
     
     /*int atom,number2;
     int *URFsWithAtom;

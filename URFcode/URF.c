@@ -606,3 +606,33 @@ void deleteBondArr(int **arr)
 {
     delete2DArray((void **)arr);
 }
+
+int translateCycleArray(urfdata *udata, int ***array, int number, char ***ptr)
+{
+    int i,j,edgeIdx;
+    char **result;
+    result = alloc2DCharArray(number, udata->graph->E);
+    for(i=0; i<number;  ++i)/*initialize to 0s*/
+    {
+        for(j=0; j<udata->graph->E; ++j)
+        {
+            result[i][j] = 0;
+        }
+    }
+    
+    for(i=0; i<number; ++i)
+    {
+        for(j=0; array[i][j]!=NULL; ++j)
+        {
+            edgeIdx = edgeId(udata->graph, array[i][j][0], array[i][j][1]);
+            result[i][edgeIdx] = 1;
+        }
+    }
+    (*ptr) = result;
+    return number;
+}
+
+void deleteEdgeIdxCycles(char **cycles)
+{
+    delete2DArray((void **)cycles);
+}
