@@ -67,7 +67,6 @@ GraphURF *readInList(char *path)
     }
     fclose(fp);
 
-    enumerateEdges(gra);
     return gra;
 }
 

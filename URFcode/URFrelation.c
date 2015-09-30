@@ -243,7 +243,7 @@ void recFinder(int x, int r, int *edges, GraphURF *gra, sPathInfo *spi)
     for(i=0; i<spi->dPaths[r]->degree[x]; ++i)/*each vertex adjacent to x in U_r*/
     {
         vertex = spi->dPaths[r]->adjList[x][i];
-        edges[edgeIdx(x, vertex, gra)] = 1;
+        edges[edgeId(gra, x, vertex)] = 1;
         recFinder(vertex, r, edges, gra, spi);
     }
 }
@@ -255,12 +255,12 @@ void findEdges(int *edges, cfam *RCF, GraphURF *gra, sPathInfo *spi)
     recFinder(RCF->q, RCF->r, edges, gra, spi);
     if(RCF->x < INT_MAX) /*even family*/
     {
-        edges[edgeIdx(RCF->x, RCF->p, gra)] = 1;
-        edges[edgeIdx(RCF->x, RCF->q, gra)] = 1;
+        edges[edgeId(gra, RCF->x, RCF->p)] = 1;
+        edges[edgeId(gra, RCF->x, RCF->q)] = 1;
     }
     else
     {
-        edges[edgeIdx(RCF->p, RCF->q, gra)] = 1;
+        edges[edgeId(gra, RCF->p, RCF->q)] = 1;
     }
 } 
 

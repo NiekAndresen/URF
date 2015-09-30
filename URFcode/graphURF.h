@@ -24,10 +24,8 @@ void addUEdge(GraphURF *, int from, int to);
 /** frees all allocated space. */
 void deleteGraph(GraphURF *gra);
 
-/**====== These are not needed for URF.h user: =====*/
-
-/** Fills the 'edges' array which contains all edges as pairs of vertices (smaller vertex index first). (Should be called on complete graph.) */
-void enumerateEdges(GraphURF *gra);
+/*=============================================================================*/
+/* This structure can also be used for directed graphs (which is being done in the calculation of CFs). It that case the degree is the OUT-degree only and the array edges is not used. */
 
 /** adds a directed edge to the graph. */
 void addEdge(GraphURF *, int from, int to);
@@ -35,7 +33,7 @@ void addEdge(GraphURF *, int from, int to);
 /** returns 1 if the vertex i is adjacent to j in the graph, 0 otherwise. */
 int isAdj(GraphURF *, int i, int j);
 
-/** prints the adjacency lists, |V| and |E| and the edges */
+/** prints the adjacency lists, |V| and |E| and the edges (edges only if the graph is undirected) */
 void printGraph(GraphURF *graph);
 
 /** Checks if the graph is connected. Returns 1 if it is, 0 otherwise. */
@@ -43,6 +41,4 @@ char checkGraphCorrect(GraphURF *gra);
 
 /** Returns the index of the bond connecting the atoms 'from' and 'to' */
 int edgeId(GraphURF *gra, int from, int to);
-
-/*for undirected graphs the degree is the OUT-degree only.*/
 #endif

@@ -25,12 +25,12 @@ void giveVertices(int a, int b, char *array, GraphURF *gra, sPathInfo *spi)
     }
 }
 
-int edgeIdx(int from, int to, GraphURF *gra)
+/*int edgeIdx(int from, int to, GraphURF *gra)
 {
     int edge;
     
     if(from > to)
-    {/*swap order to make from < to*/
+    {//swap order to make from < to
         edge = to;
         to = from;
         from = edge;
@@ -44,7 +44,7 @@ int edgeIdx(int from, int to, GraphURF *gra)
         }
     }
     return edge;
-}
+}*/
 
 void giveEdges(int a, int b, char *array, GraphURF *gra, sPathInfo *spi)
 {
@@ -56,7 +56,7 @@ void giveEdges(int a, int b, char *array, GraphURF *gra, sPathInfo *spi)
     for(i=0; i<spi->dPaths[a]->degree[b]; ++i)/*each vertex adjacent to b in U_a*/
     {
         vertex = spi->dPaths[a]->adjList[b][i];
-        array[edgeIdx(b,vertex,gra)] = 1;
+        array[edgeId(gra,b,vertex)] = 1;
         giveEdges(a, vertex, array, gra, spi);
     }
 }
@@ -114,7 +114,7 @@ void listPaths(int r, int p, char ***paths, int *currPath, int *alloced, char mo
             }
             if(mode == 'b')
             {
-                (*paths)[*currPath][edgeIdx(p,vertex,gra)] = 1;
+                (*paths)[*currPath][edgeId(gra,p,vertex)] = 1;
             }
             listPaths(r,vertex,paths,currPath,alloced,mode,gra,spi);
         }
@@ -124,7 +124,7 @@ void listPaths(int r, int p, char ***paths, int *currPath, int *alloced, char mo
         vertex = spi->dPaths[r]->adjList[p][0];
         if(mode == 'b')
         {
-            (*paths)[*currPath][edgeIdx(p,vertex,gra)] = 1;
+            (*paths)[*currPath][edgeId(gra,p,vertex)] = 1;
         }
         listPaths(r,vertex,paths,currPath,alloced,mode,gra,spi);
     }
@@ -206,12 +206,12 @@ int combinePaths(char ***paths1, char ***paths2, int p, int q, int x, char ***re
             {
                 if(x < INT_MAX)/*even cycle*/
                 {
-                    cycle[edgeIdx(p,x,gra)] = 1;
-                    cycle[edgeIdx(q,x,gra)] = 1;
+                    cycle[edgeId(gra,p,x)] = 1;
+                    cycle[edgeId(gra,q,x)] = 1;
                 }
                 else /*odd cycle*/
                 {
-                    cycle[edgeIdx(p,q,gra)] = 1;
+                    cycle[edgeId(gra,p,q)] = 1;
                 }
             }
             if(currIdx == alloced)/*more space needed*/

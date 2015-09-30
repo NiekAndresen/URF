@@ -29,19 +29,15 @@ urfdata *calculateURFs(GraphURF *gra)
 {
     char correctGraph;
     urfdata *udata;
-    correctGraph = checkGraphCorrect(gra);
+    correctGraph = checkGraphCorrect(gra); /*from graphURF.h*/
     if(correctGraph == 0) usage('c');
-    if(gra->edgesEnumerated != 'y')
-    {
-        enumerateEdges(gra);
-    }
     udata = malloc(sizeof(*udata));
-    findShortestPaths(udata, gra);
-    udata->CFs = findCycleFams(gra, udata->spi);
+    findShortestPaths(udata, gra); /*from apsp.h*/
+    udata->CFs = findCycleFams(gra, udata->spi); /*from CycleFamsURF.h*/
     udata->graph = gra;
     if(udata->CFs->nofFams > 0)
     {
-        udata->urfInfo = checkURFRelation(udata->CFs, udata->graph, udata->spi);
+        udata->urfInfo = checkURFRelation(udata->CFs, udata->graph, udata->spi);/*from URFInfo.h*/
         udata->nofURFs = udata->urfInfo->nofURFs;
     }
     else
@@ -142,12 +138,12 @@ int *giveBonds(urfdata *uData, int index)
         giveEdges(URF[i]->r, URF[i]->p, bonds, uData->graph, uData->spi);
         if(URF[i]->x < INT_MAX) /*even cycle*/
         {
-            bonds[edgeIdx(URF[i]->q,URF[i]->x,uData->graph)] = 1;
-            bonds[edgeIdx(URF[i]->p,URF[i]->x,uData->graph)] = 1;
+            bonds[edgeId(uData->graph,URF[i]->q,URF[i]->x)] = 1;
+            bonds[edgeId(uData->graph,URF[i]->p,URF[i]->x)] = 1;
         }
         else/*odd cycle*/
         {
-            bonds[edgeIdx(URF[i]->q,URF[i]->p,uData->graph)] = 1;
+            bonds[edgeId(uData->graph,URF[i]->q,URF[i]->p)] = 1;
         }
     }
     

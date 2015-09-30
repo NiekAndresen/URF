@@ -56,28 +56,6 @@ int pathsShareOnlyStart(int r, int y, int z, GraphURF *gra, sPathInfo *spi)
     return result;
 }
 
-/** returns the id-no of the edge (from,to) [used in findPrototype]*/
-int giveEdgeNo(int from, int to, GraphURF* gra)
-{
-    int edge;
-    
-    if(from > to)
-    {/*swap order to make from < to*/
-        edge = to;
-        to = from;
-        from = edge;
-    }
-
-    for(edge=gra->startIdxEdges[from]; edge<gra->E; ++edge)
-    {
-        if(gra->edges[edge][0] == from && gra->edges[edge][1] == to)
-        {
-            break;
-        }
-    }
-    return edge;
-}
-
 /** returns a cycle vector (element of {0,1}^m). odd (x=INT_MAX) or even cycle.*/
 char *findPrototype(int r, int y, int z, int x, GraphURF *gra, sPathInfo *spi)
 {
@@ -95,7 +73,7 @@ char *findPrototype(int r, int y, int z, int x, GraphURF *gra, sPathInfo *spi)
     {
         vert2 = vert1;
         vert1 = spi->pred[r][vert1];
-        proto[giveEdgeNo(vert1, vert2, gra)] = 1;
+        proto[edgeId(gra, vert1, vert2)] = 1;
     }while(vert1 != r);
     /*path from r to z*/
     vert1 = z;
@@ -103,16 +81,16 @@ char *findPrototype(int r, int y, int z, int x, GraphURF *gra, sPathInfo *spi)
     {
         vert2 = vert1;
         vert1 = spi->pred[r][vert1];
-        proto[giveEdgeNo(vert1, vert2, gra)] = 1;
+        proto[edgeId(gra, vert1, vert2)] = 1;
     }while(vert1 != r);
     if(x == INT_MAX)/*odd cycle*/
     {
-        proto[giveEdgeNo(y,z,gra)] = 1;
+        proto[edgeId(gra,y,z)] = 1;
     }
     else /*even cycle*/
     {
-        proto[giveEdgeNo(y,x,gra)] = 1;
-        proto[giveEdgeNo(z,x,gra)] = 1;
+        proto[edgeId(gra,y,x)] = 1;
+        proto[edgeId(gra,z,x)] = 1;
     }
     return proto;
 }

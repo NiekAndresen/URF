@@ -3,9 +3,6 @@
 #ifndef URF_H
 #define URF_H
 
-#include "./URFcode/apsp.h"
-#include "./URFcode/CycleFamsURF.h"
-#include "./URFcode/URFInfo.h"
 #include "./URFcode/graphURF.h"
 #include "./URFcode/URFdataStruct.h"
 
@@ -87,8 +84,8 @@ int numOfURFsContaining(urfdata *, int atom);
  @return the number of cycles returned (|E|-|V|+1)
  @param ptr pointer that points to the result array (declare 'int ***' and give address as parameter)
  The result is an array of cycles. A cycle is represented by an array of bonds. A bond is represented by two integers which are the indices of the atoms involved in the bond. A cycle is terminated by a NULL pointer
- @note Result has to be deallocated using deleteCycles(*ptr, number). */
- /*TODO note somewhere that this does not return a correct basis for an unconnected graph*/
+ @note Result has to be deallocated using deleteCycles(*ptr, number).
+ @note Does not return a correct basis for an undirected graph. */
 int findBasis(urfdata *, int ****ptr);
 
 /** @brief Gives a list of relevant cycle prototypes (one for each RCF).
