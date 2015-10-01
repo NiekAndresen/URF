@@ -9,6 +9,7 @@
 #include "URFhandler.h"
 #include "utility.h"
 #include "graphURF.h"
+#include "URFrelation.h"
 
 GraphURF *initNewURFGraph(int V)
 {
@@ -224,7 +225,7 @@ int giveURFBonds(urfdata *uData, int URFindex, int ***ptr)
         (**ptr) = malloc(sizeof(***ptr));
         return 0;
     }
-    
+
     nextfree = 0;
     alloced = 3;
     result = alloc2DIntArray(alloced, 2);
@@ -488,48 +489,41 @@ int findBasis(urfdata *udata, int ****ptr)
 {
     int i,j;
     int ***result;
-    int size;
-    int *numOfBonds;
+    char **mat; /*matrix in which the dependency checks take place*/
+    int size, added;
     int currBond;
     if(udata->nofURFs < 1) return 0;
 
     size=udata->graph->E-udata->graph->V+1;
-    numOfBonds = malloc(size * sizeof(*numOfBonds)); /*number of bonds for each cycle*/
-    for(i=0; i<size; ++i)
-    {
-        numOfBonds[i] = 0;
-    }
-    for(i=0; i<size; ++i)/*count number of bonds*/
-    {
-        for(j=0; j<udata->graph->E; ++j)
-        {
-            if(udata->urfInfo->URFs[i][0]->prototype[j] == 1)
-            {
-                ++numOfBonds[i];
-            }
-        }
-    }
-    /*allocate space*/
+    mat = malloc(size * sizeof(*mat));
     result = malloc(size * sizeof(*result));
-    for(i=0; i<size; ++i)
+    
+    added = 0;
+    for(i=0; i<udata->nofURFs; ++i)
     {
-        result[i] = alloc2DIntArray(numOfBonds[i]+1, 2);
-    }
-    free(numOfBonds);
-    for(i=0; i<size; ++i)
-    {
+        mat[added] = udata->urfInfo->URFs[i][0]->prototype;
+        if(linDep(mat, added+1, udata->graph->E) == 1) /*cycles are dependent*/
+        {
+            /*cycle added last is not part of the basis -> will be ignored/overwritten in next step*/
+            continue;
+        }
+        /*add cycle to result basis*/
         currBond = 0;
+        result[added] = alloc2DIntArray(udata->urfInfo->URFs[i][0]->weight+1, 2);
         for(j=0; j<udata->graph->E; ++j)
         {
             if(udata->urfInfo->URFs[i][0]->prototype[j] == 1)
             {
-                result[i][currBond][0] = udata->graph->edges[j][0];
-                result[i][currBond][1] = udata->graph->edges[j][1];
+                result[added][currBond][0] = udata->graph->edges[j][0];
+                result[added][currBond][1] = udata->graph->edges[j][1];
                 ++currBond;
             }
         }
-        result[i][currBond] = NULL;
+        result[added][currBond] = NULL;
+        /*if enough independent cycles were found, break out of the loop*/
+        if(++added == size) break;
     }
+    free(mat);
     
     (*ptr) = result;
     return size;

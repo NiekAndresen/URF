@@ -118,6 +118,11 @@ int dependent(char **inMat, int maxRow, int maxCol)
     return (1 - indep);
 }
 
+int linDep(char **mat, int rows, int cols)
+{
+    return dependent(mat, rows-1, cols-1);
+}
+
 /** returns the index in the array of RCFs (fams) that the RCF with the weight at the index "weight" and position j has */
 int idxWeights(URFinfo *uInfo, int weight, int j)
 {
