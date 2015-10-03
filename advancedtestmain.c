@@ -58,9 +58,9 @@ int main(int argc, char **argv)
     GraphURF *graph;
     urfdata *URFdata;
     int idx, obIdx, URFcount, count, bondCount;
-    int *atoms;
-    int **bondArray;
-    int ***cycleArray;
+    URFAtom *atoms;
+    URFBond *bondArray;
+    URFCycle *cycleArray;
     char **otherCycleArray;
 
     /* read in the graph */
@@ -128,10 +128,10 @@ int main(int argc, char **argv)
         for(idx=0; idx<count; ++idx)
         {
             printf("ring %d: ",idx);
-            for(obIdx=0; cycleArray[idx][obIdx]!=NULL;  ++obIdx)/*the end of a cycle is signaled by a NULL pointer*/
+            for(obIdx=0; obIdx<cycleArray[idx].weight;  ++obIdx)/*the end of a cycle is signaled by a NULL pointer*/
             {
-                printf("(%d ",cycleArray[idx][obIdx][0]);
-                printf("%d), ",cycleArray[idx][obIdx][1]);
+                printf("(%d ",cycleArray[idx].bonds[obIdx][0]);
+                printf("%d), ",cycleArray[idx].bonds[obIdx][1]);
             }
             printf("\n");
         }
@@ -144,10 +144,10 @@ int main(int argc, char **argv)
         for(idx=0; idx<count; ++idx)
         {
             printf("ring %d: ",idx);
-            for(obIdx=0; cycleArray[idx][obIdx]!=NULL; ++obIdx)/*the end of a cycle is signaled by a NULL pointer*/
+            for(obIdx=0; obIdx<cycleArray[idx].weight; ++obIdx)/*the end of a cycle is signaled by a NULL pointer*/
             {
-                printf("(%d ",cycleArray[idx][obIdx][0]);
-                printf("%d), ",cycleArray[idx][obIdx][1]);
+                printf("(%d ",cycleArray[idx].bonds[obIdx][0]);
+                printf("%d), ",cycleArray[idx].bonds[obIdx][1]);
             }
             printf("\n");
         }

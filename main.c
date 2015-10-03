@@ -134,7 +134,8 @@ int main(int argc, char **argv)
         deleteBondArr(URFedges);*/
     }
     
-    int *URFatoms,number3;
+    URFAtom *URFatoms;
+    int number3;
     printf("atoms in the URFs:\n");
     for(i=0; i<udata->nofURFs; ++i)
     {
@@ -156,16 +157,16 @@ int main(int argc, char **argv)
         free(URFatoms);
     }
     
-    int ***basis;
+    URFCycle *basis;
     int number1;
     number1 = findBasis(udata, &basis);
     printf("basis:\n");
     for(i=0; i<number1; ++i)
     {
-        for(j=0; basis[i][j]!=NULL;  ++j)
+        for(j=0; j<basis[i].weight; ++j)
         {
-            printf("(%d ",basis[i][j][0]);
-            printf("%d), ",basis[i][j][1]);
+            printf("(%d ",basis[i].bonds[j][0]);
+            printf("%d), ",basis[i].bonds[j][1]);
         }
         printf("\n");
     }
@@ -185,8 +186,8 @@ int main(int argc, char **argv)
     deleteCycles(basis, number1);
     
     
-    /*int atom,number2;
-    int *URFsWithAtom;
+    /*URFAtom atom;
+    int number2,*URFsWithAtom;
     atom=1;
     number2 = listURFsWithAtom(udata, &URFsWithAtom, atom);
     printf("listing all URFs with atom %d: ",atom);
@@ -210,30 +211,30 @@ int main(int argc, char **argv)
     printf("\n");
     free(URFsWithBond);*/
     
-    /*int ***protos;
+    /*URFCycle *protos;
     int num;
     printf("RC prototypes:\n");
     num = giveRCprototypes(udata, &protos);
     for(i=0; i<num ; ++i)
     {
-        for(j=0; protos[i][j]!=NULL; ++j)
+        for(j=0; j<protos[i].weight; ++j)
         {
-            printf("(%d %d), ",protos[i][j][0],protos[i][j][1]);
+            printf("(%d %d), ",protos[i].bonds[j][0],protos[i].bonds[j][1]);
         }
         printf("\n");
     }
     deleteCycles(protos, num);*/
     
-    /*int ***relCycles;
+    /*URFCycle *relCycles;
     int num1;
     printf("RCs:\n");
     num1=giveRCcycles(udata, &relCycles);
     for(i=0; i<num1; ++i)
     {
         printf("%d:  ",i+1);
-        for(j=0; relCycles[i][j]!=NULL; ++j)
+        for(j=0; j<relCycles[i].weight; ++j)
         {
-            printf("(%d %d)  ",relCycles[i][j][0],relCycles[i][j][1]);
+            printf("(%d %d)  ",relCycles[i].bonds[j][0],relCycles[i].bonds[j][1]);
         }
         printf("\n");
     }

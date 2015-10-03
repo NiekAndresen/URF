@@ -16,7 +16,7 @@ GraphURF *initNewURFGraph(int V)
     return initNewGraph(V);
 }
 
-void addUEdgeURF(GraphURF *gra, int from, int to)
+void addUEdgeURF(GraphURF *gra, URFAtom from, int to)//TODO is this possible?
 {
     addUEdge(gra, from, to);
 }
@@ -72,11 +72,11 @@ int giveURFWeight(urfdata *udata, int index)
 }
 
 /** gives an array of indices of atoms that are contained in the URF with the given index. Array is terminated by INT_MAX */
-int *giveAtoms(urfdata *uData, int index)
+URFAtom *giveAtoms(urfdata *uData, int index)
 {
     int i,nofFams,nextfree=0,alloced;
     char *atoms;
-    int *result;
+    URFAtom *result;
     cfam **URF;
     
     nofFams = uData->urfInfo->nofCFsPerURF[index];
@@ -179,7 +179,7 @@ int *giveBonds(urfdata *uData, int index)
 /** calls giveAtoms() or giveBonds() depending on mode 'a' or 'b' */
 int *giveURF(urfdata *uData, int URFindex, char mode)
 {
-    int *result;
+    URFAtom *result;
     if(mode == 'a')
     {
         result = giveAtoms(uData, URFindex);
@@ -198,7 +198,7 @@ int *giveURF(urfdata *uData, int URFindex, char mode)
     return result;
 }
 
-int giveURFAtoms(urfdata *udata, int index, int **ptr)
+int giveURFAtoms(urfdata *udata, int index, URFAtom **ptr)
 {
     int i;
     if(udata->nofURFs < 1 || index >=udata->nofURFs)
@@ -212,10 +212,10 @@ int giveURFAtoms(urfdata *udata, int index, int **ptr)
     return i;
 }
 
-int giveURFBonds(urfdata *uData, int URFindex, int ***ptr)
+int giveURFBonds(urfdata *uData, int URFindex, URFBond **ptr)
 {
     int nextfree, alloced;
-    int **result;
+    URFBond *result;
     int *bondIndices;
     int i,j;
     if(uData->nofURFs < 1 || URFindex >=uData->nofURFs)
@@ -298,10 +298,10 @@ void deleteCyclesChar(char **cycles)
     free(cycles);
 }
 
-int giveURFCycles(urfdata *udata, int ****ptr, int index)
+int giveURFCycles(urfdata *udata, URFCycle **ptr, int index)
 {
     char **URFCycles;
-    int ***result;
+    URFCycle *result;
     int i,j;
     unsigned int alloced, nextfree, nextBond;
     unsigned int edgeCount;
@@ -326,18 +326,18 @@ int giveURFCycles(urfdata *udata, int ****ptr, int index)
             alloced *= 2;
             result = realloc(result, alloced * sizeof(*result));
         }
-        result[nextfree] = alloc2DIntArray(edgeCount+1, 2);
+        result[nextfree].bonds = alloc2DIntArray(edgeCount, 2);
+        result[nextfree].weight = edgeCount;
         nextBond = 0;
         for(j=0; j<udata->graph->E; ++j)
         {
             if(URFCycles[i][j] == 1) /*copy edge into new structure*/
             {
-                result[nextfree][nextBond][0] = udata->graph->edges[j][0];
-                result[nextfree][nextBond][1] = udata->graph->edges[j][1];
+                result[nextfree].bonds[nextBond][0] = udata->graph->edges[j][0];
+                result[nextfree].bonds[nextBond][1] = udata->graph->edges[j][1];
                 ++nextBond;
             }
         }
-        result[nextfree][nextBond] = NULL;
         ++nextfree;
     }
 
@@ -346,13 +346,13 @@ int giveURFCycles(urfdata *udata, int ****ptr, int index)
     return i;
 }
 
-void deleteCycles(int ***cycles, int number)
+void deleteCycles(URFCycle *cycles, int number)
 {
     int i;
     if(number < 1) return;
     for(i=0; i<number; ++i)
     {
-        delete2DArray((void **)cycles[i]);
+        delete2DArray((void **)cycles[i].bonds);
     }
     free(cycles);
 }
@@ -417,7 +417,7 @@ int *listURFs(urfdata *udata, int object, char mode)
     return result;
 }
 
-int listURFsWithAtom(urfdata *udata, int **ptr, int object)
+int listURFsWithAtom(urfdata *udata, int **ptr, URFAtom object)
 {
     int i;
     if(udata->nofURFs < 1)
@@ -431,7 +431,7 @@ int listURFsWithAtom(urfdata *udata, int **ptr, int object)
     return i;
 }
 
-int listURFsWithBond(urfdata *udata, int **ptr, int atom1, int atom2)
+int listURFsWithBond(urfdata *udata, int **ptr, URFAtom atom1, URFAtom atom2)
 {
     int i;
     if(udata->nofURFs < 1)
@@ -445,7 +445,7 @@ int listURFsWithBond(urfdata *udata, int **ptr, int atom1, int atom2)
     return i;
 }
 
-int numOfURFsContaining(urfdata *udata, int atom)
+int numOfURFsContaining(urfdata *udata, URFAtom atom)
 {
     int *list = listURFs(udata, atom, 'a');
     int count;
@@ -485,10 +485,10 @@ char **findCharBasis(urfdata *udata)
     return result;
 }
 
-int findBasis(urfdata *udata, int ****ptr)
+int findBasis(urfdata *udata, URFCycle **ptr)
 {
     int i,j;
-    int ***result;
+    URFCycle *result;
     char **mat; /*matrix in which the dependency checks take place*/
     int size, added;
     int currBond;
@@ -509,17 +509,17 @@ int findBasis(urfdata *udata, int ****ptr)
         }
         /*add cycle to result basis*/
         currBond = 0;
-        result[added] = alloc2DIntArray(udata->urfInfo->URFs[i][0]->weight+1, 2);
+        result[added].bonds = alloc2DIntArray(udata->urfInfo->URFs[i][0]->weight, 2);
+        result[added].weight = udata->urfInfo->URFs[i][0]->weight;
         for(j=0; j<udata->graph->E; ++j)
         {
             if(udata->urfInfo->URFs[i][0]->prototype[j] == 1)
             {
-                result[added][currBond][0] = udata->graph->edges[j][0];
-                result[added][currBond][1] = udata->graph->edges[j][1];
+                result[added].bonds[currBond][0] = udata->graph->edges[j][0];
+                result[added].bonds[currBond][1] = udata->graph->edges[j][1];
                 ++currBond;
             }
         }
-        result[added][currBond] = NULL;
         /*if enough independent cycles were found, break out of the loop*/
         if(++added == size) break;
     }
@@ -529,9 +529,9 @@ int findBasis(urfdata *udata, int ****ptr)
     return size;
 }
 
-int giveRCprototypes(urfdata *udata, int ****ptr)
+int giveRCprototypes(urfdata *udata, URFCycle **ptr)
 {
-    int ***result;
+    URFCycle *result;
     int nofRel=0;
     int currFam=0, currEdge;
     int i,j;
@@ -553,18 +553,18 @@ int giveRCprototypes(urfdata *udata, int ****ptr)
     {
         if(CFs->fams[i]->mark > 0)
         {/*write new cycle*/
-            result[currFam] = alloc2DIntArray(CFs->fams[i]->weight + 1,2);
+            result[currFam].bonds = alloc2DIntArray(CFs->fams[i]->weight,2);
+            result[currFam].weight = CFs->fams[i]->weight;
             currEdge = 0;
             for(j=0; j<udata->graph->E; ++j)
             {/*copy prototype into new structure*/
                 if(CFs->fams[i]->prototype[j] == 1)
                 {
-                    result[currFam][currEdge][0] = udata->graph->edges[j][0];
-                    result[currFam][currEdge][1] = udata->graph->edges[j][1];
+                    result[currFam].bonds[currEdge][0] = udata->graph->edges[j][0];
+                    result[currFam].bonds[currEdge][1] = udata->graph->edges[j][1];
                     ++currEdge;
                 }
             }
-            result[currFam][currEdge] = NULL; /*end of cycle*/
             ++currFam;
         }
     }
@@ -573,10 +573,10 @@ int giveRCprototypes(urfdata *udata, int ****ptr)
     return nofRel;
 }
 
-int giveRCcycles(urfdata *udata, int ****ptr)
+int giveRCcycles(urfdata *udata, URFCycle **ptr)
 {
-    int ***result;
-    int ***URFrel; /*relevant Cycles of a URF*/
+    URFCycle *result;
+    URFCycle *URFrel; /*relevant Cycles of a URF*/
     int i,j;
     int alloced=4, nextfree=0;
     int num;
@@ -602,12 +602,12 @@ int giveRCcycles(urfdata *udata, int ****ptr)
     return nextfree;
 }
 
-void deleteBondArr(int **arr)
+void deleteBondArr(URFAtom **arr)
 {
     delete2DArray((void **)arr);
 }
 
-int translateCycleArray(urfdata *udata, int ***array, int number, char ***ptr)
+int translateCycleArray(urfdata *udata, URFCycle *array, int number, char ***ptr)
 {
     int i,j,edgeIdx;
     char **result;
@@ -622,9 +622,9 @@ int translateCycleArray(urfdata *udata, int ***array, int number, char ***ptr)
     
     for(i=0; i<number; ++i)
     {
-        for(j=0; array[i][j]!=NULL; ++j)
+        for(j=0; j<array[i].weight; ++j)
         {
-            edgeIdx = edgeId(udata->graph, array[i][j][0], array[i][j][1]);
+            edgeIdx = edgeId(udata->graph, array[i].bonds[j][0], array[i].bonds[j][1]);
             result[i][edgeIdx] = 1;
         }
     }
