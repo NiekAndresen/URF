@@ -16,8 +16,14 @@ GraphURF *initNewURFGraph(int V)
     return initNewGraph(V);
 }
 
-void addUEdgeURF(GraphURF *gra, URFAtom from, int to)//TODO is this possible?
+void addUEdgeURF(GraphURF *gra, URFAtom from, URFAtom to)
 {
+    if(from < 0 || from >= gra->V || to < 0 || to >= gra->V)
+    {
+        usage('a');
+        fprintf(stderr, "edge (%d,%d) can not be added to graph with %d atoms - was ignored.\n",from, to, gra->V);
+        return;
+    }
     addUEdge(gra, from, to);
 }
 
@@ -31,7 +37,7 @@ urfdata *calculateURFs(GraphURF *gra)
     char correctGraph;
     urfdata *udata;
     correctGraph = checkGraphCorrect(gra); /*from graphURF.h*/
-    if(correctGraph == 0) usage('c');
+    if(correctGraph == 0) usage('c'); /* from utility.h */
     udata = malloc(sizeof(*udata));
     findShortestPaths(udata, gra); /*from apsp.h*/
     udata->CFs = findCycleFams(gra, udata->spi); /*from CycleFamsURF.h*/
@@ -461,36 +467,6 @@ int numOfURFsContainingBond(urfdata *udata, URFAtom atom1, URFAtom atom2)
     number = listURFsWithBond(udata, &arr, atom1, atom2);
     free(arr);
     return number;
-}
-
-/** returns a set of cycles that forms a MCB of the graph.
-A cycle is represented by an array of {0,1}^n with a 1 at position i if vertex i is part of the cycle. The result is an array of these cycles. The result contains |E|-|V|+1 cycles. This does not return a correct basis on an unconnected graph.*/
-/*alternatives: return array of vertex indices; give option to call function only on the graph.*/
-/*TODO currently not needed*/
-char **findCharBasis(urfdata *udata)
-{
-    /*take a prototype out of each URF ordered by weight until |E|-|V|+1 cycles are collected*/
-    int i,j;
-    char **result;
-    GraphURF *gra;
-    gra = udata->graph;
-    result = alloc2DCharArray(gra->E-gra->V+1, gra->V);
-    for(i=0; i<gra->E-gra->V+1; ++i)
-    {
-        for(j=0; j<gra->V; ++j)
-        {
-            result[i][j] = 0;
-        }
-        for(j=0; j<gra->E; ++j)
-        {
-            if(udata->urfInfo->URFs[i][0]->prototype[j] == 1)
-            {
-                result[i][gra->edges[j][0]] = 1;
-                result[i][gra->edges[j][1]] = 1;            
-            }
-        }
-    }
-    return result;
 }
 
 int findBasis(urfdata *udata, URFCycle **ptr)

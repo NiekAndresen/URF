@@ -9,7 +9,7 @@ void delete2DArray(void **arr);
 void print2DIntArray(int **arr, int n, int m);
 void print2DCharArray(char **arr, int n, int m);
 
-/** exits the program and writes instructions to stderr */
+/** writes instructions to stderr */
 void usage();
 
 #endif
