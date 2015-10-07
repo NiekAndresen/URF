@@ -447,12 +447,20 @@ int listURFsWithBond(urfdata *udata, int **ptr, URFAtom atom1, URFAtom atom2)
 
 int numOfURFsContaining(urfdata *udata, URFAtom atom)
 {
-    int *list = listURFs(udata, atom, 'a');
-    int count;
-    if(udata->nofURFs < 1) return 0;
-    for(count=0; list[count]<INT_MAX; ++count);
-    free(list);
-    return count;
+    int number;
+    int *arr;
+    number = listURFsWithAtom(udata, &arr, atom);
+    free(arr);
+    return number;
+}
+
+int numOfURFsContainingBond(urfdata *udata, URFAtom atom1, URFAtom atom2)
+{
+    int number;
+    int *arr;
+    number = listURFsWithBond(udata, &arr, atom1, atom2);
+    free(arr);
+    return number;
 }
 
 /** returns a set of cycles that forms a MCB of the graph.

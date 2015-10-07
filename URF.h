@@ -3,7 +3,7 @@
 #ifndef URF_H
 #define URF_H
 
-/* Structs about which the user doesn't need to worry */
+/* Struct defintions - exact compositions are not part of the interface/not important for the user */
 #include "./URFcode/graphURF.h"
 #include "./URFcode/URFdataStruct.h"
 
@@ -42,6 +42,9 @@ int giveURFWeight(urfdata *, int index);
 
 /** Returns the number of URFs that contain the given atom. */
 int numOfURFsContaining(urfdata *, URFAtom atom);
+
+/** Returns the number of URFs that contain the bond consisting of the two given atoms */
+int numOfURFsContainingBond(urfdata *, URFAtom atom1, URFAtom atom2);
 
 /*===================================================================================*/
 /** Gives the atoms of a URF identified with its index in an array of URFatoms.
