@@ -4,7 +4,7 @@
 #define URF_H
 
 /* Struct defintions - exact compositions are not part of the interface/not important for the user */
-#include "./URFcode/graphURF.h"
+#include "./URFcode/graphURFStruct.h"
 #include "./URFcode/URFdataStruct.h"
 
 /** An atom is represented by its index in the molecule (0 to |V|-1). This typedef seperates atoms from other integers. */
