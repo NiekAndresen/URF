@@ -3,10 +3,9 @@
 #ifndef URF_H
 #define URF_H
 
+/* Structs about which the user doesn't need to worry */
 #include "./URFcode/graphURF.h"
 #include "./URFcode/URFdataStruct.h"
-
-/*TODO write something about calling these functions on a graph without cycles: advantage of returned number of cycles etc: can be 0; still possible to call delete functions; ...*/
 
 /** An atom is represented by its index in the molecule (0 to |V|-1). This typedef seperates atoms from other integers. */
 typedef int URFAtom;
@@ -122,7 +121,7 @@ void deleteCycles(URFCycle *cycles, int number);
 
 /*===================================================================================*/
 
-/** Translates the results of 'giveURFCycles()', 'findBasis()', 'giveRCprototypes()' and 'giveRCcycles()' (arrays of URFcylces) into an array of cycles represented by arrays of {0,1}^|E|. Such an array has a 1 at position i if edge i is part of the cycle. An edge is identified by the position at which it was added to the graph starting at 0.
+/** Translates the results of 'giveURFCycles()', 'findBasis()', 'giveRCprototypes()' and 'giveRCcycles()' (arrays of URFcylces) into an array of cycles represented by arrays of {0,1}^|E|. Such an array has a 1 at position i if edge i is part of the cycle or 0 otherwise. An edge is identified by the position at which it was added to the graph starting at 0.
  @param array The resulting structure of the functions named above
  @param number The return value of the functions named above (the number of cycles given)
  @param ptr Pointer to the result array (declare 'char **' and give address as parameter)
