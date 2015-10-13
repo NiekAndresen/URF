@@ -3,7 +3,7 @@
 .PHONY:clean
 
 CC=clang
-CFLAGS=-Wall -Werror
+CFLAGS=-Wall -Werror -O3
 
 URFCODEDIR = ./URFcode
 

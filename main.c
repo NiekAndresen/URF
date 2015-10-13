@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "./URFcode/io.h"
 #include "./URFcode/graphURF.h"
 #include "./URFcode/utility.h"
@@ -23,6 +24,7 @@ int main(int argc, char **argv)
     GraphURF *graph;
     int i,j,k;
     urfdata *udata;
+    time_t time;
     
     if(argc == 1)
     {
@@ -35,9 +37,11 @@ int main(int argc, char **argv)
     
     printGraph(graph);
 
+    time = clock();
     udata = calculateURFs(graph);
+    time = clock() - time;
     
-    printf("calculated\n");
+    printf("calculated, it took %fs\n",(float)time/CLOCKS_PER_SEC);
     /*
     printf("dist:\n");
     print2DIntArray(udata->spi->dist, graph->V, graph->V);
@@ -241,6 +245,6 @@ int main(int argc, char **argv)
     deleteCycles(relCycles, num1);*/
     
     deleteURFdata(udata);
-    printf("Niek ist die Nummer %d\n",1);
+    //printf("Niek ist die Nummer %d\n",1);
     return EXIT_SUCCESS;
 }
