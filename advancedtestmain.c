@@ -128,7 +128,7 @@ int main(int argc, char **argv)
         for(idx=0; idx<count; ++idx)
         {
             printf("ring %d: ",idx);
-            for(obIdx=0; obIdx<cycleArray[idx].weight;  ++obIdx)/*the end of a cycle is signaled by a NULL pointer*/
+            for(obIdx=0; obIdx<cycleArray[idx].weight;  ++obIdx)
             {
                 printf("(%d ",cycleArray[idx].bonds[obIdx][0]);
                 printf("%d), ",cycleArray[idx].bonds[obIdx][1]);
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
         for(idx=0; idx<count; ++idx)
         {
             printf("ring %d: ",idx);
-            for(obIdx=0; obIdx<cycleArray[idx].weight; ++obIdx)/*the end of a cycle is signaled by a NULL pointer*/
+            for(obIdx=0; obIdx<cycleArray[idx].weight; ++obIdx)
             {
                 printf("(%d ",cycleArray[idx].bonds[obIdx][0]);
                 printf("%d), ",cycleArray[idx].bonds[obIdx][1]);
