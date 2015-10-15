@@ -15,6 +15,18 @@ int **alloc2DIntArray(int n, int m)
     return arr;
 }
 
+unsigned int **alloc2DUIntArray(int n, int m)
+{
+    int i;
+    unsigned int **arr = malloc(n * sizeof(*arr));
+    *arr = malloc(n*m*sizeof(**arr));
+    for(i=1; i<n; ++i)
+    {
+        arr[i] = *arr + i * m;
+    }
+    return arr;
+}
+
 char **alloc2DCharArray(int n, int m)
 {
     int i;
