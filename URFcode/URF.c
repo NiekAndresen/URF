@@ -13,6 +13,7 @@
 
 GraphURF *initNewURFGraph(int V)
 {
+    if(V < 0) usage('v');
     return initNewGraph(V);
 }
 
@@ -36,6 +37,7 @@ urfdata *calculateURFs(GraphURF *gra)
 {
     char correctGraph;
     urfdata *udata;
+    
     correctGraph = checkGraphCorrect(gra); /*from graphURF.h*/
     if(correctGraph == 0) usage('c'); /* from utility.h */
     udata = malloc(sizeof(*udata));

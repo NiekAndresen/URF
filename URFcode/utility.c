@@ -71,6 +71,10 @@ void usage(char errType)
     {
         fprintf(stderr, "WARNING: In URF finder: Tried to add an edge with atoms not in range.\n");
     }
+    else if(errType == 'v')
+    {
+        fprintf(stderr, "ERROR: Tried to initialize a graph with negative number of vertices.\n");
+    }
     else if(errType == 'f')
     {
         fprintf(stderr, "ERROR: Could not open the file specified in argv[1].\n");
