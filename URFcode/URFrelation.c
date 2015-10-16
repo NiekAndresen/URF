@@ -7,7 +7,6 @@
 #include "URFInfo.h"
 #include "graphURF.h"
 #include "CycleFamsURF.h"
-#include "io.h"
 #include "URFhandler.h"
 #include "utility.h"
 
@@ -302,7 +301,7 @@ char shareEdges(cfURF *RCFs, int idx1, int idx2, GraphURF *graph, sPathInfo *spi
 /** checks the previously 'marked as potentially URF-related' RCFs for edges that they have in common which proves that they are URF-related. */
 void checkEdges(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo, sPathInfo *spi)
 {
-    int i,j,k;
+    int i,j,k,l;
     for(i=0; i<uInfo->nofWeights; ++i) /*go through all matrices*/
     {
         for(j=0; j<uInfo->nofProtos[i]; ++j)
@@ -311,8 +310,15 @@ void checkEdges(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo, sPathInfo *spi)
             {
                 if(uInfo->URFrel[i][j][k] == 1) /*find entries which indicate potential URF-relations*/
                 {
-                    uInfo->URFrel[i][j][k] = shareEdges(RCFs, idxWeights(uInfo, i, j), idxWeights(uInfo, i, k), graph, spi); /*1 if RCFs j and k share at least an edge*/
-                    uInfo->URFrel[i][k][j] = uInfo->URFrel[i][j][k];
+                    for(l=0; l<graph->E;  ++l)
+                    {
+                        if(RCFs->fams[idxWeights(uInfo,i,j)]->prototype[l] == 1 && RCFs->fams[idxWeights(uInfo,i,k)]->prototype[l] == 1)
+                        {
+                            uInfo->URFrel[i][j][k] = 0;
+                        }
+                    }
+                    /*uInfo->URFrel[i][j][k] = shareEdges(RCFs, idxWeights(uInfo, i, j), idxWeights(uInfo, i, k), graph, spi); 1 if RCFs j and k share at least an edge
+                    uInfo->URFrel[i][k][j] = uInfo->URFrel[i][j][k];*/
                 }
             }
         }
