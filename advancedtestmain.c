@@ -105,7 +105,7 @@ int main(int argc, char **argv)
         {
             count = giveURFBonds(URFdata, idx, &bondArray);
             printf("There are %d bonds in URF %d.\n", count, idx);
-            deleteBondArr(bondArray);
+            free(bondArray);
         }
         printf("\n");
         
@@ -166,7 +166,7 @@ int main(int argc, char **argv)
             printf("\n");
         }
         deleteCycles(cycleArray, count);
-        deleteEdgeIdxCycles(otherCycleArray);
+        deleteEdgeIdxCycles(otherCycleArray, count);
     }
     printf("==========================================================URF=\n");
 
