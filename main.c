@@ -186,7 +186,7 @@ int main(int argc, char **argv)
         }
         printf("\n");
     }
-    deleteEdgeIdxCycles(basis2);
+    deleteEdgeIdxCycles(basis2, number1);
     deleteCycles(basis, number1);
     
     

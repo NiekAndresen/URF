@@ -133,7 +133,7 @@ void deleteCycles(URFCycle *cycles, unsigned int number);
  @note The initial structure still exists afterwards and still has to be deleted. */
 unsigned int translateCycleArray(urfdata *, URFCycle *array, unsigned int number, char ***ptr);
 
-/** Deallocates the structure given by 'translateCycleArray()' if called on its result. */
-void deleteEdgeIdxCycles(char **cycles);
+/** Deallocates the structure given by 'translateCycleArray()' if called on its result and return value (the number of cycles). */
+void deleteEdgeIdxCycles(char **cycles, unsigned int number);
 
 #endif

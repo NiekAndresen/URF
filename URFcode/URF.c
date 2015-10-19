@@ -596,6 +596,8 @@ unsigned int translateCycleArray(urfdata *udata, URFCycle *array, unsigned int n
 {
     int i,j,edgeIdx;
     char **result;
+    
+    if(number < 1) return 0;
     result = alloc2DCharArray(number, udata->graph->E);
     for(i=0; i<number;  ++i)/*initialize to 0s*/
     {
@@ -617,7 +619,8 @@ unsigned int translateCycleArray(urfdata *udata, URFCycle *array, unsigned int n
     return number;
 }
 
-void deleteEdgeIdxCycles(char **cycles)
+void deleteEdgeIdxCycles(char **cycles, unsigned int num)
 {
+    if(num < 1) return;
     delete2DArray((void **)cycles);
 }
