@@ -20,7 +20,7 @@ void addUEdgeURF(GraphURF *gra, URFAtom from, URFAtom to)
 {
     if(from >= gra->V || to >= gra->V)
     {
-        usage('a');
+        URF_warn('a');
         fprintf(stderr, "edge (%d,%d) can not be added to graph with %d atoms - was ignored.\n",from, to, gra->V);
         return;
     }
@@ -38,7 +38,7 @@ urfdata *calculateURFs(GraphURF *gra)
     urfdata *udata;
     
     correctGraph = checkGraphCorrect(gra); /*from graphURF.h*/
-    if(correctGraph == 0) usage('c'); /* from utility.h */
+    if(correctGraph == 0) URF_warn('c'); /* from utility.h */
     udata = malloc(sizeof(*udata));
     findShortestPaths(udata, gra); /*from apsp.h*/
     udata->CFs = findCycleFams(gra, udata->spi); /*from CycleFamsURF.h*/

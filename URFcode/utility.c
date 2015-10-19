@@ -72,7 +72,7 @@ void print2DCharArray(char **arr, int n, int m)
 }
 
 /* errTypes where the program is exited are for debugging. They don't occur when using only URF.h interface */
-void usage(char errType)
+void URF_warn(char errType)
 {
     if(errType == 'c')
     {

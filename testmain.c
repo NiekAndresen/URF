@@ -4,6 +4,11 @@
 #include <stdlib.h>
 #include "URF.h"
 
+/* Simple program showing some information about URFs of a given graph.
+This program does not take any specific command line arguments.
+If you give any number (>0) of command line arguments, the program
+will give some more information. */
+
 int main(int argc, char **argv)
 {
     GraphURF *graph;

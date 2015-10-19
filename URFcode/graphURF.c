@@ -282,7 +282,7 @@ int edgeId(GraphURF *gra, int from, int to)
     if(found == 'f')
     {
         fprintf(stderr, "Could not find edge [%d,%d]\n",from,to);
-        usage('e');
+        URF_warn('e');
     }
     return edge;
 }

@@ -245,6 +245,6 @@ int main(int argc, char **argv)
     deleteCycles(relCycles, num1);*/
     
     deleteURFdata(udata);
-    //printf("Niek ist die Nummer %d\n",1);
+    /*printf("Niek ist die Nummer %d\n",1);*/
     return EXIT_SUCCESS;
 }

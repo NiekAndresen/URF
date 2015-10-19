@@ -25,7 +25,7 @@ void printmat(char **mat, int maxRow, int maxCol)
 GraphURF *readInList(char *path)
 {
     GraphURF *gra;
-    int temp;
+    int temp, ignore;
     int V;
     char cha;
     int currLine=0;
@@ -34,7 +34,7 @@ GraphURF *readInList(char *path)
     if(fp == NULL)
     {
         fprintf(stderr, "Could not open file %s\n",path);
-        usage('f');
+        URF_warn('f');
     }
     
     cha = fgetc(fp);
@@ -56,8 +56,9 @@ GraphURF *readInList(char *path)
     {
         if(cha == ' ')
         {
-            fscanf(fp, "%d", &temp);
+            ignore = fscanf(fp, "%d", &temp);
             addUEdgeURF(gra, currLine, temp-1);
+            temp = ignore; /*to circumvent a compiler warning of ignoring fscanf return value or "setting but not using" ignore*/
         }
         else if(cha == '\n')
         {

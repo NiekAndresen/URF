@@ -11,6 +11,6 @@ void print2DIntArray(int **arr, int n, int m);
 void print2DCharArray(char **arr, int n, int m);
 
 /** writes instructions to stderr */
-void usage();
+void URF_warn();
 
 #endif
