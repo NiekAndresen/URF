@@ -128,14 +128,15 @@ int main(int argc, char **argv)
         printf("\n");
         deleteCycles(cycles, number);*/
         
-        /*int **URFedges,number4;
+        URFBond *URFedges;
+        int number4;
         number4 = giveURFBonds(udata, i,&URFedges);
         printf("edges of URF %d:\n",i);
         for(j=0; j<number4; ++j)
         {
             printf("%d: [%d,%d]\n", j, URFedges[j][0], URFedges[j][1]);
         }
-        deleteBondArr(URFedges);*/
+        free(URFedges);
     }
     
     URFAtom *URFatoms;

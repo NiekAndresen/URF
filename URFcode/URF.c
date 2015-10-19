@@ -224,18 +224,17 @@ unsigned int giveURFBonds(urfdata *uData, unsigned int URFindex, URFBond **ptr)
     unsigned int nextfree, alloced;
     URFBond *result;
     unsigned int *bondIndices;
-    unsigned int i,j;
+    unsigned int i;
     if(uData->nofURFs < 1 || URFindex >=uData->nofURFs)
     {
         /*to still be able to call 'deleteBondArray()' on the result*/
         (*ptr) = malloc(sizeof(**ptr));
-        (**ptr) = malloc(sizeof(***ptr));
         return 0;
     }
 
     nextfree = 0;
     alloced = 3;
-    result = alloc2DUIntArray(alloced, 2);
+    result = malloc(alloced * sizeof(*result));
     bondIndices = giveBonds(uData, URFindex);
     for(i=0; bondIndices[i]<INT_MAX; ++i)
     {
@@ -243,11 +242,6 @@ unsigned int giveURFBonds(urfdata *uData, unsigned int URFindex, URFBond **ptr)
         {
             alloced *= 2; /* double the space */
             result = realloc(result, alloced * sizeof(*result));
-            *result = realloc(*result, alloced * 2 * sizeof(**result));
-            for(j=0; j<alloced; ++j)
-            {
-                result[j] = result[0] + 2 * j;
-            }
         }
         result[nextfree][0] = uData->graph->edges[bondIndices[i]][0];
         result[nextfree][1] = uData->graph->edges[bondIndices[i]][1];
@@ -333,7 +327,7 @@ unsigned int giveURFCycles(urfdata *udata, URFCycle **ptr, unsigned int index)
             alloced *= 2;
             result = realloc(result, alloced * sizeof(*result));
         }
-        result[nextfree].bonds = alloc2DUIntArray(edgeCount, 2);
+        result[nextfree].bonds = malloc(edgeCount * sizeof(*result[nextfree].bonds));
         result[nextfree].weight = edgeCount;
         nextBond = 0;
         for(j=0; j<udata->graph->E; ++j)
@@ -359,7 +353,7 @@ void deleteCycles(URFCycle *cycles, unsigned int number)
     if(number < 1) return;
     for(i=0; i<number; ++i)
     {
-        delete2DArray((void **)cycles[i].bonds);
+        free(cycles[i].bonds);
     }
     free(cycles);
 }
@@ -494,7 +488,7 @@ unsigned int findBasis(urfdata *udata, URFCycle **ptr)
         }
         /*add cycle to result basis*/
         currBond = 0;
-        result[added].bonds = alloc2DUIntArray(udata->urfInfo->URFs[i][0]->weight, 2);
+        result[added].bonds = malloc(udata->urfInfo->URFs[i][0]->weight * sizeof(*(result[added].bonds)));
         result[added].weight = udata->urfInfo->URFs[i][0]->weight;
         for(j=0; j<udata->graph->E; ++j)
         {
@@ -538,7 +532,7 @@ unsigned int giveRCprototypes(urfdata *udata, URFCycle **ptr)
     {
         if(CFs->fams[i]->mark > 0)
         {/*write new cycle*/
-            result[currFam].bonds = alloc2DUIntArray(CFs->fams[i]->weight,2);
+            result[currFam].bonds = malloc(CFs->fams[i]->weight * sizeof(*result[currFam].bonds));
             result[currFam].weight = CFs->fams[i]->weight;
             currEdge = 0;
             for(j=0; j<udata->graph->E; ++j)
@@ -585,11 +579,6 @@ unsigned int giveRCcycles(urfdata *udata, URFCycle **ptr)
     
     (*ptr) = result;
     return nextfree;
-}
-
-void deleteBondArr(URFAtom **arr)
-{
-    delete2DArray((void **)arr);
 }
 
 unsigned int translateCycleArray(urfdata *udata, URFCycle *array, unsigned int number, char ***ptr)
