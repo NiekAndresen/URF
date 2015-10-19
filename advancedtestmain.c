@@ -172,4 +172,6 @@ int main(int argc, char **argv)
 
     /* delete urfdata and the graph */
     deleteURFdata(URFdata);
+    
+    return 0;
 }
