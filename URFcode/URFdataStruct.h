@@ -3,9 +3,9 @@
 #ifndef URFDATASTRUCT
 #define URFDATASTRUCT
 
-#include "apsp.h"
-#include "CycleFamsURF.h"
-#include "URFInfo.h"
+#include "apspStruct.h"
+#include "CycleFamsURFStruct.h"
+#include "URFInfoStruct.h"
 
 /** struct that contains all data that was accumulated during the calculation of the URF-structure.
 The URF.h user does not need to change or read anything in this structure other than by using the functions provided in "URF.h". */
