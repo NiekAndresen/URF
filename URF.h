@@ -26,7 +26,7 @@ The vertices are numbered from 0 to |V|-1. Call the following functions:
  the vertex with index "from" to the vertex with index "to". It is NO problem
  to add an edge twice - even with different order of vertices (will be ignored).
  
-now calculateURFs (from URF.h) can be called on it*/
+now calculateURFs can be called on it*/
 
 /** initializes a new Graph that edges can be added to */
 URF_graph *initNewURFGraph(unsigned int V);
