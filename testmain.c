@@ -11,7 +11,7 @@ will give some more information. */
 
 int main(int argc, char **argv)
 {
-    GraphURF *graph;
+    URF_graph *graph;
     urfdata *URFdata;
     int idx, obIdx, URFcount, count, bondCount, atomCount;
     URFAtom *atoms;

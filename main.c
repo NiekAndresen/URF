@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "./URFcode/io.h"
-#include "./URFcode/graphURF.h"
+#include "./URFcode/URF_graph.h"
 #include "./URFcode/utility.h"
 #include "URF.h"
 /** returns the index in the array of RCFs (fams) that the RCF with the weight at the index "weight" and position j has */
@@ -21,7 +21,7 @@ int idxWeightsMain(URFinfo *uInfo, int weight, int j)
 
 int main(int argc, char **argv)
 {
-    GraphURF *graph;
+    URF_graph *graph;
     int i,j,k;
     urfdata *udata;
     time_t time;
@@ -126,7 +126,7 @@ int main(int argc, char **argv)
             printf("\n");
         }
         printf("\n");
-        deleteCycles(cycles, number);*/
+        deleteCyclesURF(cycles, number);*/
         
         URFBond *URFedges;
         int number4;
@@ -164,7 +164,7 @@ int main(int argc, char **argv)
     
     URFCycle *basis;
     int number1;
-    number1 = findBasis(udata, &basis);
+    number1 = findBasisURF(udata, &basis);
     printf("basis:\n");
     for(i=0; i<number1; ++i)
     {
@@ -188,7 +188,7 @@ int main(int argc, char **argv)
         printf("\n");
     }
     deleteEdgeIdxCycles(basis2, number1);
-    deleteCycles(basis, number1);
+    deleteCyclesURF(basis, number1);
     
     
     /*URFAtom atom;
@@ -228,7 +228,7 @@ int main(int argc, char **argv)
         }
         printf("\n");
     }
-    deleteCycles(protos, num);*/
+    deleteCyclesURF(protos, num);*/
     
     /*URFCycle *relCycles;
     int num1;
@@ -243,7 +243,7 @@ int main(int argc, char **argv)
         }
         printf("\n");
     }
-    deleteCycles(relCycles, num1);*/
+    deleteCyclesURF(relCycles, num1);*/
     
     deleteURFdata(udata);
     /*printf("Niek ist die Nummer %d\n",1);*/

@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <limits.h>
 #include "apsp.h"
-#include "graphURF.h"
+#include "URF_graph.h"
 #include "URFhandler.h"
 
-void giveVertices(int a, int b, char *array, GraphURF *gra, sPathInfo *spi)
+void giveVertices(int a, int b, char *array, URF_graph *gra, sPathInfo *spi)
 {
 /* similar to the function "List_Paths" from Vismara*/
     int i, vertex;
@@ -25,7 +25,7 @@ void giveVertices(int a, int b, char *array, GraphURF *gra, sPathInfo *spi)
     }
 }
 
-/*int edgeIdx(int from, int to, GraphURF *gra)
+/*int edgeIdx(int from, int to, URF_graph *gra)
 {
     int edge;
     
@@ -46,7 +46,7 @@ void giveVertices(int a, int b, char *array, GraphURF *gra, sPathInfo *spi)
     return edge;
 }*/
 
-void giveEdges(int a, int b, char *array, GraphURF *gra, sPathInfo *spi)
+void giveEdges(int a, int b, char *array, URF_graph *gra, sPathInfo *spi)
 {
 /* similar to the function "List_Paths" from Vismara*/
     int i, vertex;
@@ -62,7 +62,7 @@ void giveEdges(int a, int b, char *array, GraphURF *gra, sPathInfo *spi)
 }
 
 /** just like the function "List_Paths" by Vismara: finds all shortest paths between r and p recursively and writes them into the array "paths". 'mode' determines if the paths are stored as arrays of vertices or of edges.*/
-void listPaths(int r, int p, char ***paths, int *currPath, int *alloced, char mode, GraphURF *gra, sPathInfo *spi)
+void listPaths(int r, int p, char ***paths, int *currPath, int *alloced, char mode, URF_graph *gra, sPathInfo *spi)
 {
     int number; /*number of edges or of vertices in the graph*/
     int vertex;
@@ -131,7 +131,7 @@ void listPaths(int r, int p, char ***paths, int *currPath, int *alloced, char mo
     free(copyBeforeSplit);
 }
     
-void getPaths(int r, int p, char ***paths, int alloced, char mode, GraphURF *gra, sPathInfo *spi)
+void getPaths(int r, int p, char ***paths, int alloced, char mode, URF_graph *gra, sPathInfo *spi)
 {
     int i,j;
     int currPath=0;
@@ -169,7 +169,7 @@ void getPaths(int r, int p, char ***paths, int alloced, char mode, GraphURF *gra
     (*paths)[currPath+1] = NULL;
 }
 
-int combinePaths(char ***paths1, char ***paths2, int p, int q, int x, char ***result, int currIdx, int alloced, char mode, GraphURF *gra)
+int combinePaths(char ***paths1, char ***paths2, int p, int q, int x, char ***result, int currIdx, int alloced, char mode, URF_graph *gra)
 {
     char *path1, *path2;
     int i,j,k;

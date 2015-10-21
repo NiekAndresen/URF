@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <stdio.h>
-#include "graphURF.h"
+#include "URF_graph.h"
 #include "utility.h"
 #include "apsp.h"
 
-void initializeSPathInfo(sPathInfo *info, GraphURF *gra)
+void initializeSPathInfo(sPathInfo *info, URF_graph *gra)
 {
     int i;
     info->pred = alloc2DIntArray(gra->V, gra->V);
@@ -20,7 +20,7 @@ void initializeSPathInfo(sPathInfo *info, GraphURF *gra)
     }
 }
 
-void findpaths(sPathInfo *spi, GraphURF *gra)
+void findpaths(sPathInfo *spi, URF_graph *gra)
 {
     int i,j,w,adj,run;
     int q_head, q_nextfree, q_size;
@@ -96,7 +96,7 @@ void findpaths(sPathInfo *spi, GraphURF *gra)
     free(queue);
 }
 
-sPathInfo *AllPairsShortestPaths(GraphURF *gra)
+sPathInfo *AllPairsShortestPaths(URF_graph *gra)
 {
     sPathInfo *info = malloc(sizeof(*info));
     

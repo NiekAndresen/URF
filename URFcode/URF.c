@@ -8,15 +8,15 @@
 #include "CycleFamsURF.h"
 #include "URFhandler.h"
 #include "utility.h"
-#include "graphURF.h"
+#include "URF_graph.h"
 #include "URFrelation.h"
 
-GraphURF *initNewURFGraph(unsigned int V)
+URF_graph *initNewURFGraph(unsigned int V)
 {
     return initNewGraph(V);
 }
 
-void addUEdgeURF(GraphURF *gra, URFAtom from, URFAtom to)
+void addUEdgeURF(URF_graph *gra, URFAtom from, URFAtom to)
 {
     if(from >= gra->V || to >= gra->V)
     {
@@ -27,17 +27,17 @@ void addUEdgeURF(GraphURF *gra, URFAtom from, URFAtom to)
     addUEdge(gra, from, to);
 }
 
-void findShortestPaths(urfdata *udata, GraphURF *gra)
+void findShortestPaths(urfdata *udata, URF_graph *gra)
 {
     udata->spi = AllPairsShortestPaths(gra);
 }
 
-urfdata *calculateURFs(GraphURF *gra)
+urfdata *calculateURFs(URF_graph *gra)
 {
     char correctGraph;
     urfdata *udata;
     
-    correctGraph = checkGraphCorrect(gra); /*from graphURF.h*/
+    correctGraph = checkGraphCorrect(gra); /*from URF_graph.h*/
     if(correctGraph == 0) URF_warn('c'); /* from utility.h */
     udata = malloc(sizeof(*udata));
     findShortestPaths(udata, gra); /*from apsp.h*/
@@ -347,7 +347,7 @@ unsigned int giveURFCycles(urfdata *udata, URFCycle **ptr, unsigned int index)
     return i;
 }
 
-void deleteCycles(URFCycle *cycles, unsigned int number)
+void deleteCyclesURF(URFCycle *cycles, unsigned int number)
 {
     int i;
     if(number < 1) return;
@@ -464,7 +464,7 @@ unsigned int numOfURFsContainingBond(urfdata *udata, URFAtom atom1, URFAtom atom
     return number;
 }
 
-unsigned int findBasis(urfdata *udata, URFCycle **ptr)
+unsigned int findBasisURF(urfdata *udata, URFCycle **ptr)
 {
     int i,j;
     URFCycle *result;

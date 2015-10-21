@@ -5,7 +5,7 @@
 
 /* Struct defintions
 exact compositions are not part of the interface/not important for the user */
-#include "./URFcode/graphURFStruct.h"
+#include "./URFcode/URF_graph_Struct.h"
 #include "./URFcode/URFdataStruct.h"
 
 /** An atom is represented by its index in the molecule (0 to |V|-1).
@@ -19,26 +19,26 @@ typedef URFAtom URFBond[2];
 The vertices are numbered from 0 to |V|-1. Call the following functions:
 
  - initNewGraph(int V) to initialize a new graph with V vertices
- (returns GraphURF pointer: includes have provided "typedef
- struct{...} GraphURF" so one can declare a GraphURF *)
+ (returns URF_graph pointer: includes have provided "typedef
+ struct{...} URF_graph" so one can declare a URF_graph *)
  
- - addUEdge(GraphURF *, int from, int to) to add a new (undirected) edge from
+ - addUEdge(URF_graph *, int from, int to) to add a new (undirected) edge from
  the vertex with index "from" to the vertex with index "to". It is NO problem
  to add an edge twice - even with different order of vertices (will be ignored).
  
 now calculateURFs (from URF.h) can be called on it*/
 
 /** initializes a new Graph that edges can be added to */
-GraphURF *initNewURFGraph(unsigned int V);
+URF_graph *initNewURFGraph(unsigned int V);
 
 /** adds an undirected edge to the graph. */
-void addUEdgeURF(GraphURF *, URFAtom from, URFAtom to);
+void addUEdgeURF(URF_graph *, URFAtom from, URFAtom to);
 /*============================================================================*/
 
 /** Calculates the URF-structure of the given graph and returns it (includes
 have provided "typedef struct{...} urfdata" so one can declare a urfdata *).
 The graph has to be a correct undirected graph.*/
-urfdata *calculateURFs(GraphURF *);
+urfdata *calculateURFs(URF_graph *);
 
 /** Deletes urfdata from memory including the graph.*/
 void deleteURFdata(urfdata *);
@@ -110,24 +110,24 @@ typedef struct{
  @param ptr pointer that points to the result array of cycles
 (declare 'URFCycle *' and give address as parameter)
  @param index index of the URF
- @note ptr has to be deallocated using 'deleteCycles(*ptr)'*/
+ @note ptr has to be deallocated using 'deleteCyclesURF(*ptr)'*/
 unsigned int giveURFCycles(urfdata *, URFCycle **ptr, unsigned int index);
 
 /** Returns a set of cycles that forms a Minimal Cycle Basis of the graph.
  @return the number of cycles returned (|E|-|V|+1)
  @param ptr pointer that points to the result array
 (declare 'URFCycle *' and give address as parameter)
- @note Result has to be deallocated using deleteCycles(*ptr, number).
+ @note Result has to be deallocated using deleteCyclesURF(*ptr, number).
  @note Does not return a correct basis for an undirected graph.
  The result is an array of cycles.*/
-unsigned int findBasis(urfdata *, URFCycle **ptr);
+unsigned int findBasisURF(urfdata *, URFCycle **ptr);
 
 /** @brief Gives a list of relevant cycle prototypes (one for each RCF).
  @return the number of prototypes
  @param ptr pointer to the result array
 (declare 'URFCycle *' and give address as parameter)
  The result is an array of cycles.
- @note Result has to be deallocated using deleteCycles(*ptr, number). */
+ @note Result has to be deallocated using deleteCyclesURF(*ptr, number). */
 unsigned int giveRCprototypes(urfdata *, URFCycle **ptr);
 
 /** @brief Gives a list of all relevant cycles
@@ -135,13 +135,13 @@ unsigned int giveRCprototypes(urfdata *, URFCycle **ptr);
  @param ptr pointer to the result array
 (declare 'URFCycle *' and give address as parameter)
  The result is an array of cycles.
- @note Result has to be deallocated using deleteCycles(*ptr, number). */
+ @note Result has to be deallocated using deleteCyclesURF(*ptr, number). */
 unsigned int giveRCcycles(urfdata *, URFCycle **ptr);
 
 /** Deallocates the structure given by 'giveURFCycles()', 'findBasis()',
 'giveRCprototypes()' and 'giveRCcycles()' if called on its result and return
 value (the number of cycles) */
-void deleteCycles(URFCycle *cycles, unsigned int number);
+void deleteCyclesURF(URFCycle *cycles, unsigned int number);
 
 /*============================================================================*/
 

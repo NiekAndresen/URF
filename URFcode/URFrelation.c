@@ -5,7 +5,7 @@
 #include <limits.h>
 #include "URFrelation.h"
 #include "URFInfo.h"
-#include "graphURF.h"
+#include "URF_graph.h"
 #include "CycleFamsURF.h"
 #include "URFhandler.h"
 #include "utility.h"
@@ -143,7 +143,7 @@ To see whether or not two RCFs are potentially URF-related we look at each RCF '
     If it is independent of all those combinations we look at if it is independent of the combination of 'B<' and all of 'B='.
     If this is the case, it becomes part of the basis B (part of 'B=')
     If we find that it is dependent on 'B<' and one of 'B=', the element of 'B=' and C are marked as potentially URF-related.*/
-void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
+void checkDependencies(cfURF *RCFs, URF_graph *graph, URFinfo *uInfo)
 {
     char **matrix;
     int currRow; /*index of the first row that does NOT contain a cycle that is part of "B=" (see Vismara)*/
@@ -239,7 +239,7 @@ void checkDependencies(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo)
 }
 
 /** not unlike the function "List_Paths" from Vismara, this function finds all edges that are on shortest paths from r to x recursively and stores the result in the array edges.*/
-void recFinder(int x, int r, int *edges, GraphURF *gra, sPathInfo *spi)
+void recFinder(int x, int r, int *edges, URF_graph *gra, sPathInfo *spi)
 {
     int i, vertex;
     
@@ -253,7 +253,7 @@ void recFinder(int x, int r, int *edges, GraphURF *gra, sPathInfo *spi)
 }
 
 /** finds all edges in the RCF and stores the result in the array edges.*/
-void findEdges(int *edges, cfam *RCF, GraphURF *gra, sPathInfo *spi)
+void findEdges(int *edges, cfam *RCF, URF_graph *gra, sPathInfo *spi)
 {
     recFinder(RCF->p, RCF->r, edges, gra, spi);
     recFinder(RCF->q, RCF->r, edges, gra, spi);
@@ -269,7 +269,7 @@ void findEdges(int *edges, cfam *RCF, GraphURF *gra, sPathInfo *spi)
 } 
 
 /** Checks if the RCFs with indices idx1 and idx2 share at least one edge. returns 1 if yes and 0 otherwise. */
-char shareEdges(cfURF *RCFs, int idx1, int idx2, GraphURF *graph, sPathInfo *spi)
+char shareEdges(cfURF *RCFs, int idx1, int idx2, URF_graph *graph, sPathInfo *spi)
 {
     int *edges1;
     int *edges2; /*arrays of {0,1}^m that can store a set of edges with entries being 1 if the edge is contained and 0 otherwise*/
@@ -299,7 +299,7 @@ char shareEdges(cfURF *RCFs, int idx1, int idx2, GraphURF *graph, sPathInfo *spi
 }
 
 /** checks the previously 'marked as potentially URF-related' RCFs for edges that they have in common which proves that they are URF-related. */
-void checkEdges(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo, sPathInfo *spi)
+void checkEdges(cfURF *RCFs, URF_graph *graph, URFinfo *uInfo, sPathInfo *spi)
 {
     int i,j,k,l;
     for(i=0; i<uInfo->nofWeights; ++i) /*go through all matrices*/
@@ -348,7 +348,7 @@ void findTransitiveClosure(URFinfo *uInfo)
     }
 }
 
-void findRelations(cfURF *RCFs, GraphURF *graph, URFinfo *uInfo, sPathInfo *spi)
+void findRelations(cfURF *RCFs, URF_graph *graph, URFinfo *uInfo, sPathInfo *spi)
 {
     checkDependencies(RCFs, graph, uInfo);
     checkEdges(RCFs, graph, uInfo, spi);

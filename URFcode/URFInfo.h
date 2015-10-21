@@ -3,7 +3,7 @@
 #ifndef URFINFO_H
 #define URFINFO_H
 
-#include "graphURF.h"
+#include "URF_graph.h"
 #include "CycleFamsURF.h"
 #include "apsp.h"
 #include "URFInfoStruct.h"
@@ -12,6 +12,6 @@
 void deleteURFInfo(URFinfo *);
 
 /** Uses Gaussian elimination to mark potentially URF-related CFs and checks the previously marked CFs for URF-relation. Fills the URFinfo. */
-URFinfo *checkURFRelation(cfURF *, GraphURF *, sPathInfo *);
+URFinfo *checkURFRelation(cfURF *, URF_graph *, sPathInfo *);
 
 #endif

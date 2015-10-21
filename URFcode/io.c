@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <ctype.h>
-#include "graphURF.h"
+#include "URF_graph.h"
 #include "../URF.h"
 #include "utility.h"
 
@@ -22,9 +22,9 @@ void printmat(char **mat, int maxRow, int maxCol)
     }
 }
 
-GraphURF *readInList(char *path)
+URF_graph *readInList(char *path)
 {
-    GraphURF *gra;
+    URF_graph *gra;
     int temp, ignore;
     int V;
     char cha;

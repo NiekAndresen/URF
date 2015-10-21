@@ -4,12 +4,12 @@
 #include <limits.h>
 #include <stdio.h>
 #include "apsp.h"
-#include "graphURF.h"
+#include "URF_graph.h"
 #include "CycleFamsURF.h"
 #include "CFquicksort.h"
 
 /** returns 1 if the intersection of P(r,y) and P(r,z) is equal to {r}; 0 otherwise */
-int pathsShareOnlyStart(int r, int y, int z, GraphURF *gra, sPathInfo *spi)
+int pathsShareOnlyStart(int r, int y, int z, URF_graph *gra, sPathInfo *spi)
 {
     int result = 0, i, pnt, count=0;
     int *vertInRY, *vertInRZ; /*edges in P(r,y) and P(r,z)*/
@@ -57,7 +57,7 @@ int pathsShareOnlyStart(int r, int y, int z, GraphURF *gra, sPathInfo *spi)
 }
 
 /** returns a cycle vector (element of {0,1}^m). odd (x=INT_MAX) or even cycle.*/
-char *findPrototype(int r, int y, int z, int x, GraphURF *gra, sPathInfo *spi)
+char *findPrototype(int r, int y, int z, int x, URF_graph *gra, sPathInfo *spi)
 {
     int i, vert1, vert2;
     char *proto;
@@ -96,7 +96,7 @@ char *findPrototype(int r, int y, int z, int x, GraphURF *gra, sPathInfo *spi)
 }
 
 /** fills the rc datastructure with the odd cycle r-y-z-r */
-void addOdd(int r, int y, int z, GraphURF *gra, sPathInfo *spi, cfURF *rc)
+void addOdd(int r, int y, int z, URF_graph *gra, sPathInfo *spi, cfURF *rc)
 {
     cfam *new = malloc(sizeof(*new));
     new->r = r;
@@ -110,7 +110,7 @@ void addOdd(int r, int y, int z, GraphURF *gra, sPathInfo *spi, cfURF *rc)
 }
 
 /** fills the rc datastructure with the even cycle r-y-x-z-r */
-void addEven(int r, int y, int x, int z, GraphURF *gra, sPathInfo *spi, cfURF *rc)
+void addEven(int r, int y, int x, int z, URF_graph *gra, sPathInfo *spi, cfURF *rc)
 {
     cfam *new = malloc(sizeof(**rc->fams));
     new->r = r;
@@ -124,7 +124,7 @@ void addEven(int r, int y, int x, int z, GraphURF *gra, sPathInfo *spi, cfURF *r
 }
 
 /** returns 1 if y is adjacent to z or 0 otherwise */
-int adjacent(int y, int z, GraphURF *gra)
+int adjacent(int y, int z, URF_graph *gra)
 {
     int i, result = 0;
     for(i=0; i<gra->degree[y]; ++i)
@@ -139,7 +139,7 @@ int adjacent(int y, int z, GraphURF *gra)
 }
 
 /** finds a number of cycle families that contain at least all RELEVANT cycle families - just like in Vismara's pseudocode */
-void vismara(cfURF *rc, GraphURF *gra, sPathInfo *spi)
+void vismara(cfURF *rc, URF_graph *gra, sPathInfo *spi)
 {
     int i;
     int rv,yv,zv,pv,qv; /*variables as in Vismara's algorithm, extended by a 'v'*/
@@ -203,7 +203,7 @@ void vismara(cfURF *rc, GraphURF *gra, sPathInfo *spi)
     free(evenCand);
 }
 
-cfURF *findCycleFams(GraphURF *gra, sPathInfo *spi)
+cfURF *findCycleFams(URF_graph *gra, sPathInfo *spi)
 {
     cfURF *rc = malloc(sizeof(*rc));
     rc->fams = malloc((2*gra->E*gra->E + (gra->E - gra->V +1) * gra->V) * sizeof(*rc->fams)); /*number of CFs is at most 2m²+vn (Vismara Lemma 3)*/
