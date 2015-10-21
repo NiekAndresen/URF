@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 {
     URF_graph *graph;
     int i,j,k;
-    urfdata *udata;
+    URF_data *udata;
     time_t time;
     
     if(argc == 1)

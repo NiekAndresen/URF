@@ -5,9 +5,9 @@
 #include "URF.h"
 
 /** Reads a graph from a file */
-GraphURF *readInAdjLists(char *path)
+URF_graph *readInAdjLists(char *path)
 {
-    GraphURF *gra;
+    URF_graph *gra;
     int temp;
     int V;
     char cha;
@@ -55,8 +55,8 @@ GraphURF *readInAdjLists(char *path)
 
 int main(int argc, char **argv)
 {
-    GraphURF *graph;
-    urfdata *URFdata;
+    URF_graph *graph;
+    URF_data *URF_data;
     int idx, obIdx, URFcount, count, bondCount;
     URFAtom *atoms;
     URFBond *bondArray;
@@ -86,15 +86,15 @@ int main(int argc, char **argv)
     }
 
     /* calculate Unique Ring Families */
-    URFdata = calculateURFs(graph);
+    URF_data = calculateURFs(graph);
     
     /* some output */
-    URFcount = numberOfURFs(URFdata);
+    URFcount = numberOfURFs(URF_data);
     printf("==========================================================URF=\n");
     printf("Number of Unique Ring Families: %d\n\n", URFcount);
     for(idx=0; idx<URFcount; ++idx)
     {
-        printf("URF %d has weight %d.\n", idx, giveURFWeight(URFdata, idx));
+        printf("URF %d has weight %d.\n", idx, giveURFWeight(URF_data, idx));
     }
     /* some more output which might change when the order of the input is changed*/
     if(argc > 2)
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
         printf("The rest of this output might depend on the order of the input:\n\n");
         for(idx=0; idx<URFcount; ++idx)
         {
-            count = giveURFBonds(URFdata, idx, &bondArray);
+            count = giveURFBonds(URF_data, idx, &bondArray);
             printf("There are %d bonds in URF %d.\n", count, idx);
             free(bondArray);
         }
@@ -112,7 +112,7 @@ int main(int argc, char **argv)
         for(idx=0; idx<URFcount; ++idx)
         {
             printf("Atoms in URF %d: ",idx);
-            count = giveURFAtoms(URFdata, idx, &atoms);
+            count = giveURFAtoms(URF_data, idx, &atoms);
             for(obIdx=0; obIdx<count; ++obIdx)
             {
                 printf("%d ",atoms[obIdx]);
@@ -123,7 +123,7 @@ int main(int argc, char **argv)
         printf("\n");
         
         printf("A possible MCB (SSSR) ");
-        count = findBasis(URFdata, &cycleArray);
+        count = findBasis(URF_data, &cycleArray);
         printf("(%d rings):\n",count);
         for(idx=0; idx<count; ++idx)
         {
@@ -139,7 +139,7 @@ int main(int argc, char **argv)
         printf("\n");
         
         printf("The RC Prototypes with bonds as pairs of atoms ");
-        count = giveRCprototypes(URFdata, &cycleArray);
+        count = giveRCprototypes(URF_data, &cycleArray);
         printf("(%d rings):\n",count);
         for(idx=0; idx<count; ++idx)
         {
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
         printf("\n");
         
         printf("The RC Prototypes as arrays ");
-        count = translateCycleArray(URFdata, cycleArray, count, &otherCycleArray);
+        count = translateCycleArray(URF_data, cycleArray, count, &otherCycleArray);
         printf("(%d rings):\n",count);
         for(idx=0; idx<count; ++idx)
         {
@@ -170,8 +170,8 @@ int main(int argc, char **argv)
     }
     printf("==========================================================URF=\n");
 
-    /* delete urfdata and the graph */
-    deleteURFdata(URFdata);
+    /* delete URF_data and the graph */
+    deleteURFdata(URF_data);
     
     return 0;
 }
