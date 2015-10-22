@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "./URFcode/io.h"
+#include "./io.h"
 #include "./URFcode/URF_graph.h"
 #include "./URFcode/utility.h"
 #include "URF.h"
