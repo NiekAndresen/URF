@@ -13,7 +13,7 @@ URFCODEDIR = ./URFcode
 # SOURCE: other .c-files of your program
 # Change these three lines:
 BIN = testURF.x
-MAIN = main.c
+MAIN = advancedtestmain.c
 SOURCE = io.c
 
 OBJ = $(SOURCE:%.c=%.o)

@@ -56,7 +56,7 @@ URF_graph *readInAdjLists(char *path)
 int main(int argc, char **argv)
 {
     URF_graph *graph;
-    URF_data *URF_data;
+    URF_data *URFdata;
     int idx, obIdx, URFcount, count, bondCount;
     URFAtom *atoms;
     URFBond *bondArray;
@@ -86,15 +86,15 @@ int main(int argc, char **argv)
     }
 
     /* calculate Unique Ring Families */
-    URF_data = URF_calculate(graph);
+    URFdata = URF_calculate(graph);
     
     /* some output */
-    URFcount = URF_giveNumber(URF_data);
+    URFcount = URF_giveNumber(URFdata);
     printf("==========================================================URF=\n");
     printf("Number of Unique Ring Families: %d\n\n", URFcount);
     for(idx=0; idx<URFcount; ++idx)
     {
-        printf("URF %d has weight %d.\n", idx, URF_giveWeight(URF_data, idx));
+        printf("URF %d has weight %d.\n", idx, URF_giveWeight(URFdata, idx));
     }
     /* some more output which might change when the order of the input is changed*/
     if(argc > 2)
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
         printf("The rest of this output might depend on the order of the input:\n\n");
         for(idx=0; idx<URFcount; ++idx)
         {
-            count = URF_giveBonds(URF_data, idx, &bondArray);
+            count = URF_giveBonds(URFdata, idx, &bondArray);
             printf("There are %d bonds in URF %d.\n", count, idx);
             free(bondArray);
         }
@@ -112,7 +112,7 @@ int main(int argc, char **argv)
         for(idx=0; idx<URFcount; ++idx)
         {
             printf("Atoms in URF %d: ",idx);
-            count = URF_giveAtoms(URF_data, idx, &atoms);
+            count = URF_giveAtoms(URFdata, idx, &atoms);
             for(obIdx=0; obIdx<count; ++obIdx)
             {
                 printf("%d ",atoms[obIdx]);
@@ -123,7 +123,7 @@ int main(int argc, char **argv)
         printf("\n");
         
         printf("A possible MCB (SSSR) ");
-        count = findBasis(URF_data, &cycleArray);
+        count = URF_findBasis(URFdata, &cycleArray);
         printf("(%d rings):\n",count);
         for(idx=0; idx<count; ++idx)
         {
@@ -135,11 +135,11 @@ int main(int argc, char **argv)
             }
             printf("\n");
         }
-        deleteCycles(cycleArray, count);
+        URF_deleteCycles(cycleArray, count);
         printf("\n");
         
         printf("The RC Prototypes with bonds as pairs of atoms ");
-        count = URF_giveRCPrototypes(URF_data, &cycleArray);
+        count = URF_giveRCPrototypes(URFdata, &cycleArray);
         printf("(%d rings):\n",count);
         for(idx=0; idx<count; ++idx)
         {
@@ -154,24 +154,39 @@ int main(int argc, char **argv)
         printf("\n");
         
         printf("The RC Prototypes as arrays ");
-        count = URF_translateCycArray(URF_data, cycleArray, count, &otherCycleArray);
+        count = URF_translateCycArray(URFdata, cycleArray, count, &otherCycleArray);
         printf("(%d rings):\n",count);
+        /* To be able to understand the bitsets better: */
+        bondCount = URF_giveEdgeArray(URFdata, &bondArray);
+        printf("Edge from");
+        for(idx=0; idx<bondCount; ++idx)
+        {
+            printf("%2d",bondArray[idx][0]);
+        }
+        printf("\n     to  ");
+        for(idx=0; idx<bondCount; ++idx)
+        {
+            printf("%2d",bondArray[idx][1]);
+        }
+        printf("\n");
+        free(bondArray);
+        /* the bitsets: */
         for(idx=0; idx<count; ++idx)
         {
-            printf("ring %d: ",idx);
+            printf("ring %3d: ",idx);
             for(obIdx=0; obIdx<bondCount; ++obIdx)
             {
                 printf("%d ",otherCycleArray[idx][obIdx]);
             }
             printf("\n");
         }
-        deleteCycles(cycleArray, count);
+        URF_deleteCycles(cycleArray, count);
         URF_deleteEdgeIdxArray(otherCycleArray, count);
     }
     printf("==========================================================URF=\n");
 
-    /* delete URF_data and the graph */
-    URF_deleteData(URF_data);
+    /* delete URFdata and the graph */
+    URF_deleteData(URFdata);
     
     return 0;
 }

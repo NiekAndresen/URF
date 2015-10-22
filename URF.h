@@ -166,4 +166,15 @@ unsigned int URF_translateCycArray(URF_data *, URFCycle *array,
 its result and return value (the number of cycles). */
 void URF_deleteEdgeIdxArray(char **cycles, unsigned int number);
 
+/** Gives the edges of the graph.
+ Having the edges of the graph enumerated by this functions helps understand the
+ bitset representation given by "URF_translateCycArray()".
+ @return the number of edges in the graph
+ @param ptr pointer that points to the result array (declare 'URFBond *' and
+give address as parameter)
+ @note Result has to be deallocated using 'free(*ptr)'
+ Gives an array of bonds where a bond is represented by two URFAtoms that it
+ connects. */
+unsigned int URF_giveEdgeArray(URF_data *, URFBond **ptr);
+
 #endif

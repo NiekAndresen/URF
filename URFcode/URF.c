@@ -613,3 +613,18 @@ void URF_deleteEdgeIdxArray(char **cycles, unsigned int num)
     if(num < 1) return;
     delete2DArray((void **)cycles);
 }
+
+unsigned int URF_giveEdgeArray(URF_data *udata, URFBond **ptr)
+{
+    URFBond *result;
+    unsigned int idx;
+    
+    result = malloc(udata->graph->E * sizeof(*result));
+    for(idx=0; idx<udata->graph->E; ++idx)
+    {
+        result[idx][0] = udata->graph->edges[idx][0];
+        result[idx][1] = udata->graph->edges[idx][1];
+    }
+    (*ptr) = result;
+    return udata->graph->E;
+}
