@@ -26,35 +26,35 @@ The vertices are numbered from 0 to |V|-1. Call the following functions:
  the vertex with index "from" to the vertex with index "to". It is NO problem
  to add an edge twice - even with different order of vertices (will be ignored).
  
-now calculateURFs can be called on it*/
+now URF_calculate can be called on it*/
 
 /** initializes a new Graph that edges can be added to */
-URF_graph *initNewURFGraph(unsigned int V);
+URF_graph *URF_initNewGraph(unsigned int V);
 
 /** adds an undirected edge to the graph. */
-void addUEdgeURF(URF_graph *, URFAtom from, URFAtom to);
+void URF_addUEdge(URF_graph *, URFAtom from, URFAtom to);
 /*============================================================================*/
 
 /** Calculates the URF-structure of the given graph and returns it (includes
 have provided "typedef struct{...} URF_data" so one can declare a URF_data *).
 The graph has to be a correct undirected graph.*/
-URF_data *calculateURFs(URF_graph *);
+URF_data *URF_calculate(URF_graph *);
 
 /** Deletes URF_data from memory including the graph.*/
-void deleteURFdata(URF_data *);
+void URF_deleteData(URF_data *);
 
 /** Returns the number of URFs. */
-unsigned int numberOfURFs(URF_data *);
+unsigned int URF_giveNumber(URF_data *);
 
 /** Returns the weight of each cycle in the URF identified by its index */
-unsigned int giveURFWeight(URF_data *, int index);
+unsigned int URF_giveWeight(URF_data *, int index);
 
 /** Returns the number of URFs that contain the given atom. */
-unsigned int numOfURFsContaining(URF_data *, URFAtom atom);
+unsigned int URF_numContaining(URF_data *, URFAtom atom);
 
 /** Returns the number of URFs that contain the bond consisting of the two given
  atoms */
-unsigned int numOfURFsContainingBond(URF_data *, URFAtom atom1, URFAtom atom2);
+unsigned int URF_numContainingBond(URF_data *, URFAtom atom1, URFAtom atom2);
 
 /*============================================================================*/
 /** Gives the atoms of a URF identified with its index in an array of URFatoms.
@@ -64,7 +64,7 @@ unsigned int numOfURFsContainingBond(URF_data *, URFAtom atom1, URFAtom atom2);
 give address as parameter) 
  @note Result has do be deallocated using free(*ptr).
  @brief Gives the atoms of a URF. */
-unsigned int giveURFAtoms(URF_data *, unsigned int index, URFAtom **ptr);
+unsigned int URF_giveAtoms(URF_data *, unsigned int index, URFAtom **ptr);
 
 /** Gives the bonds of a URF identified with its index.
  @return the number of bonds in this URF
@@ -74,7 +74,7 @@ give address as parameter)
  @note Result has to be deallocated using 'free(*ptr)'
  Gives an array of bonds where a bond is represented by two URFAtoms that it
  connects. */
-unsigned int giveURFBonds(URF_data *, unsigned int index, URFBond **ptr);
+unsigned int URF_giveBonds(URF_data *, unsigned int index, URFBond **ptr);
 
 /** Gives all URFs containing the atom.
  @return the number of URFs containing the atom
@@ -83,7 +83,7 @@ indices of URFs containing the atom. (declare 'int *' and give address as
 parameter)
  @param atom the URFatom
  @note The array ptr has to be to be deallocated with 'free(*ptr)' */
-unsigned int listURFsWithAtom(URF_data *, unsigned int **ptr, URFAtom atom);
+unsigned int URF_listURFsWithAtom(URF_data *, unsigned int **ptr, URFAtom atom);
 
 /** Gives all URFs containing the bond.
  @return the number of URFs containing the bond
@@ -93,7 +93,7 @@ unsigned int listURFsWithAtom(URF_data *, unsigned int **ptr, URFAtom atom);
  @param atom1 the first URFAtom of the bond
  @param atom2 the the second URFatom of the bond
  @note The array ptr has to be to be deallocated with 'free(*ptr)' */
-unsigned int listURFsWithBond(URF_data *, unsigned int **ptr, URFAtom atom1,
+unsigned int URF_listURFsWithBond(URF_data *, unsigned int **ptr, URFAtom atom1,
                               URFAtom atom2);
 
 /*============================================================================*/
@@ -110,43 +110,43 @@ typedef struct{
  @param ptr pointer that points to the result array of cycles
 (declare 'URFCycle *' and give address as parameter)
  @param index index of the URF
- @note ptr has to be deallocated using 'deleteCyclesURF(*ptr)'*/
-unsigned int giveURFCycles(URF_data *, URFCycle **ptr, unsigned int index);
+ @note ptr has to be deallocated using 'URF_deleteCycles(*ptr)'*/
+unsigned int URF_giveCycles(URF_data *, URFCycle **ptr, unsigned int index);
 
 /** Returns a set of cycles that forms a Minimal Cycle Basis of the graph.
  @return the number of cycles returned (|E|-|V|+1)
  @param ptr pointer that points to the result array
 (declare 'URFCycle *' and give address as parameter)
- @note Result has to be deallocated using deleteCyclesURF(*ptr, number).
+ @note Result has to be deallocated using URF_deleteCycles(*ptr, number).
  @note Does not return a correct basis for an undirected graph.
  The result is an array of cycles.*/
-unsigned int findBasisURF(URF_data *, URFCycle **ptr);
+unsigned int URF_findBasis(URF_data *, URFCycle **ptr);
 
 /** @brief Gives a list of relevant cycle prototypes (one for each RCF).
  @return the number of prototypes
  @param ptr pointer to the result array
 (declare 'URFCycle *' and give address as parameter)
  The result is an array of cycles.
- @note Result has to be deallocated using deleteCyclesURF(*ptr, number). */
-unsigned int giveRCprototypes(URF_data *, URFCycle **ptr);
+ @note Result has to be deallocated using URF_deleteCycles(*ptr, number). */
+unsigned int URF_giveRCPrototypes(URF_data *, URFCycle **ptr);
 
 /** @brief Gives a list of all relevant cycles
  @return the number of cycles
  @param ptr pointer to the result array
 (declare 'URFCycle *' and give address as parameter)
  The result is an array of cycles.
- @note Result has to be deallocated using deleteCyclesURF(*ptr, number). */
-unsigned int giveRCcycles(URF_data *, URFCycle **ptr);
+ @note Result has to be deallocated using URF_deleteCycles(*ptr, number). */
+unsigned int URF_giveRCycles(URF_data *, URFCycle **ptr);
 
-/** Deallocates the structure given by 'giveURFCycles()', 'findBasis()',
-'giveRCprototypes()' and 'giveRCcycles()' if called on its result and return
+/** Deallocates the structure given by 'URF_giveCycles()', 'findBasis()',
+'URF_giveRCPrototypes()' and 'URF_giveRCycles()' if called on its result and return
 value (the number of cycles) */
-void deleteCyclesURF(URFCycle *cycles, unsigned int number);
+void URF_deleteCycles(URFCycle *cycles, unsigned int number);
 
 /*============================================================================*/
 
-/** Translates the results of 'giveURFCycles()', 'findBasis()',
-'giveRCprototypes()' and 'giveRCcycles()' (arrays of URFcylces) into an array
+/** Translates the results of 'URF_giveCycles()', 'findBasis()',
+'URF_giveRCPrototypes()' and 'URF_giveRCycles()' (arrays of URFcylces) into an array
 of cycles represented by arrays of {0,1}^|E|. Such an array has a 1 at position
 i if edge i is part of the cycle or 0 otherwise. An edge is identified by the
 position at which it was added to the graph starting at 0.
@@ -159,11 +159,11 @@ position at which it was added to the graph starting at 0.
  @brief Changes the representation of a cycle in an array of cycles.
  @note The initial structure still exists afterwards and still has to be
 deleted. */
-unsigned int translateCycleArray(URF_data *, URFCycle *array,
+unsigned int URF_translateCycArray(URF_data *, URFCycle *array,
                                  unsigned int number, char ***ptr);
 
-/** Deallocates the structure given by 'translateCycleArray()' if called on
+/** Deallocates the structure given by 'URF_translateCycArray()' if called on
 its result and return value (the number of cycles). */
-void deleteEdgeIdxCycles(char **cycles, unsigned int number);
+void URF_deleteEdgeIdxArray(char **cycles, unsigned int number);
 
 #endif

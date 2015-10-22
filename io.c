@@ -47,7 +47,7 @@ URF_graph *readInList(char *path)
         cha = fgetc(fp);
     }
     V = currLine;
-    gra = initNewURFGraph(V);
+    gra = URF_initNewGraph(V);
     
     rewind(fp);
     currLine = 0;
@@ -57,7 +57,7 @@ URF_graph *readInList(char *path)
         if(cha == ' ')
         {
             ignore = fscanf(fp, "%d", &temp);
-            addUEdgeURF(gra, currLine, temp-1);
+            URF_addUEdge(gra, currLine, temp-1);
             temp = ignore; /*to circumvent a compiler warning of ignoring fscanf return value or "setting but not using" ignore*/
         }
         else if(cha == '\n')

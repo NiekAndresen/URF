@@ -11,12 +11,12 @@
 #include "URF_graph.h"
 #include "URFrelation.h"
 
-URF_graph *initNewURFGraph(unsigned int V)
+URF_graph *URF_initNewGraph(unsigned int V)
 {
     return initNewGraph(V);
 }
 
-void addUEdgeURF(URF_graph *gra, URFAtom from, URFAtom to)
+void URF_addUEdge(URF_graph *gra, URFAtom from, URFAtom to)
 {
     if(from >= gra->V || to >= gra->V)
     {
@@ -32,7 +32,7 @@ void findShortestPaths(URF_data *udata, URF_graph *gra)
     udata->spi = AllPairsShortestPaths(gra);
 }
 
-URF_data *calculateURFs(URF_graph *gra)
+URF_data *URF_calculate(URF_graph *gra)
 {
     char correctGraph;
     URF_data *udata;
@@ -55,7 +55,7 @@ URF_data *calculateURFs(URF_graph *gra)
     return udata;
 }
 
-void deleteURFdata(URF_data *udata)
+void URF_deleteData(URF_data *udata)
 {
     deleteAPSP(udata->spi, udata->graph->V);
     deleteCycleFams(udata->CFs);
@@ -67,12 +67,12 @@ void deleteURFdata(URF_data *udata)
     free(udata);
 }
 
-unsigned int numberOfURFs(URF_data *udata)
+unsigned int URF_giveNumber(URF_data *udata)
 {
     return (unsigned int)udata->nofURFs;    
 }
 
-unsigned int giveURFWeight(URF_data *udata, int index)
+unsigned int URF_giveWeight(URF_data *udata, int index)
 {
     if(udata->nofURFs < 1 || index >= udata->nofURFs) return 0;
     return udata->urfInfo->URFs[index][0]->weight;
@@ -205,7 +205,7 @@ URFAtom *giveURF(URF_data *uData, int URFindex, char mode)
     return result;
 }
 
-unsigned int giveURFAtoms(URF_data *udata, unsigned int index, URFAtom **ptr)
+unsigned int URF_giveAtoms(URF_data *udata, unsigned int index, URFAtom **ptr)
 {
     unsigned int i;
     if(udata->nofURFs < 1 || index >=udata->nofURFs)
@@ -219,7 +219,7 @@ unsigned int giveURFAtoms(URF_data *udata, unsigned int index, URFAtom **ptr)
     return i;
 }
 
-unsigned int giveURFBonds(URF_data *uData, unsigned int URFindex, URFBond **ptr)
+unsigned int URF_giveBonds(URF_data *uData, unsigned int URFindex, URFBond **ptr)
 {
     unsigned int nextfree, alloced;
     URFBond *result;
@@ -258,7 +258,7 @@ modes:
     - 'b': A cycle is represented by an array of {0,1}^m which contains a 1 at position i if the edge i is part of the cycle or 0 otherwise (m: number of edges).
 The array of cycles is ended with a terminating NULL pointer.
 This structure has to be deallocated using 'deleteCyclesChar(<return value>)'.*/
-char **giveURFCyclesChar(URF_data *udata, int index, char mode)
+char **URF_giveCyclesChar(URF_data *udata, int index, char mode)
 {
     int i;
     int currIdx=0; /*index of next free space in result array*/
@@ -288,7 +288,7 @@ char **giveURFCyclesChar(URF_data *udata, int index, char mode)
     return result;
 }
 
-/**to delete result of giveURFCyclesChar()*/
+/**to delete result of URF_giveCyclesChar()*/
 void deleteCyclesChar(char **cycles)
 {
     int i;
@@ -299,7 +299,7 @@ void deleteCyclesChar(char **cycles)
     free(cycles);
 }
 
-unsigned int giveURFCycles(URF_data *udata, URFCycle **ptr, unsigned int index)
+unsigned int URF_giveCycles(URF_data *udata, URFCycle **ptr, unsigned int index)
 {
     char **URFCycles;
     URFCycle *result;
@@ -311,7 +311,7 @@ unsigned int giveURFCycles(URF_data *udata, URFCycle **ptr, unsigned int index)
     alloced = 4;
     nextfree = 0;
     result = malloc(alloced * sizeof(*result));
-    URFCycles = giveURFCyclesChar(udata, index, 'b');
+    URFCycles = URF_giveCyclesChar(udata, index, 'b');
     for(i=0; URFCycles[i]!=NULL; ++i)
     {
         edgeCount = 0; /*count number of edges in this cycle*/
@@ -347,7 +347,7 @@ unsigned int giveURFCycles(URF_data *udata, URFCycle **ptr, unsigned int index)
     return i;
 }
 
-void deleteCyclesURF(URFCycle *cycles, unsigned int number)
+void URF_deleteCycles(URFCycle *cycles, unsigned int number)
 {
     int i;
     if(number < 1) return;
@@ -418,7 +418,7 @@ unsigned int *listURFs(URF_data *udata, int object, char mode)
     return result;
 }
 
-unsigned int listURFsWithAtom(URF_data *udata, unsigned int **ptr, URFAtom object)
+unsigned int URF_listURFsWithAtom(URF_data *udata, unsigned int **ptr, URFAtom object)
 {
     unsigned int i;
     if(udata->nofURFs < 1)
@@ -432,7 +432,7 @@ unsigned int listURFsWithAtom(URF_data *udata, unsigned int **ptr, URFAtom objec
     return i;
 }
 
-unsigned int listURFsWithBond(URF_data *udata, unsigned int **ptr, URFAtom atom1, URFAtom atom2)
+unsigned int URF_listURFsWithBond(URF_data *udata, unsigned int **ptr, URFAtom atom1, URFAtom atom2)
 {
     unsigned int i;
     if(udata->nofURFs < 1)
@@ -446,25 +446,25 @@ unsigned int listURFsWithBond(URF_data *udata, unsigned int **ptr, URFAtom atom1
     return i;
 }
 
-unsigned int numOfURFsContaining(URF_data *udata, URFAtom atom)
+unsigned int URF_numContaining(URF_data *udata, URFAtom atom)
 {
     unsigned int number;
     unsigned int *arr;
-    number = listURFsWithAtom(udata, &arr, atom);
+    number = URF_listURFsWithAtom(udata, &arr, atom);
     free(arr);
     return number;
 }
 
-unsigned int numOfURFsContainingBond(URF_data *udata, URFAtom atom1, URFAtom atom2)
+unsigned int URF_numContainingBond(URF_data *udata, URFAtom atom1, URFAtom atom2)
 {
     unsigned int number;
     unsigned int *arr;
-    number = listURFsWithBond(udata, &arr, atom1, atom2);
+    number = URF_listURFsWithBond(udata, &arr, atom1, atom2);
     free(arr);
     return number;
 }
 
-unsigned int findBasisURF(URF_data *udata, URFCycle **ptr)
+unsigned int URF_findBasis(URF_data *udata, URFCycle **ptr)
 {
     int i,j;
     URFCycle *result;
@@ -508,7 +508,7 @@ unsigned int findBasisURF(URF_data *udata, URFCycle **ptr)
     return size;
 }
 
-unsigned int giveRCprototypes(URF_data *udata, URFCycle **ptr)
+unsigned int URF_giveRCPrototypes(URF_data *udata, URFCycle **ptr)
 {
     URFCycle *result;
     unsigned int nofRel=0;
@@ -552,7 +552,7 @@ unsigned int giveRCprototypes(URF_data *udata, URFCycle **ptr)
     return nofRel;
 }
 
-unsigned int giveRCcycles(URF_data *udata, URFCycle **ptr)
+unsigned int URF_giveRCycles(URF_data *udata, URFCycle **ptr)
 {
     URFCycle *result;
     URFCycle *URFrel; /*relevant Cycles of a URF*/
@@ -564,7 +564,7 @@ unsigned int giveRCcycles(URF_data *udata, URFCycle **ptr)
     result = malloc(alloced * sizeof(*result));
     for(i=0; i<udata->nofURFs; ++i)
     {
-        num = giveURFCycles(udata, &URFrel, i);
+        num = URF_giveCycles(udata, &URFrel, i);
         for(j=0; j<num; ++j)/*append all cycles of URF i to result*/
         {
             if(alloced == nextfree)/*more space needed*/
@@ -581,7 +581,7 @@ unsigned int giveRCcycles(URF_data *udata, URFCycle **ptr)
     return nextfree;
 }
 
-unsigned int translateCycleArray(URF_data *udata, URFCycle *array, unsigned int number, char ***ptr)
+unsigned int URF_translateCycArray(URF_data *udata, URFCycle *array, unsigned int number, char ***ptr)
 {
     int i,j,edgeIdx;
     char **result;
@@ -608,7 +608,7 @@ unsigned int translateCycleArray(URF_data *udata, URFCycle *array, unsigned int 
     return number;
 }
 
-void deleteEdgeIdxCycles(char **cycles, unsigned int num)
+void URF_deleteEdgeIdxArray(char **cycles, unsigned int num)
 {
     if(num < 1) return;
     delete2DArray((void **)cycles);

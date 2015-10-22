@@ -38,7 +38,7 @@ int main(int argc, char **argv)
     printGraph(graph);
 
     time = clock();
-    udata = calculateURFs(graph);
+    udata = URF_calculate(graph);
     time = clock() - time;
     
     printf("calculated, it took %fs\n",(float)time/CLOCKS_PER_SEC);
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 
         /*int l,number;
         int ***cycles;
-        number = giveURFCycles(udata, &cycles, i);
+        number = URF_giveCycles(udata, &cycles, i);
         printf("cycles (%d):\n",number);
         for(j=0; j<number; ++j)
         {
@@ -126,11 +126,11 @@ int main(int argc, char **argv)
             printf("\n");
         }
         printf("\n");
-        deleteCyclesURF(cycles, number);*/
+        URF_deleteCycles(cycles, number);*/
         
         URFBond *URFedges;
         int number4;
-        number4 = giveURFBonds(udata, i,&URFedges);
+        number4 = URF_giveBonds(udata, i,&URFedges);
         printf("edges of URF %d:\n",i);
         for(j=0; j<number4; ++j)
         {
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
     printf("atoms in the URFs:\n");
     for(i=0; i<udata->nofURFs; ++i)
     {
-        number3 = giveURFAtoms(udata, i, &URFatoms);
+        number3 = URF_giveAtoms(udata, i, &URFatoms);
         j=0;
         for(k=0; k<graph->V; ++k)
         {
@@ -164,7 +164,7 @@ int main(int argc, char **argv)
     
     URFCycle *basis;
     int number1;
-    number1 = findBasisURF(udata, &basis);
+    number1 = URF_findBasis(udata, &basis);
     printf("basis:\n");
     for(i=0; i<number1; ++i)
     {
@@ -178,7 +178,7 @@ int main(int argc, char **argv)
 
     printf("or:\n");
     char **basis2;
-    number1 = translateCycleArray(udata, basis, number1, &basis2);
+    number1 = URF_translateCycArray(udata, basis, number1, &basis2);
     for(i=0; i<number1; ++i)
     {
         for(j=0; j<udata->graph->E; ++j)
@@ -187,27 +187,27 @@ int main(int argc, char **argv)
         }
         printf("\n");
     }
-    deleteEdgeIdxCycles(basis2, number1);
-    deleteCyclesURF(basis, number1);
+    URF_deleteEdgeIdxArray(basis2, number1);
+    URF_deleteCycles(basis, number1);
     
     
     /*URFAtom atom;
     int number2,*URFsWithAtom;
     atom=1;
-    number2 = listURFsWithAtom(udata, &URFsWithAtom, atom);
+    number2 = URF_listURFsWithAtom(udata, &URFsWithAtom, atom);
     printf("listing all URFs with atom %d: ",atom);
     for(i=0; i<number2; ++i)
     {
         printf("%d ",URFsWithAtom[i]);
     }
     printf("\n");
-    printf("number of URFs with atom %d: %d\n",atom,numOfURFsContaining(udata, atom));
+    printf("number of URFs with atom %d: %d\n",atom,URF_numContaining(udata, atom));
     free(URFsWithAtom);*/
     
     /*int bond,numberB;
     int *URFsWithBond;
     bond=1;
-    numberB = listURFsWithBond(udata, &URFsWithBond, udata->graph->edges[bond][0], udata->graph->edges[bond][1]);
+    numberB = URF_listURFsWithBond(udata, &URFsWithBond, udata->graph->edges[bond][0], udata->graph->edges[bond][1]);
     printf("listing all URFs with bond %d: ",bond);
     for(i=0; i<numberB; ++i)
     {
@@ -219,7 +219,7 @@ int main(int argc, char **argv)
     /*URFCycle *protos;
     int num;
     printf("RC prototypes:\n");
-    num = giveRCprototypes(udata, &protos);
+    num = URF_giveRCPrototypes(udata, &protos);
     for(i=0; i<num ; ++i)
     {
         for(j=0; j<protos[i].weight; ++j)
@@ -228,12 +228,12 @@ int main(int argc, char **argv)
         }
         printf("\n");
     }
-    deleteCyclesURF(protos, num);*/
+    URF_deleteCycles(protos, num);*/
     
     /*URFCycle *relCycles;
     int num1;
     printf("RCs:\n");
-    num1=giveRCcycles(udata, &relCycles);
+    num1=URF_giveRCycles(udata, &relCycles);
     for(i=0; i<num1; ++i)
     {
         printf("%d:  ",i+1);
@@ -243,9 +243,9 @@ int main(int argc, char **argv)
         }
         printf("\n");
     }
-    deleteCyclesURF(relCycles, num1);*/
+    URF_deleteCycles(relCycles, num1);*/
     
-    deleteURFdata(udata);
+    URF_deleteData(udata);
     /*printf("Niek ist die Nummer %d\n",1);*/
     return EXIT_SUCCESS;
 }
