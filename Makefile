@@ -14,15 +14,15 @@ URFCODEDIR = ./URFcode
 # Change these three lines:
 BIN = testURF.x
 MAIN = main.c
-SOURCE =
+SOURCE = io.c
 
 OBJ = $(SOURCE:%.c=%.o)
-URFSRC = URF.c io.c URF_graph.c utility.c apsp.c CycleFamsURF.c CFquicksort.c URFInfo.c URFrelation.c URFhandler.c
+URFSRC = URF.c URF_graph.c utility.c apsp.c CycleFamsURF.c CFquicksort.c URFInfo.c URFrelation.c URFhandler.c
 URFOBJ = $(URFSRC:%.c=%.o)
 URFOBJDIR = $(URFSRC:%.c=$(URFCODEDIR)/%.o) #attaching directory to be able to use "%.o: %.c"
 
 $(BIN): $(URFOBJDIR) $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $(URFOBJ) $(MAIN)
+	$(CC) $(CFLAGS) -o $@ $(URFOBJ) $(OBJ) $(MAIN)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $<
