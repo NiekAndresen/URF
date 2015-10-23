@@ -11,7 +11,8 @@ exact compositions are not part of the interface/not important for the user */
 /** An atom is represented by its index in the molecule (0 to |V|-1).
 This typedef seperates atoms from other integers. */
 typedef unsigned int URFAtom;
-/** A bond is represented by the atoms that it connects. */
+/** A bond is represented by an array of size two containing the atoms that it
+connects. */
 typedef URFAtom URFBond[2];
 
 /*============================================================================*/
