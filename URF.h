@@ -118,7 +118,7 @@ unsigned int URF_giveCycles(URF_data *, URFCycle **ptr, unsigned int index);
  @param ptr pointer that points to the result array
 (declare 'URFCycle *' and give address as parameter)
  @note Result has to be deallocated using URF_deleteCycles(*ptr, number).
- @note Does not return a correct basis for an undirected graph.
+ @note Does not return a correct basis for an unconnected graph.
  The result is an array of cycles.*/
 unsigned int URF_findBasis(URF_data *, URFCycle **ptr);
 
