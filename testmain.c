@@ -38,12 +38,12 @@ int main(int argc, char **argv)
     URFdata = URF_calculate(graph);
     
     /* some output */
-    URFcount = URF_giveNumber(URFdata);
+    URFcount = URF_getNumber(URFdata);
     printf("==========================================================URF=\n");
     printf("Number of Unique Ring Families: %d\n\n", URFcount);
     for(idx=0; idx<URFcount; ++idx)
     {
-        printf("URF %d has weight %d.\n", idx, URF_giveWeight(URFdata, idx));
+        printf("URF %d has weight %d.\n", idx, URF_getWeight(URFdata, idx));
     }
     /* some more output which might change when the order of the input is changed*/
     if(argc > 1)
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
         printf("The rest of this output might depend on the order of the input:\n\n");
         for(idx=0; idx<URFcount; ++idx)
         {
-            count = URF_giveBonds(URFdata, idx, &bondArray);
+            count = URF_getBonds(URFdata, idx, &bondArray);
             printf("There are %d bonds in URF %d.\n", count, idx);
             free(bondArray);
         }
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
         for(idx=0; idx<URFcount; ++idx)
         {
             printf("Atoms in URF %d: ",idx);
-            count = URF_giveAtoms(URFdata, idx, &atoms);
+            count = URF_getAtoms(URFdata, idx, &atoms);
             for(obIdx=0; obIdx<count; ++obIdx)
             {
                 printf("%d ",atoms[obIdx]);
@@ -72,7 +72,7 @@ int main(int argc, char **argv)
         printf("\n");
         
         printf("A possible MCB (SSSR) ");
-        count = URF_findBasis(URFdata, &cycleArray);
+        count = URF_getBasis(URFdata, &cycleArray);
         printf("(%d rings):\n",count);
         for(idx=0; idx<count; ++idx)
         {
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
         printf("\n");
         
         printf("The RC Prototypes with bonds as pairs of atoms ");
-        count = URF_giveRCPrototypes(URFdata, &cycleArray);
+        count = URF_getRCPrototypes(URFdata, &cycleArray);
         printf("(%d rings):\n",count);
         for(idx=0; idx<count; ++idx)
         {
@@ -106,7 +106,7 @@ int main(int argc, char **argv)
         count = URF_translateCycArray(URFdata, cycleArray, count, &otherCycleArray);
         printf("(%d rings):\n",count);
         /* To be able to understand the bitsets better: */
-        bondCount = URF_giveEdgeArray(URFdata, &bondArray);
+        bondCount = URF_getEdgeArray(URFdata, &bondArray);
         printf("Edge from");
         for(idx=0; idx<bondCount; ++idx)
         {

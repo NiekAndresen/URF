@@ -67,19 +67,19 @@ void URF_deleteData(URF_data *udata)
     free(udata);
 }
 
-unsigned int URF_giveNumber(URF_data *udata)
+unsigned int URF_getNumber(URF_data *udata)
 {
     return (unsigned int)udata->nofURFs;    
 }
 
-unsigned int URF_giveWeight(URF_data *udata, int index)
+unsigned int URF_getWeight(URF_data *udata, int index)
 {
     if(udata->nofURFs < 1 || index >= udata->nofURFs) return 0;
     return udata->urfInfo->URFs[index][0]->weight;
 }
 
 /** gives an array of indices of atoms that are contained in the URF with the given index. Array is terminated by INT_MAX */
-URFAtom *giveAtoms(URF_data *uData, int index)
+URFAtom *getAtoms(URF_data *uData, int index)
 {
     int i,nofFams,nextfree=0,alloced;
     char *atoms;
@@ -129,7 +129,7 @@ URFAtom *giveAtoms(URF_data *uData, int index)
 }
 
 /** gives an array of indices of bonds that are contained in the URF with the given index. Array is terminated by INT_MAX */
-unsigned int *giveBonds(URF_data *uData, int index)
+unsigned int *getBonds(URF_data *uData, int index)
 {
     int i,nofFams,nextfree=0,alloced;
     char *bonds;
@@ -183,17 +183,17 @@ unsigned int *giveBonds(URF_data *uData, int index)
     return result;
 }
 
-/** calls giveAtoms() or giveBonds() depending on mode 'a' or 'b' */
+/** calls getAtoms() or getBonds() depending on mode 'a' or 'b' */
 URFAtom *giveURF(URF_data *uData, int URFindex, char mode)
 {
     URFAtom *result;
     if(mode == 'a')
     {
-        result = giveAtoms(uData, URFindex);
+        result = getAtoms(uData, URFindex);
     }
     else if(mode == 'b')
     {
-        result = giveBonds(uData, URFindex);
+        result = getBonds(uData, URFindex);
     }
     else
     {
@@ -205,7 +205,7 @@ URFAtom *giveURF(URF_data *uData, int URFindex, char mode)
     return result;
 }
 
-unsigned int URF_giveAtoms(URF_data *udata, unsigned int index, URFAtom **ptr)
+unsigned int URF_getAtoms(URF_data *udata, unsigned int index, URFAtom **ptr)
 {
     unsigned int i;
     if(udata->nofURFs < 1 || index >=udata->nofURFs)
@@ -214,12 +214,12 @@ unsigned int URF_giveAtoms(URF_data *udata, unsigned int index, URFAtom **ptr)
         (*ptr) = malloc(sizeof(**ptr));
         return 0;
     }
-    (*ptr) = giveAtoms(udata, index);
+    (*ptr) = getAtoms(udata, index);
     for(i=0; (*ptr)[i]<INT_MAX; ++i); /*counts the number of atoms*/
     return i;
 }
 
-unsigned int URF_giveBonds(URF_data *uData, unsigned int URFindex, URFBond **ptr)
+unsigned int URF_getBonds(URF_data *uData, unsigned int URFindex, URFBond **ptr)
 {
     unsigned int nextfree, alloced;
     URFBond *result;
@@ -235,7 +235,7 @@ unsigned int URF_giveBonds(URF_data *uData, unsigned int URFindex, URFBond **ptr
     nextfree = 0;
     alloced = 3;
     result = malloc(alloced * sizeof(*result));
-    bondIndices = giveBonds(uData, URFindex);
+    bondIndices = getBonds(uData, URFindex);
     for(i=0; bondIndices[i]<INT_MAX; ++i)
     {
         if(nextfree == alloced)/*more space needed in result*/
@@ -258,7 +258,7 @@ modes:
     - 'b': A cycle is represented by an array of {0,1}^m which contains a 1 at position i if the edge i is part of the cycle or 0 otherwise (m: number of edges).
 The array of cycles is ended with a terminating NULL pointer.
 This structure has to be deallocated using 'deleteCyclesChar(<return value>)'.*/
-char **URF_giveCyclesChar(URF_data *udata, int index, char mode)
+char **URF_getCyclesChar(URF_data *udata, int index, char mode)
 {
     int i;
     int currIdx=0; /*index of next free space in result array*/
@@ -288,7 +288,7 @@ char **URF_giveCyclesChar(URF_data *udata, int index, char mode)
     return result;
 }
 
-/**to delete result of URF_giveCyclesChar()*/
+/**to delete result of URF_getCyclesChar()*/
 void deleteCyclesChar(char **cycles)
 {
     int i;
@@ -299,7 +299,7 @@ void deleteCyclesChar(char **cycles)
     free(cycles);
 }
 
-unsigned int URF_giveCycles(URF_data *udata, URFCycle **ptr, unsigned int index)
+unsigned int URF_getCycles(URF_data *udata, URFCycle **ptr, unsigned int index)
 {
     char **URFCycles;
     URFCycle *result;
@@ -311,7 +311,7 @@ unsigned int URF_giveCycles(URF_data *udata, URFCycle **ptr, unsigned int index)
     alloced = 4;
     nextfree = 0;
     result = malloc(alloced * sizeof(*result));
-    URFCycles = URF_giveCyclesChar(udata, index, 'b');
+    URFCycles = URF_getCyclesChar(udata, index, 'b');
     for(i=0; URFCycles[i]!=NULL; ++i)
     {
         edgeCount = 0; /*count number of edges in this cycle*/
@@ -446,7 +446,7 @@ unsigned int URF_listURFsWithBond(URF_data *udata, unsigned int **ptr, URFAtom a
     return i;
 }
 
-unsigned int URF_numContaining(URF_data *udata, URFAtom atom)
+unsigned int URF_numContainingAtom(URF_data *udata, URFAtom atom)
 {
     unsigned int number;
     unsigned int *arr;
@@ -464,7 +464,7 @@ unsigned int URF_numContainingBond(URF_data *udata, URFAtom atom1, URFAtom atom2
     return number;
 }
 
-unsigned int URF_findBasis(URF_data *udata, URFCycle **ptr)
+unsigned int URF_getBasis(URF_data *udata, URFCycle **ptr)
 {
     int i,j;
     URFCycle *result;
@@ -508,7 +508,7 @@ unsigned int URF_findBasis(URF_data *udata, URFCycle **ptr)
     return size;
 }
 
-unsigned int URF_giveRCPrototypes(URF_data *udata, URFCycle **ptr)
+unsigned int URF_getRCPrototypes(URF_data *udata, URFCycle **ptr)
 {
     URFCycle *result;
     unsigned int nofRel=0;
@@ -552,7 +552,7 @@ unsigned int URF_giveRCPrototypes(URF_data *udata, URFCycle **ptr)
     return nofRel;
 }
 
-unsigned int URF_giveRCycles(URF_data *udata, URFCycle **ptr)
+unsigned int URF_getRCycles(URF_data *udata, URFCycle **ptr)
 {
     URFCycle *result;
     URFCycle *URFrel; /*relevant Cycles of a URF*/
@@ -564,7 +564,7 @@ unsigned int URF_giveRCycles(URF_data *udata, URFCycle **ptr)
     result = malloc(alloced * sizeof(*result));
     for(i=0; i<udata->nofURFs; ++i)
     {
-        num = URF_giveCycles(udata, &URFrel, i);
+        num = URF_getCycles(udata, &URFrel, i);
         for(j=0; j<num; ++j)/*append all cycles of URF i to result*/
         {
             if(alloced == nextfree)/*more space needed*/
@@ -614,7 +614,7 @@ void URF_deleteEdgeIdxArray(char **cycles, unsigned int num)
     delete2DArray((void **)cycles);
 }
 
-unsigned int URF_giveEdgeArray(URF_data *udata, URFBond **ptr)
+unsigned int URF_getEdgeArray(URF_data *udata, URFBond **ptr)
 {
     URFBond *result;
     unsigned int idx;

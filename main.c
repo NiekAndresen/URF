@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 
         /*int l,number;
         int ***cycles;
-        number = URF_giveCycles(udata, &cycles, i);
+        number = URF_getCycles(udata, &cycles, i);
         printf("cycles (%d):\n",number);
         for(j=0; j<number; ++j)
         {
@@ -130,7 +130,7 @@ int main(int argc, char **argv)
         
         URFBond *URFedges;
         int number4;
-        number4 = URF_giveBonds(udata, i,&URFedges);
+        number4 = URF_getBonds(udata, i,&URFedges);
         printf("edges of URF %d:\n",i);
         for(j=0; j<number4; ++j)
         {
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
     printf("atoms in the URFs:\n");
     for(i=0; i<udata->nofURFs; ++i)
     {
-        number3 = URF_giveAtoms(udata, i, &URFatoms);
+        number3 = URF_getAtoms(udata, i, &URFatoms);
         j=0;
         for(k=0; k<graph->V; ++k)
         {
@@ -164,7 +164,7 @@ int main(int argc, char **argv)
     
     URFCycle *basis;
     int number1;
-    number1 = URF_findBasis(udata, &basis);
+    number1 = URF_getBasis(udata, &basis);
     printf("basis:\n");
     for(i=0; i<number1; ++i)
     {
@@ -219,7 +219,7 @@ int main(int argc, char **argv)
     /*URFCycle *protos;
     int num;
     printf("RC prototypes:\n");
-    num = URF_giveRCPrototypes(udata, &protos);
+    num = URF_getRCPrototypes(udata, &protos);
     for(i=0; i<num ; ++i)
     {
         for(j=0; j<protos[i].weight; ++j)
@@ -233,7 +233,7 @@ int main(int argc, char **argv)
     /*URFCycle *relCycles;
     int num1;
     printf("RCs:\n");
-    num1=URF_giveRCycles(udata, &relCycles);
+    num1=URF_getRCycles(udata, &relCycles);
     for(i=0; i<num1; ++i)
     {
         printf("%d:  ",i+1);
