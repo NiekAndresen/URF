@@ -9,7 +9,7 @@
 /** initializes a new graph with the value |V| and the array degree, then
     allocates enough space for 'adjList', so that they can be filled.
     E is set to 0, edges are added later.*/
-void initGraph(URF_graph *gra, int V, int *degree)
+void URF_initGraph(URF_graph *gra, int V, int *degree)
 {
     int i;
     int **adjList;
@@ -32,7 +32,7 @@ void initGraph(URF_graph *gra, int V, int *degree)
     gra->edges = malloc(gra->edgesAlloced * sizeof(*gra->edges));
 }
 
-void DFSvisit(URF_graph *gra, int vertex, char *visited)
+void URF_DFSvisit(URF_graph *gra, int vertex, char *visited)
 {
     int i,j;
     for(i=0; i<gra->degree[vertex]; ++i)
@@ -41,13 +41,13 @@ void DFSvisit(URF_graph *gra, int vertex, char *visited)
         if(visited[j] == 0)
         {
             visited[j] = 1;
-            DFSvisit(gra,j,visited);
+            URF_DFSvisit(gra,j,visited);
         }
     }
 }
 
 /** returns 1 if the graph is connected, 0 otherwise. uses DFS */
-char checkGraphConnected(URF_graph *gra)
+char URF_checkGraphConnected(URF_graph *gra)
 {
     int i;
     char *visited;
@@ -59,7 +59,7 @@ char checkGraphConnected(URF_graph *gra)
     {
         visited[i] = 0; /*unvisited*/
     }
-    DFSvisit(gra, 0, visited);
+    URF_DFSvisit(gra, 0, visited);
     for(i=0; i<gra->V; ++i)
     {
         if(visited[i] == 0) /*one was unvisited*/
@@ -74,7 +74,7 @@ char checkGraphConnected(URF_graph *gra)
 }
 
 /** returns 1 if the graph is directed, 0 otherwise. */
-char checkGraphDirected(URF_graph *gra)
+char URF_checkGraphDirected(URF_graph *gra)
 {
     int from,to,j,i;
     char edgeUndir;
@@ -103,7 +103,7 @@ char checkGraphDirected(URF_graph *gra)
     return 1-edgeUndir;
 }
 
-char checkGraphCorrect(URF_graph *gra)
+char URF_checkGraphCorrect(URF_graph *gra)
 {
     /*int i,j;
     int from, to;*/
@@ -113,9 +113,9 @@ char checkGraphCorrect(URF_graph *gra)
     edgeUndir = 0;
     
     /*check for directed edges is commented out because currently with the way the edges are added, the graph is always undirected*/
-    edgeUndir = 1-checkGraphDirected(gra);
+    edgeUndir = 1-URF_checkGraphDirected(gra);
     
-    connected = checkGraphConnected(gra);
+    connected = URF_checkGraphConnected(gra);
 
     if(edgeUndir == 0 || connected == 0)
     {
@@ -124,7 +124,7 @@ char checkGraphCorrect(URF_graph *gra)
     return 1;
 }
 
-int isAdj(URF_graph *graph, int i, int j)
+int URF_isAdj(URF_graph *graph, int i, int j)
 {
     int idx;
     for(idx=0; idx<graph->degree[i]; ++idx)
@@ -137,11 +137,11 @@ int isAdj(URF_graph *graph, int i, int j)
     return 0;
 }
 
-void deleteGraph(URF_graph *gra)
+void URF_deleteGraph(URF_graph *gra)
 {
     int i;
     assert(gra != NULL);
-    if(checkGraphDirected(gra) == 0)/*undirected*/
+    if(URF_checkGraphDirected(gra) == 0)/*undirected*/
     {
         for(i=0; i<gra->E; ++i)
         {
@@ -161,7 +161,7 @@ void deleteGraph(URF_graph *gra)
     free(gra);
 }
 
-void printGraph(URF_graph *graph)
+void URF_printGraph(URF_graph *graph)
 {
     int i,j;
     
@@ -175,7 +175,7 @@ void printGraph(URF_graph *graph)
         }
         printf("\n");
     }
-    if(checkGraphDirected(graph) == 0)/*undirected*/
+    if(URF_checkGraphDirected(graph) == 0)/*undirected*/
     {
         printf("edges:\n");
         for(i=0; i<graph->E; ++i)
@@ -195,11 +195,11 @@ URF_graph *initNewGraph(int V)
     {
         degree[i] = 0;
     }
-    initGraph(graph,V,degree);
+    URF_initGraph(graph,V,degree);
     return graph;
 }
 
-void addEdge(URF_graph *gra, int from, int to)
+void URF_addEdge(URF_graph *gra, int from, int to)
 {
     int i;
     for(i=0; i<gra->degree[from]; ++i)
@@ -222,7 +222,7 @@ void addEdge(URF_graph *gra, int from, int to)
     gra->adjList[from][ gra->degree[from]-1 ] = to;
 }
 
-void addToEdgeArray(URF_graph *gra, int from, int to)
+void URF_addToEdgeArray(URF_graph *gra, int from, int to)
 {
     int temp;
     if(from > to)
@@ -251,21 +251,21 @@ void addUEdge(URF_graph *gra, int from, int to)
             return;
         }
     }
-    addEdge(gra, from, to);
-    addEdge(gra, to, from);
+    URF_addEdge(gra, from, to);
+    URF_addEdge(gra, to, from);
     --gra->E; /*was incremented twice*/
 
-    addToEdgeArray(gra, from, to);
+    URF_addToEdgeArray(gra, from, to);
 }
 
-int edgeId(URF_graph *gra, int from, int to)
+int URF_edgeId(URF_graph *gra, int from, int to)
 {
     int edge;
     char found;
     
     found = 'f';
     if(from > to)
-    {/*swap order to make from < to*/
+    {/*URF_swap order to make from < to*/
         edge = to;
         to = from;
         from = edge;

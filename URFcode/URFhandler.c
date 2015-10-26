@@ -7,7 +7,7 @@
 #include "URF_graph.h"
 #include "URFhandler.h"
 
-void giveVertices(int a, int b, char *array, URF_graph *gra, sPathInfo *spi)
+void URF_giveVertices(int a, int b, char *array, URF_graph *gra, sPathInfo *spi)
 {
 /* similar to the function "List_Paths" from Vismara*/
     int i, vertex;
@@ -18,51 +18,30 @@ void giveVertices(int a, int b, char *array, URF_graph *gra, sPathInfo *spi)
         return;
     }
     array[b] = 1;
-    for(i=0; i<spi->dPaths[a]->degree[b]; ++i)/*each vertex adjacent to b in U_a*/
+    for(i=0; i<spi->dPaths[a]->degree[b]; ++i)/*each vertex URF_adjacent to b in U_a*/
     {
         vertex = spi->dPaths[a]->adjList[b][i];
-        giveVertices(a, vertex, array, gra, spi);
+        URF_giveVertices(a, vertex, array, gra, spi);
     }
 }
 
-/*int edgeIdx(int from, int to, URF_graph *gra)
-{
-    int edge;
-    
-    if(from > to)
-    {//swap order to make from < to
-        edge = to;
-        to = from;
-        from = edge;
-    }
-
-    for(edge=gra->startIdxEdges[from]; edge<gra->E; ++edge)
-    {
-        if((gra->edges[edge][0] == from) && (gra->edges[edge][1] == to))
-        {
-            break;
-        }
-    }
-    return edge;
-}*/
-
-void giveEdges(int a, int b, char *array, URF_graph *gra, sPathInfo *spi)
+void URF_giveEdges(int a, int b, char *array, URF_graph *gra, sPathInfo *spi)
 {
 /* similar to the function "List_Paths" from Vismara*/
     int i, vertex;
     
     if(a==b) return;
     
-    for(i=0; i<spi->dPaths[a]->degree[b]; ++i)/*each vertex adjacent to b in U_a*/
+    for(i=0; i<spi->dPaths[a]->degree[b]; ++i)/*each vertex URF_adjacent to b in U_a*/
     {
         vertex = spi->dPaths[a]->adjList[b][i];
-        array[edgeId(gra,b,vertex)] = 1;
-        giveEdges(a, vertex, array, gra, spi);
+        array[URF_edgeId(gra,b,vertex)] = 1;
+        URF_giveEdges(a, vertex, array, gra, spi);
     }
 }
 
 /** just like the function "List_Paths" by Vismara: finds all shortest paths between r and p recursively and writes them into the array "paths". 'mode' determines if the paths are stored as arrays of vertices or of edges.*/
-void listPaths(int r, int p, char ***paths, int *currPath, int *alloced, char mode, URF_graph *gra, sPathInfo *spi)
+void URF_listPaths(int r, int p, char ***paths, int *currPath, int *alloced, char mode, URF_graph *gra, sPathInfo *spi)
 {
     int number; /*number of edges or of vertices in the graph*/
     int vertex;
@@ -88,7 +67,7 @@ void listPaths(int r, int p, char ***paths, int *currPath, int *alloced, char mo
         {
             copyBeforeSplit[i] = (*paths)[*currPath][i];
         }
-        for(i=0; i<spi->dPaths[r]->degree[p]; ++i)/*each vertex adjacent to p in U_r*/
+        for(i=0; i<spi->dPaths[r]->degree[p]; ++i)/*each vertex URF_adjacent to p in U_r*/
         {
             vertex = spi->dPaths[r]->adjList[p][i];
             if(i!=0)/*not continuing the last path*/
@@ -114,9 +93,9 @@ void listPaths(int r, int p, char ***paths, int *currPath, int *alloced, char mo
             }
             if(mode == 'b')
             {
-                (*paths)[*currPath][edgeId(gra,p,vertex)] = 1;
+                (*paths)[*currPath][URF_edgeId(gra,p,vertex)] = 1;
             }
-            listPaths(r,vertex,paths,currPath,alloced,mode,gra,spi);
+            URF_listPaths(r,vertex,paths,currPath,alloced,mode,gra,spi);
         }
     }
     else/*not a split*/
@@ -124,14 +103,14 @@ void listPaths(int r, int p, char ***paths, int *currPath, int *alloced, char mo
         vertex = spi->dPaths[r]->adjList[p][0];
         if(mode == 'b')
         {
-            (*paths)[*currPath][edgeId(gra,p,vertex)] = 1;
+            (*paths)[*currPath][URF_edgeId(gra,p,vertex)] = 1;
         }
-        listPaths(r,vertex,paths,currPath,alloced,mode,gra,spi);
+        URF_listPaths(r,vertex,paths,currPath,alloced,mode,gra,spi);
     }
     free(copyBeforeSplit);
 }
     
-void getPaths(int r, int p, char ***paths, int alloced, char mode, URF_graph *gra, sPathInfo *spi)
+void URF_getPaths(int r, int p, char ***paths, int alloced, char mode, URF_graph *gra, sPathInfo *spi)
 {
     int i,j;
     int currPath=0;
@@ -154,7 +133,7 @@ void getPaths(int r, int p, char ***paths, int alloced, char mode, URF_graph *gr
             (*paths)[i][j] = 0;
         }
     }
-    listPaths(r,p,paths,&currPath,&alloced,mode,gra,spi);
+    URF_listPaths(r,p,paths,&currPath,&alloced,mode,gra,spi);
     if(currPath+1 == alloced)
     {
         *paths = realloc(*paths, (alloced+1)*sizeof(**paths));
@@ -169,7 +148,7 @@ void getPaths(int r, int p, char ***paths, int alloced, char mode, URF_graph *gr
     (*paths)[currPath+1] = NULL;
 }
 
-int combinePaths(char ***paths1, char ***paths2, int p, int q, int x, char ***result, int currIdx, int alloced, char mode, URF_graph *gra)
+int URF_combinePaths(char ***paths1, char ***paths2, int p, int q, int x, char ***result, int currIdx, int alloced, char mode, URF_graph *gra)
 {
     char *path1, *path2;
     int i,j,k;
@@ -206,12 +185,12 @@ int combinePaths(char ***paths1, char ***paths2, int p, int q, int x, char ***re
             {
                 if(x < INT_MAX)/*even cycle*/
                 {
-                    cycle[edgeId(gra,p,x)] = 1;
-                    cycle[edgeId(gra,q,x)] = 1;
+                    cycle[URF_edgeId(gra,p,x)] = 1;
+                    cycle[URF_edgeId(gra,q,x)] = 1;
                 }
                 else /*odd cycle*/
                 {
-                    cycle[edgeId(gra,p,q)] = 1;
+                    cycle[URF_edgeId(gra,p,q)] = 1;
                 }
             }
             if(currIdx == alloced)/*more space needed*/

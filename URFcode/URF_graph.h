@@ -8,7 +8,7 @@
  
 now calculateURFs (from URF.h) can be called on it 
 
- - deleteGraph to free all allocated space */
+ - URF_deleteGraph to free all allocated space */
 
 #ifndef URF_graph_H
 #define URF_graph_H
@@ -22,23 +22,23 @@ URF_graph *initNewGraph(int V);
 void addUEdge(URF_graph *, int from, int to);
 
 /** frees all allocated space. */
-void deleteGraph(URF_graph *gra);
+void URF_deleteGraph(URF_graph *gra);
 
 /*=============================================================================*/
 /* This structure can also be used for directed graphs (which is being done in the calculation of CFs). It that case the degree is the OUT-degree only and the array edges is not used. */
 
 /** adds a directed edge to the graph. */
-void addEdge(URF_graph *, int from, int to);
+void URF_addEdge(URF_graph *, int from, int to);
 
-/** returns 1 if the vertex i is adjacent to j in the graph, 0 otherwise. */
-int isAdj(URF_graph *, int i, int j);
+/** returns 1 if the vertex i is URF_adjacent to j in the graph, 0 otherwise. */
+int URF_isAdj(URF_graph *, int i, int j);
 
 /** prints the adjacency lists, |V| and |E| and the edges (edges only if the graph is undirected) */
-void printGraph(URF_graph *graph);
+void URF_printGraph(URF_graph *graph);
 
 /** Checks if the graph is connected. Returns 1 if it is, 0 otherwise. */
-char checkGraphCorrect(URF_graph *gra);
+char URF_checkGraphCorrect(URF_graph *gra);
 
 /** Returns the index of the bond connecting the atoms 'from' and 'to' */
-int edgeId(URF_graph *gra, int from, int to);
+int URF_edgeId(URF_graph *gra, int from, int to);
 #endif

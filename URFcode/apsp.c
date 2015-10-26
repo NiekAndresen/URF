@@ -7,12 +7,12 @@
 #include "utility.h"
 #include "apsp.h"
 
-void initializeSPathInfo(sPathInfo *info, URF_graph *gra)
+void URF_initializeSPathInfo(sPathInfo *info, URF_graph *gra)
 {
     int i;
-    info->pred = alloc2DIntArray(gra->V, gra->V);
-    info->dist = alloc2DIntArray(gra->V, gra->V);
-    info->reachable = alloc2DCharArray(gra->V, gra->V);
+    info->pred = URF_alloc2DIntArray(gra->V, gra->V);
+    info->dist = URF_alloc2DIntArray(gra->V, gra->V);
+    info->reachable = URF_alloc2DCharArray(gra->V, gra->V);
     info->dPaths = malloc(gra->V * sizeof(*info->dPaths));
     for(i=0; i<gra->V; ++i)
     {
@@ -20,7 +20,7 @@ void initializeSPathInfo(sPathInfo *info, URF_graph *gra)
     }
 }
 
-void findpaths(sPathInfo *spi, URF_graph *gra)
+void URF_findpaths(sPathInfo *spi, URF_graph *gra)
 {
     int i,j,w,adj,run;
     int q_head, q_nextfree, q_size;
@@ -96,25 +96,25 @@ void findpaths(sPathInfo *spi, URF_graph *gra)
     free(queue);
 }
 
-sPathInfo *AllPairsShortestPaths(URF_graph *gra)
+sPathInfo *URF_AllPairsShortestPaths(URF_graph *gra)
 {
     sPathInfo *info = malloc(sizeof(*info));
     
-    initializeSPathInfo(info, gra);
-    findpaths(info, gra);
+    URF_initializeSPathInfo(info, gra);
+    URF_findpaths(info, gra);
     
     return info;
 }
 
-void deleteAPSP(sPathInfo *info, int V)
+void URF_deleteAPSP(sPathInfo *info, int V)
 {
     int i;
-    delete2DArray((void **)info->pred);
-    delete2DArray((void **)info->dist);
-    delete2DArray((void **)info->reachable);
+    URF_delete2DArray((void **)info->pred);
+    URF_delete2DArray((void **)info->dist);
+    URF_delete2DArray((void **)info->reachable);
     for(i=0; i<V; ++i)
     {
-        deleteGraph(info->dPaths[i]);
+        URF_deleteGraph(info->dPaths[i]);
     }
     free(info->dPaths);
     free(info);

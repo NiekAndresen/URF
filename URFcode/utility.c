@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int **alloc2DIntArray(int n, int m)
+int **URF_alloc2DIntArray(int n, int m)
 {
     int i;
     int **arr = malloc(n * sizeof(*arr));
@@ -15,7 +15,7 @@ int **alloc2DIntArray(int n, int m)
     return arr;
 }
 
-unsigned int **alloc2DUIntArray(int n, int m)
+unsigned int **URF_alloc2DUIntArray(int n, int m)
 {
     int i;
     unsigned int **arr = malloc(n * sizeof(*arr));
@@ -27,7 +27,7 @@ unsigned int **alloc2DUIntArray(int n, int m)
     return arr;
 }
 
-char **alloc2DCharArray(int n, int m)
+char **URF_alloc2DCharArray(int n, int m)
 {
     int i;
     char **arr = malloc(n * sizeof(*arr));
@@ -39,13 +39,13 @@ char **alloc2DCharArray(int n, int m)
     return arr;
 }
 
-void delete2DArray(void **arr)
+void URF_delete2DArray(void **arr)
 {
     free(*arr);
     free(arr);
 }
 
-void print2DIntArray(int **arr, int n, int m)
+void URF_print2DIntArray(int **arr, int n, int m)
 {
     int i,j;
     for(i=0; i<n; ++i)
@@ -58,7 +58,7 @@ void print2DIntArray(int **arr, int n, int m)
     }
 }
 
-void print2DCharArray(char **arr, int n, int m)
+void URF_print2DCharArray(char **arr, int n, int m)
 {
     int i,j;
     for(i=0; i<n; ++i)

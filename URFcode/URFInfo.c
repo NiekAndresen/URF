@@ -6,7 +6,7 @@
 #include "URFrelation.h"
 
 /** allocates the matrices in urfInfo */
-URFinfo *initUrfInfo(cfURF *RCFs, URF_graph *graph)
+URFinfo *URF_initUrfInfo(cfURF *RCFs, URF_graph *graph)
 {
     URFinfo *urfInfo;
     char ***URFrel;
@@ -75,7 +75,7 @@ URFinfo *initUrfInfo(cfURF *RCFs, URF_graph *graph)
     return urfInfo;
 }
 
-void deleteURFInfo(URFinfo *uInfo)
+void URF_deleteURFInfo(URFinfo *uInfo)
 {
     int i;
     for(i=0; i<uInfo->nofWeights; ++i)
@@ -95,7 +95,7 @@ void deleteURFInfo(URFinfo *uInfo)
 }
 
 /** returns the number of URFs. */
-int countURFs(URFinfo *uInfo)
+int URF_countURFs(URFinfo *uInfo)
 {
     int URFRelCount=0, weightIdx, i, j;
     char **alreadyInURF; /*for each weight: an array storing if a RCF is already part of a URF*/
@@ -145,7 +145,7 @@ int countURFs(URFinfo *uInfo)
 }
 
 /** returns the index in the array of RCFs (fams) that the RCF with the weight at the index "weight" and position j has */
-int idxWeight(URFinfo *uInfo, int weight, int j)
+int URF_idxWeight(URFinfo *uInfo, int weight, int j)
 {
     int i, sum = 0;
     for(i=0; i<weight; ++i)
@@ -156,7 +156,7 @@ int idxWeight(URFinfo *uInfo, int weight, int j)
 }
 
 /** adds the CF with the index 'RCFIdx' to the URF with the index 'URFIdx'. Needs the number of RCFs already in the URF as third parameter 'previouslyAlloced' */
-void addRCFtoURF(int RCFIdx, int URFIdx, int previouslyAlloced, cfam ***URFs, cfURF *CFs)
+void URF_addRCFtoURF(int RCFIdx, int URFIdx, int previouslyAlloced, cfam ***URFs, cfURF *CFs)
 {
     if(previouslyAlloced == 0)
     {
@@ -169,7 +169,7 @@ void addRCFtoURF(int RCFIdx, int URFIdx, int previouslyAlloced, cfam ***URFs, cf
     URFs[URFIdx][previouslyAlloced] =  CFs->fams[RCFIdx];
 }
 
-void fillURFs(URFinfo *uInfo, cfURF *CFs)
+void URF_fillURFs(URFinfo *uInfo, cfURF *CFs)
 {
     cfam ***URFs;
     int *nofRCFs;
@@ -207,7 +207,7 @@ void fillURFs(URFinfo *uInfo, cfURF *CFs)
                 {
                     if(uInfo->URFrel[i][j][k] == 1)
                     {
-                        addRCFtoURF(idxWeight(uInfo,i,k),currURFIdx,nofRCFs[currURFIdx],URFs,CFs);/*add to current URF the CFs with the given Idx*/
+                        URF_addRCFtoURF(URF_idxWeight(uInfo,i,k),currURFIdx,nofRCFs[currURFIdx],URFs,CFs);/*add to current URF the CFs with the given Idx*/
                         ++nofRCFs[currURFIdx];
                         alreadyInURF[i][k] = 1;
                     }
@@ -226,13 +226,13 @@ void fillURFs(URFinfo *uInfo, cfURF *CFs)
     uInfo->nofCFsPerURF = nofRCFs;
 }
 
-URFinfo *checkURFRelation(cfURF *RCFs, URF_graph *graph, sPathInfo *spi)
+URFinfo *URF_checkURFRelation(cfURF *RCFs, URF_graph *graph, sPathInfo *spi)
 {
-    URFinfo *uInfo = initUrfInfo(RCFs, graph);
-    findRelations(RCFs, graph, uInfo, spi);
+    URFinfo *uInfo = URF_initUrfInfo(RCFs, graph);
+    URF_findRelations(RCFs, graph, uInfo, spi);
     
-    uInfo->nofURFs = countURFs(uInfo);
-    fillURFs(uInfo, RCFs);
+    uInfo->nofURFs = URF_countURFs(uInfo);
+    URF_fillURFs(uInfo, RCFs);
     return uInfo;
 }
 

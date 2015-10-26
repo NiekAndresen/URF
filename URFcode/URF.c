@@ -27,9 +27,9 @@ void URF_addUEdge(URF_graph *gra, URFAtom from, URFAtom to)
     addUEdge(gra, from, to);
 }
 
-void findShortestPaths(URF_data *udata, URF_graph *gra)
+void URF_findShortestPaths(URF_data *udata, URF_graph *gra)
 {
-    udata->spi = AllPairsShortestPaths(gra);
+    udata->spi = URF_AllPairsShortestPaths(gra);
 }
 
 URF_data *URF_calculate(URF_graph *gra)
@@ -37,15 +37,15 @@ URF_data *URF_calculate(URF_graph *gra)
     char correctGraph;
     URF_data *udata;
     
-    correctGraph = checkGraphCorrect(gra); /*from URF_graph.h*/
+    correctGraph = URF_checkGraphCorrect(gra); /*from URF_graph.h*/
     if(correctGraph == 0) URF_warn('c'); /* from utility.h */
     udata = malloc(sizeof(*udata));
-    findShortestPaths(udata, gra); /*from apsp.h*/
-    udata->CFs = findCycleFams(gra, udata->spi); /*from CycleFamsURF.h*/
+    URF_findShortestPaths(udata, gra); /*from apsp.h*/
+    udata->CFs = URF_findCycleFams(gra, udata->spi); /*from CycleFamsURF.h*/
     udata->graph = gra;
     if(udata->CFs->nofFams > 0)
     {
-        udata->urfInfo = checkURFRelation(udata->CFs, udata->graph, udata->spi);/*from URFInfo.h*/
+        udata->urfInfo = URF_checkURFRelation(udata->CFs, udata->graph, udata->spi);/*from URFInfo.h*/
         udata->nofURFs = udata->urfInfo->nofURFs;
     }
     else
@@ -57,13 +57,13 @@ URF_data *URF_calculate(URF_graph *gra)
 
 void URF_deleteData(URF_data *udata)
 {
-    deleteAPSP(udata->spi, udata->graph->V);
-    deleteCycleFams(udata->CFs);
+    URF_deleteAPSP(udata->spi, udata->graph->V);
+    URF_deleteCycleFams(udata->CFs);
     if(udata->nofURFs > 0)
     {
-        deleteURFInfo(udata->urfInfo);
+        URF_deleteURFInfo(udata->urfInfo);
     }
-    deleteGraph(udata->graph);
+    URF_deleteGraph(udata->graph);
     free(udata);
 }
 
@@ -98,8 +98,8 @@ URFAtom *getAtoms(URF_data *uData, int index)
     }
     for(i=0; i<nofFams; ++i)
     {
-        giveVertices(URF[i]->r, URF[i]->q, atoms, uData->graph, uData->spi);
-        giveVertices(URF[i]->r, URF[i]->p, atoms, uData->graph, uData->spi);
+        URF_giveVertices(URF[i]->r, URF[i]->q, atoms, uData->graph, uData->spi);
+        URF_giveVertices(URF[i]->r, URF[i]->p, atoms, uData->graph, uData->spi);
         if(URF[i]->x < INT_MAX) /*even cycle*/
         {
             atoms[URF[i]->x] = 1;
@@ -148,16 +148,16 @@ unsigned int *getBonds(URF_data *uData, int index)
     }
     for(i=0; i<nofFams; ++i)
     {
-        giveEdges(URF[i]->r, URF[i]->q, bonds, uData->graph, uData->spi);
-        giveEdges(URF[i]->r, URF[i]->p, bonds, uData->graph, uData->spi);
+        URF_giveEdges(URF[i]->r, URF[i]->q, bonds, uData->graph, uData->spi);
+        URF_giveEdges(URF[i]->r, URF[i]->p, bonds, uData->graph, uData->spi);
         if(URF[i]->x < INT_MAX) /*even cycle*/
         {
-            bonds[edgeId(uData->graph,URF[i]->q,URF[i]->x)] = 1;
-            bonds[edgeId(uData->graph,URF[i]->p,URF[i]->x)] = 1;
+            bonds[URF_edgeId(uData->graph,URF[i]->q,URF[i]->x)] = 1;
+            bonds[URF_edgeId(uData->graph,URF[i]->p,URF[i]->x)] = 1;
         }
         else/*odd cycle*/
         {
-            bonds[edgeId(uData->graph,URF[i]->q,URF[i]->p)] = 1;
+            bonds[URF_edgeId(uData->graph,URF[i]->q,URF[i]->p)] = 1;
         }
     }
     
@@ -184,7 +184,7 @@ unsigned int *getBonds(URF_data *uData, int index)
 }
 
 /** calls getAtoms() or getBonds() depending on mode 'a' or 'b' */
-URFAtom *giveURF(URF_data *uData, int URFindex, char mode)
+URFAtom *URF_giveURF(URF_data *uData, int URFindex, char mode)
 {
     URFAtom *result;
     if(mode == 'a')
@@ -197,7 +197,7 @@ URFAtom *giveURF(URF_data *uData, int URFindex, char mode)
     }
     else
     {
-        fprintf(stderr, "ERROR: tried to call 'giveURF()' with invalid mode '%c'\n",mode);
+        fprintf(stderr, "ERROR: tried to call 'URF_giveURF()' with invalid mode '%c'\n",mode);
         fprintf(stderr, "Only 'a' or 'b' are allowed. Read interface for help.\n");
         exit(EXIT_FAILURE);
     }
@@ -257,7 +257,7 @@ modes:
     - 'a': A cycle is represented by an array of {0,1}^n which contains a 1 at position i if the vertex i is part of the cycle or 0 otherwise (n: number of vertices).
     - 'b': A cycle is represented by an array of {0,1}^m which contains a 1 at position i if the edge i is part of the cycle or 0 otherwise (m: number of edges).
 The array of cycles is ended with a terminating NULL pointer.
-This structure has to be deallocated using 'deleteCyclesChar(<return value>)'.*/
+This structure has to be deallocated using 'URF_deleteCyclesChar(<return value>)'.*/
 char **URF_getCyclesChar(URF_data *udata, int index, char mode)
 {
     int i;
@@ -274,9 +274,9 @@ char **URF_getCyclesChar(URF_data *udata, int index, char mode)
     result = malloc(alloced * sizeof(*result));
     for(i=0; i<nofFams; ++i)
     {
-        getPaths(URF[i]->r, URF[i]->p, &paths1, alloced, mode, udata->graph, udata->spi);
-        getPaths(URF[i]->r, URF[i]->q, &paths2, alloced, mode, udata->graph, udata->spi);
-        currIdx = combinePaths(&paths1, &paths2, URF[i]->p, URF[i]->q, URF[i]->x, &result, currIdx, alloced, mode, udata->graph);
+        URF_getPaths(URF[i]->r, URF[i]->p, &paths1, alloced, mode, udata->graph, udata->spi);
+        URF_getPaths(URF[i]->r, URF[i]->q, &paths2, alloced, mode, udata->graph, udata->spi);
+        currIdx = URF_combinePaths(&paths1, &paths2, URF[i]->p, URF[i]->q, URF[i]->x, &result, currIdx, alloced, mode, udata->graph);
         /*calculate how many spaces are alloced with the help of the returned currIdx. Can be done since 'alloced' is always a power of two*/
         while(currIdx > alloced) alloced *= 2;
     }
@@ -289,7 +289,7 @@ char **URF_getCyclesChar(URF_data *udata, int index, char mode)
 }
 
 /**to delete result of URF_getCyclesChar()*/
-void deleteCyclesChar(char **cycles)
+void URF_deleteCyclesChar(char **cycles)
 {
     int i;
     for(i=0; cycles[i]!=NULL; ++i)
@@ -342,7 +342,7 @@ unsigned int URF_getCycles(URF_data *udata, URFCycle **ptr, unsigned int index)
         ++nextfree;
     }
 
-    deleteCyclesChar(URFCycles);
+    URF_deleteCyclesChar(URFCycles);
     *ptr = result;
     return i;
 }
@@ -364,7 +364,7 @@ mode:
     - 'b': bond
 returns an array of integers containing all indices of URFs containing the object.
 The array ends with a terminating INT_MAX on its last position and has to be deallocated with 'free()' */
-unsigned int *listURFs(URF_data *udata, int object, char mode)
+unsigned int *URF_listURFs(URF_data *udata, int object, char mode)
 {
     unsigned int *result;
     int *URFs; /*array of {0,1}^#URFs containing 1 on position i if the i-th URF contains the object*/
@@ -375,14 +375,14 @@ unsigned int *listURFs(URF_data *udata, int object, char mode)
     
     if(!(mode == 'a' || mode == 'b'))
     {
-        fprintf(stderr, "ERROR: tried to call 'listURFs()' with invalid mode '%c'\n",mode);
+        fprintf(stderr, "ERROR: tried to call 'URF_listURFs()' with invalid mode '%c'\n",mode);
         fprintf(stderr, "Only 'a' or 'b' are allowed. Read interface for help.\n");
         exit(EXIT_FAILURE);
     }
     URFs = malloc(udata->nofURFs * sizeof(*URFs));
     for(i=0; i<udata->nofURFs; ++i)
     {
-        objects = giveURF(udata, i, mode);
+        objects = URF_giveURF(udata, i, mode);
         contained = 0;
         for(j=0; objects[j]<INT_MAX; ++j)
         {
@@ -418,7 +418,7 @@ unsigned int *listURFs(URF_data *udata, int object, char mode)
     return result;
 }
 
-unsigned int URF_listURFsWithAtom(URF_data *udata, unsigned int **ptr, URFAtom object)
+unsigned int URF_URF_listURFsWithAtom(URF_data *udata, unsigned int **ptr, URFAtom object)
 {
     unsigned int i;
     if(udata->nofURFs < 1)
@@ -427,12 +427,12 @@ unsigned int URF_listURFsWithAtom(URF_data *udata, unsigned int **ptr, URFAtom o
         (*ptr) = malloc(sizeof(**ptr));
         return 0;
     }
-    *ptr = listURFs(udata, object, 'a');
+    *ptr = URF_listURFs(udata, object, 'a');
     for(i=0; (*ptr)[i]<INT_MAX; ++i);
     return i;
 }
 
-unsigned int URF_listURFsWithBond(URF_data *udata, unsigned int **ptr, URFAtom atom1, URFAtom atom2)
+unsigned int URF_URF_listURFsWithBond(URF_data *udata, unsigned int **ptr, URFAtom atom1, URFAtom atom2)
 {
     unsigned int i;
     if(udata->nofURFs < 1)
@@ -441,7 +441,7 @@ unsigned int URF_listURFsWithBond(URF_data *udata, unsigned int **ptr, URFAtom a
         (*ptr) = malloc(sizeof(**ptr));
         return 0;
     }
-    *ptr = listURFs(udata, edgeId(udata->graph, atom1, atom2), 'b');
+    *ptr = URF_listURFs(udata, URF_edgeId(udata->graph, atom1, atom2), 'b');
     for(i=0; (*ptr)[i]<INT_MAX; ++i);
     return i;
 }
@@ -450,7 +450,7 @@ unsigned int URF_numContainingAtom(URF_data *udata, URFAtom atom)
 {
     unsigned int number;
     unsigned int *arr;
-    number = URF_listURFsWithAtom(udata, &arr, atom);
+    number = URF_URF_listURFsWithAtom(udata, &arr, atom);
     free(arr);
     return number;
 }
@@ -459,7 +459,7 @@ unsigned int URF_numContainingBond(URF_data *udata, URFAtom atom1, URFAtom atom2
 {
     unsigned int number;
     unsigned int *arr;
-    number = URF_listURFsWithBond(udata, &arr, atom1, atom2);
+    number = URF_URF_listURFsWithBond(udata, &arr, atom1, atom2);
     free(arr);
     return number;
 }
@@ -481,7 +481,7 @@ unsigned int URF_getBasis(URF_data *udata, URFCycle **ptr)
     for(i=0; i<udata->nofURFs; ++i)
     {
         mat[added] = udata->urfInfo->URFs[i][0]->prototype;
-        if(linDep(mat, added+1, udata->graph->E) == 1) /*cycles are dependent*/
+        if(URF_linDep(mat, added+1, udata->graph->E) == 1) /*cycles are URF_dependent*/
         {
             /*cycle added last is not part of the basis -> will be ignored/overwritten in next step*/
             continue;
@@ -499,7 +499,7 @@ unsigned int URF_getBasis(URF_data *udata, URFCycle **ptr)
                 ++currBond;
             }
         }
-        /*if enough independent cycles were found, break out of the loop*/
+        /*if enough inURF_dependent cycles were found, break out of the loop*/
         if(++added == size) break;
     }
     free(mat);
@@ -583,11 +583,11 @@ unsigned int URF_getRCycles(URF_data *udata, URFCycle **ptr)
 
 unsigned int URF_translateCycArray(URF_data *udata, URFCycle *array, unsigned int number, char ***ptr)
 {
-    int i,j,edgeIdx;
+    int i,j,URF_edgeIdx;
     char **result;
     
     if(number < 1) return 0;
-    result = alloc2DCharArray(number, udata->graph->E);
+    result = URF_alloc2DCharArray(number, udata->graph->E);
     for(i=0; i<number;  ++i)/*initialize to 0s*/
     {
         for(j=0; j<udata->graph->E; ++j)
@@ -600,8 +600,8 @@ unsigned int URF_translateCycArray(URF_data *udata, URFCycle *array, unsigned in
     {
         for(j=0; j<array[i].weight; ++j)
         {
-            edgeIdx = edgeId(udata->graph, array[i].bonds[j][0], array[i].bonds[j][1]);
-            result[i][edgeIdx] = 1;
+            URF_edgeIdx = URF_edgeId(udata->graph, array[i].bonds[j][0], array[i].bonds[j][1]);
+            result[i][URF_edgeIdx] = 1;
         }
     }
     (*ptr) = result;
@@ -611,7 +611,7 @@ unsigned int URF_translateCycArray(URF_data *udata, URFCycle *array, unsigned in
 void URF_deleteEdgeIdxArray(char **cycles, unsigned int num)
 {
     if(num < 1) return;
-    delete2DArray((void **)cycles);
+    URF_delete2DArray((void **)cycles);
 }
 
 unsigned int URF_getEdgeArray(URF_data *udata, URFBond **ptr)

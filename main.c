@@ -35,7 +35,7 @@ int main(int argc, char **argv)
         graph = readInList(argv[1]);
     }
     
-    printGraph(graph);
+    URF_printGraph(graph);
 
     time = clock();
     udata = URF_calculate(graph);

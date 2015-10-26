@@ -9,9 +9,9 @@
 #include "URFInfoStruct.h"
 
 /** deletes the URFinfo */
-void deleteURFInfo(URFinfo *);
+void URF_deleteURFInfo(URFinfo *);
 
 /** Uses Gaussian elimination to mark potentially URF-related CFs and checks the previously marked CFs for URF-relation. Fills the URFinfo. */
-URFinfo *checkURFRelation(cfURF *, URF_graph *, sPathInfo *);
+URFinfo *URF_checkURFRelation(cfURF *, URF_graph *, sPathInfo *);
 
 #endif
