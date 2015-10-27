@@ -147,10 +147,10 @@ void URF_deleteCycles(URFCycle *cycles, unsigned int number);
 /*============================================================================*/
 
 /** Translates the results of 'URF_getCycles()', 'getBasis()',
-'URF_getRCPrototypes()' and 'URF_getRCycles()' (arrays of URFcylces) into an array
-of cycles represented by arrays of {0,1}^|E|. Such an array has a 1 at position
-i if edge i is part of the cycle or 0 otherwise. An edge is identified by the
-position at which it was added to the graph starting at 0.
+'URF_getRCPrototypes()' and 'URF_getRCycles()' (arrays of URFcylces) into an
+array of cycles represented by arrays of {0,1}^|E|. Such an array has a 1 at
+position i if edge i is part of the cycle or 0 otherwise. An edge is identified
+by the position at which it was added to the graph starting at 0.
  @param array The resulting structure of the functions named above
  @param number The return value of the functions named above
 (the number of cycles given)

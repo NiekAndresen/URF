@@ -8,7 +8,8 @@
 #include "./URFcode/URF_graph.h"
 #include "./URFcode/utility.h"
 #include "URF.h"
-/** returns the index in the array of RCFs (fams) that the RCF with the weight at the index "weight" and position j has */
+/** returns the index in the array of RCFs (fams) that the RCF with the weight
+at the index "weight" and position j has */
 int idxWeightsMain(URFinfo *uInfo, int weight, int j)
 {
     int i, sum = 0;
