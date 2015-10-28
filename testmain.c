@@ -20,8 +20,46 @@ int main(int argc, char **argv)
   char **otherCycleArray;
 
   /* read in the graph */
-  atomCount = 8;
-  bondCount = 10;
+  unsigned int bondArr[][2]={
+  {1, 13},
+  {2, 17},
+  {3,  4},
+  {3,  7},
+  {3, 13},
+  {4, 12},
+  {4, 17},
+  {5, 13},
+  {5, 17},
+  {5, 20},
+  {6,  7},
+  {6,  9},
+  {6, 10},
+  {6, 12},
+  {7,  8},
+  {7, 14},
+  {8,  9},
+  {8, 11},
+  {8, 15},
+  {9, 16},
+  {9, 26},
+ {10, 11},
+ {10, 18},
+ {11, 19},
+ {20, 21},
+ {20, 22},
+ {21, 23},
+ {22, 24},
+ {23, 25},
+ {24, 25}
+ };
+  atomCount = 26;
+  bondCount = 30;
+  graph = URF_initNewGraph(atomCount);
+  for(idx=0;idx<bondCount; ++idx)
+  {
+    URF_addUEdge(graph, bondArr[idx][0]-1, bondArr[idx][1]-1);
+  }
+  /*atomCount = 8;
   graph = URF_initNewGraph(atomCount);
   URF_addUEdge(graph, 0, 1);
   URF_addUEdge(graph, 0, 2);
@@ -32,7 +70,7 @@ int main(int argc, char **argv)
   URF_addUEdge(graph, 4, 6);
   URF_addUEdge(graph, 5, 7);
   URF_addUEdge(graph, 6, 7);
-  URF_addUEdge(graph, 7, 0);
+  URF_addUEdge(graph, 7, 0);*/
 
   /* calculate Unique Ring Families */
   URFdata = URF_calculate(graph);
@@ -102,7 +140,7 @@ int main(int argc, char **argv)
     }
     printf("\n");
     
-    printf("The RC Prototypes as arrays ");
+    printf("The RC Prototypes as vectors ");
     count = URF_translateCycArray(URFdata, cycleArray, count, &otherCycleArray);
     printf("(%d rings):\n",count);
     /* To be able to understand the bitsets better: */

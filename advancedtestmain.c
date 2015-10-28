@@ -153,7 +153,7 @@ int main(int argc, char **argv)
     }
     printf("\n");
     
-    printf("The RC Prototypes as arrays ");
+    printf("The RC Prototypes as vectors ");
     count = URF_translateCycArray(URFdata, cycleArray, count, &otherCycleArray);
     printf("(%d rings):\n",count);
     /* To be able to understand the bitsets better: */

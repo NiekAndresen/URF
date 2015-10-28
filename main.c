@@ -43,20 +43,20 @@ int main(int argc, char **argv)
     time = clock() - time;
     
     printf("calculated, it took %fs\n",(float)time/CLOCKS_PER_SEC);
-    /*
-    printf("dist:\n");
-    print2DIntArray(udata->spi->dist, graph->V, graph->V);
+    
+    /*printf("dist:\n");
+    URF_print2DIntArray(udata->spi->dist, graph->V, graph->V);
     printf("pred:\n");
-    print2DIntArray(udata->spi->pred, graph->V, graph->V);
+    URF_print2DIntArray(udata->spi->pred, graph->V, graph->V);
     printf("reachable:\n");
-    print2DCharArray(udata->spi->reachable, graph->V, graph->V);
+    URF_print2DCharArray(udata->spi->reachable, graph->V, graph->V);
     printf("dPaths:\n");
     for(i=0; i<graph->V; ++i)
     {
         printf("r=%d\n",i);
-        printGraph(udata->spi->dPaths[i]);
-    }
-    */  
+        URF_printGraph(udata->spi->dPaths[i]);
+    }*/
+      
     printf("CFs:\n");
     printf("Number of Fams: %d\n", udata->CFs->nofFams);
     for(i=0; i<udata->CFs->nofFams; ++i)
@@ -113,21 +113,21 @@ int main(int argc, char **argv)
         }
         printf("\n");
 
-        /*int l,number;
-        int ***cycles;
+        int l,number;
+        URFCycle *cycles;
         number = URF_getCycles(udata, &cycles, i);
         printf("cycles (%d):\n",number);
         for(j=0; j<number; ++j)
         {
-            for(l=0; cycles[j][l]!=NULL; ++l)
+            for(l=0; l<cycles[j].weight; ++l)
             {
-                printf("(%d ",cycles[j][l][0]);
-                printf("%d), ",cycles[j][l][1]);
+                printf("(%d ",cycles[j].bonds[l][0]);
+                printf("%d), ",cycles[j].bonds[l][1]);
             }
             printf("\n");
         }
         printf("\n");
-        URF_deleteCycles(cycles, number);*/
+        URF_deleteCycles(cycles, number);
         
         URFBond *URFedges;
         int number4;
@@ -192,8 +192,9 @@ int main(int argc, char **argv)
     URF_deleteCycles(basis, number1);
     
     
-    /*URFAtom atom;
-    int number2,*URFsWithAtom;
+    URFAtom atom;
+    int number2;
+    URFAtom *URFsWithAtom;
     atom=1;
     number2 = URF_listURFsWithAtom(udata, &URFsWithAtom, atom);
     printf("listing all URFs with atom %d: ",atom);
@@ -202,11 +203,11 @@ int main(int argc, char **argv)
         printf("%d ",URFsWithAtom[i]);
     }
     printf("\n");
-    printf("number of URFs with atom %d: %d\n",atom,URF_numContaining(udata, atom));
-    free(URFsWithAtom);*/
+    printf("number of URFs with atom %d: %d\n",atom,URF_numContainingAtom(udata, atom));
+    free(URFsWithAtom);
     
-    /*int bond,numberB;
-    int *URFsWithBond;
+    int bond,numberB;
+    unsigned int *URFsWithBond;
     bond=1;
     numberB = URF_listURFsWithBond(udata, &URFsWithBond, udata->graph->edges[bond][0], udata->graph->edges[bond][1]);
     printf("listing all URFs with bond %d: ",bond);
@@ -215,9 +216,9 @@ int main(int argc, char **argv)
         printf("%d ",URFsWithBond[i]);
     }
     printf("\n");
-    free(URFsWithBond);*/
+    free(URFsWithBond);
     
-    /*URFCycle *protos;
+    URFCycle *protos;
     int num;
     printf("RC prototypes:\n");
     num = URF_getRCPrototypes(udata, &protos);
@@ -229,9 +230,9 @@ int main(int argc, char **argv)
         }
         printf("\n");
     }
-    URF_deleteCycles(protos, num);*/
+    URF_deleteCycles(protos, num);
     
-    /*URFCycle *relCycles;
+    URFCycle *relCycles;
     int num1;
     printf("RCs:\n");
     num1=URF_getRCycles(udata, &relCycles);
@@ -244,7 +245,7 @@ int main(int argc, char **argv)
         }
         printf("\n");
     }
-    URF_deleteCycles(relCycles, num1);*/
+    URF_deleteCycles(relCycles, num1);
     
     URF_deleteData(udata);
     /*printf("Niek ist die Nummer %d\n",1);*/
