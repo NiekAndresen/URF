@@ -11,7 +11,8 @@
 /** deletes the URFinfo */
 void URF_deleteURFInfo(URFinfo *);
 
-/** Uses Gaussian elimination to mark potentially URF-related CFs and checks the previously marked CFs for URF-relation. Fills the URFinfo. */
+/** Uses Gaussian elimination to mark potentially URF-related CFs and checks
+the previously marked CFs for URF-relation. Fills the URFinfo. */
 URFinfo *URF_checkURFRelation(cfURF *, URF_graph *, sPathInfo *);
 
 #endif
