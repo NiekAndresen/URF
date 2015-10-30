@@ -6,7 +6,6 @@
 #include "apsp.h"
 #include "URF_graph.h"
 #include "CycleFamsURF.h"
-#include "CFquicksort.h"
 
 /** returns 1 if the intersection of P(r,y) and P(r,z) is equal to {r};
 0 otherwise */
@@ -206,6 +205,19 @@ void URF_vismara(cfURF *rc, URF_graph *gra, sPathInfo *spi)
   free(evenCand);
 }
 
+int URF_cycleFamsComp(const void *cf1, const void *cf2)
+{
+    if(((cfam *)cf1)->weight < ((cfam *)cf2)->weight)
+    {
+        return -1;
+    }
+    else if(((cfam *)cf1)->weight > ((cfam *)cf2)->weight)
+    {
+        return 1;
+    }
+    else return 0;
+}
+
 cfURF *URF_findCycleFams(URF_graph *gra, sPathInfo *spi)
 {
   cfURF *rc = malloc(sizeof(*rc));
@@ -213,7 +225,7 @@ cfURF *URF_findCycleFams(URF_graph *gra, sPathInfo *spi)
   rc->fams = malloc((2*gra->E*gra->E + (gra->E - gra->V +1) * gra->V) * sizeof(*rc->fams));
   rc->nofFams = 0;
   URF_vismara(rc, gra, spi);
-  URF_sortbyweight(rc);
+  qsort(rc->fams, rc->nofFams, sizeof(*rc->fams), URF_cycleFamsComp);
   return rc;
 }
 
