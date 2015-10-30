@@ -3,6 +3,8 @@
 #ifndef URFINFODATASTRUCT
 #define URFINFODATASTRUCT
 
+#include "CycleFamsURFStruct.h"
+
 typedef struct{
   int nofWeights; /*number of different weights of cycle families occuring*/
   int *nofProtos; /*array storing the number of prototypes for each weight*/

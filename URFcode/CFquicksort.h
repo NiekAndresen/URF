@@ -3,7 +3,7 @@
 #ifndef CFQUICKSORT_H
 #define CFQUICKSORT_H
 
-#include "CycleFamsURF.h"
+#include "CycleFamsURFStruct.h"
 
 /** sorts the RCFs in the array fams by weight. */
 void URF_sortbyweight(cfURF *rc);

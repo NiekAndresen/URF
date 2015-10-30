@@ -21,10 +21,10 @@ now calculateURFs (from URF.h) can be called on it
 #include "URF_graph_Struct.h"
 
 /** initializes a new Graph that edges can be added to (allocates space for it) */
-URF_graph *initNewGraph(int V);
+URF_graph *URF_initNewGraph_g(int V);
 
 /** adds an undirected edge to the graph. */
-void addUEdge(URF_graph *, int from, int to);
+void URF_addUEdge_g(URF_graph *, int from, int to);
 
 /** frees all allocated space. */
 void URF_deleteGraph(URF_graph *gra);

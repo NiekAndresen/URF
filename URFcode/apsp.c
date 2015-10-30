@@ -16,7 +16,7 @@ void URF_initializeSPathInfo(sPathInfo *info, URF_graph *gra)
   info->dPaths = malloc(gra->V * sizeof(*info->dPaths));
   for(i=0; i<gra->V; ++i)
   {
-    info->dPaths[i] = initNewGraph(gra->V);
+    info->dPaths[i] = URF_initNewGraph_g(gra->V);
   }
 }
 

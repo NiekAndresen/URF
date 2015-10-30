@@ -3,8 +3,9 @@
 #ifndef CYCLEFAMSURF_H
 #define CYCLEFAMSURF_H
 
-#include "apsp.h"
+#include "apspStruct.h"
 #include "CycleFamsURFStruct.h"
+#include "URF_graph_Struct.h"
 
 /** uses Vismara's algorithm to find (Relevant) Cycle Families.
 Returns them sorted by weight */

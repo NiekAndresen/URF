@@ -186,7 +186,7 @@ void URF_printGraph(URF_graph *graph)
   }
 }
 
-URF_graph *initNewGraph(int V)
+URF_graph *URF_initNewGraph_g(int V)
 {
   URF_graph *graph = malloc(sizeof(*graph));
   int *degree;
@@ -243,7 +243,7 @@ void URF_addToEdgeArray(URF_graph *gra, int from, int to)
   gra->edges[gra->E-1][1] = to;
 }
 
-void addUEdge(URF_graph *gra, int from, int to)
+void URF_addUEdge_g(URF_graph *gra, int from, int to)
 {
   int i;
   for(i=0; i<gra->degree[from]; ++i)

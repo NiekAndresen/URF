@@ -3,8 +3,8 @@
 #ifndef GAUSSELIMURF_H
 #define GAUSSELIMURF_H
 
-#include "URFInfo.h"
-#include "apsp.h"
+#include "URFInfoStruct.h"
+#include "apspStruct.h"
 
 /** Finds potentially URFs-related CFs with the help of Gaussian Elimination,
 checks if the relation in fulfilled and stores the result in the URFinfo. In

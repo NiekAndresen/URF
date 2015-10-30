@@ -3,6 +3,8 @@
 #ifndef APSPDATASTRUCT
 #define APSPDATASTRUCT
 
+#include "URF_graph_Struct.h"
+
 typedef struct{
   int **pred; /*predecessor matrix*/
   int **dist; /*distance matrix*/

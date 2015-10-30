@@ -10,10 +10,11 @@
 #include "utility.h"
 #include "URF_graph.h"
 #include "URFrelation.h"
+#include "URFInfo.h"
 
 URF_graph *URF_initNewGraph(unsigned int V)
 {
-  return initNewGraph(V);
+  return URF_initNewGraph_g(V);
 }
 
 void URF_addUEdge(URF_graph *gra, URFAtom from, URFAtom to)
@@ -26,7 +27,7 @@ void URF_addUEdge(URF_graph *gra, URFAtom from, URFAtom to)
     from, to, gra->V);
     return;
   }
-  addUEdge(gra, from, to);
+  URF_addUEdge_g(gra, from, to);
 }
 
 void URF_findShortestPaths(URF_data *udata, URF_graph *gra)
