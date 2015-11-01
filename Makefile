@@ -17,7 +17,7 @@ MAIN = testmain.c
 SOURCE = io.c
 
 OBJ = $(SOURCE:%.c=%.o)
-URFSRC = URF.c URFgraph.c utility.c apsp.c CycleFamsURF.c URFInfo.c URFrelation.c URFhandler.c
+URFSRC = URF.c URFgraph.c utility.c apsp.c CycleFamsURF.c URFinfo.c URFrelation.c URFhandler.c
 URFOBJ = $(URFSRC:%.c=%.o)
 URFOBJDIR = $(URFSRC:%.c=$(URFCODEDIR)/%.o) #attaching directory to be able to use "%.o: %.c"
 

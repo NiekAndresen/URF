@@ -5,7 +5,7 @@
 
 #include "apspStruct.h"
 #include "CycleFamsURFStruct.h"
-#include "URFInfoStruct.h"
+#include "URFinfoStruct.h"
 
 /** struct that contains all data that was accumulated during the calculation of
 the URF-structure. The URF.h user does not need to change or read anything in

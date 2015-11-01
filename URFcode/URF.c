@@ -10,7 +10,7 @@
 #include "utility.h"
 #include "URFgraph.h"
 #include "URFrelation.h"
-#include "URFInfo.h"
+#include "URFinfo.h"
 
 URF_graph *URF_initNewGraph(unsigned int V)
 {
@@ -48,7 +48,7 @@ URF_data *URF_calculate(URF_graph *gra)
   udata->graph = gra;
   if(udata->CFs->nofFams > 0)
   {
-    /*from URFInfo.h*/
+    /*from URFinfo.h*/
     udata->urfInfo = URF_checkURFRelation(udata->CFs, udata->graph, udata->spi);
     udata->nofURFs = udata->urfInfo->nofURFs;
   }

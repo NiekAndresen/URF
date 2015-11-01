@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include "URFrelation.h"
-#include "URFInfo.h"
+#include "URFinfo.h"
 #include "URFgraph.h"
 #include "CycleFamsURF.h"
 #include "URFhandler.h"
