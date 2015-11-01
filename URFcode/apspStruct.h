@@ -3,7 +3,7 @@
 #ifndef APSPDATASTRUCT
 #define APSPDATASTRUCT
 
-#include "URF_graph_Struct.h"
+#include "URFgraphStruct.h"
 
 typedef struct{
   int **pred; /*predecessor matrix*/

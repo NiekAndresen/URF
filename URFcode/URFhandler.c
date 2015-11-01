@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include "apsp.h"
-#include "URF_graph.h"
+#include "URFgraph.h"
 #include "URFhandler.h"
 
 void URF_giveVertices(int a, int b, char *array, URF_graph *gra, sPathInfo *spi)

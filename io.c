@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <ctype.h>
-#include "./URFcode/URF_graph.h"
+#include "./URFcode/URFgraph.h"
 #include "./URFcode/utility.h"
 #include "URF.h"
 

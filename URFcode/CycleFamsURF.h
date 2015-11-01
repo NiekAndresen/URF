@@ -5,7 +5,7 @@
 
 #include "apspStruct.h"
 #include "CycleFamsURFStruct.h"
-#include "URF_graph_Struct.h"
+#include "URFgraphStruct.h"
 
 /** uses Vismara's algorithm to find (Relevant) Cycle Families.
 Returns them sorted by weight */

@@ -3,7 +3,7 @@
 #ifndef IO_H
 #define IO_H
 
-#include "./URFcode/URF_graph.h"
+#include "./URFcode/URFgraph.h"
 
 /** reads the adjecency lists in the file path into the Graph.
 The vertices are saved with their index (0 - |V|-1).

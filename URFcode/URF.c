@@ -8,7 +8,7 @@
 #include "CycleFamsURF.h"
 #include "URFhandler.h"
 #include "utility.h"
-#include "URF_graph.h"
+#include "URFgraph.h"
 #include "URFrelation.h"
 #include "URFInfo.h"
 
@@ -17,7 +17,7 @@ URF_graph *URF_initNewGraph(unsigned int V)
   return URF_initNewGraph_g(V);
 }
 
-void URF_addUEdge(URF_graph *gra, URFAtom from, URFAtom to)
+void URF_addUEdge(URF_graph *gra, URF_atom from, URF_atom to)
 {
   if(from >= gra->V || to >= gra->V)
   {
@@ -84,11 +84,11 @@ unsigned int URF_getWeight(URF_data *udata, int index)
 
 /** gives an array of indices of atoms that are contained in the URF with the
 given index. Array is terminated by INT_MAX */
-URFAtom *getAtoms(URF_data *uData, int index)
+URF_atom *getAtoms(URF_data *uData, int index)
 {
   int i,nofFams,nextfree=0,alloced;
   char *atoms;
-  URFAtom *result;
+  URF_atom *result;
   cfam **URF;
   
   nofFams = uData->urfInfo->nofCFsPerURF[index];
@@ -190,9 +190,9 @@ unsigned int *getBonds(URF_data *uData, int index)
 }
 
 /** calls getAtoms() or getBonds() depending on mode 'a' or 'b' */
-URFAtom *URF_giveURF(URF_data *uData, int URFindex, char mode)
+URF_atom *URF_giveURF(URF_data *uData, int URFindex, char mode)
 {
-  URFAtom *result;
+  URF_atom *result;
   if(mode == 'a')
   {
     result = getAtoms(uData, URFindex);
@@ -212,7 +212,7 @@ URFAtom *URF_giveURF(URF_data *uData, int URFindex, char mode)
   return result;
 }
 
-unsigned int URF_getAtoms(URF_data *udata, unsigned int index, URFAtom **ptr)
+unsigned int URF_getAtoms(URF_data *udata, unsigned int index, URF_atom **ptr)
 {
   unsigned int i;
   if(udata->nofURFs < 1 || index >=udata->nofURFs)
@@ -226,10 +226,10 @@ unsigned int URF_getAtoms(URF_data *udata, unsigned int index, URFAtom **ptr)
   return i;
 }
 
-unsigned int URF_getBonds(URF_data *uData, unsigned int URFindex, URFBond **ptr)
+unsigned int URF_getBonds(URF_data *uData, unsigned int URFindex, URF_bond **ptr)
 {
   unsigned int nextfree, alloced;
-  URFBond *result;
+  URF_bond *result;
   unsigned int *bondIndices;
   unsigned int i;
   if(uData->nofURFs < 1 || URFindex >=uData->nofURFs)
@@ -440,7 +440,7 @@ unsigned int *URF_listURFs(URF_data *udata, int object, char mode)
 }
 
 unsigned int URF_listURFsWithAtom(URF_data *udata, unsigned int **ptr,
-                                      URFAtom object)
+                                      URF_atom object)
 {
   unsigned int i;
   if(udata->nofURFs < 1)
@@ -455,7 +455,7 @@ unsigned int URF_listURFsWithAtom(URF_data *udata, unsigned int **ptr,
 }
 
 unsigned int URF_listURFsWithBond(URF_data *udata, unsigned int **ptr,
-                                      URFAtom atom1, URFAtom atom2)
+                                      URF_atom atom1, URF_atom atom2)
 {
   unsigned int i;
   if(udata->nofURFs < 1)
@@ -469,7 +469,7 @@ unsigned int URF_listURFsWithBond(URF_data *udata, unsigned int **ptr,
   return i;
 }
 
-unsigned int URF_numContainingAtom(URF_data *udata, URFAtom atom)
+unsigned int URF_numContainingAtom(URF_data *udata, URF_atom atom)
 {
   unsigned int number;
   unsigned int *arr;
@@ -478,7 +478,7 @@ unsigned int URF_numContainingAtom(URF_data *udata, URFAtom atom)
   return number;
 }
 
-unsigned int URF_numContainingBond(URF_data *udata, URFAtom atom1, URFAtom atom2)
+unsigned int URF_numContainingBond(URF_data *udata, URF_atom atom1, URF_atom atom2)
 {
   unsigned int number;
   unsigned int *arr;
@@ -642,9 +642,9 @@ void URF_deleteEdgeIdxArray(char **cycles, unsigned int num)
   URF_delete2DArray((void **)cycles);
 }
 
-unsigned int URF_getEdgeArray(URF_data *udata, URFBond **ptr)
+unsigned int URF_getEdgeArray(URF_data *udata, URF_bond **ptr)
 {
-  URFBond *result;
+  URF_bond *result;
   unsigned int idx;
   
   result = malloc(udata->graph->E * sizeof(*result));

@@ -3,7 +3,7 @@
 #ifndef URFINFO_H
 #define URFINFO_H
 
-#include "URF_graph_Struct.h"
+#include "URFgraphStruct.h"
 #include "CycleFamsURFStruct.h"
 #include "apspStruct.h"
 #include "URFInfoStruct.h"

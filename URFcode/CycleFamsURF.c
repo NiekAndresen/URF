@@ -4,7 +4,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include "apsp.h"
-#include "URF_graph.h"
+#include "URFgraph.h"
 #include "CycleFamsURF.h"
 
 /** returns 1 if the intersection of P(r,y) and P(r,z) is equal to {r};

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <stdio.h>
-#include "URF_graph.h"
+#include "URFgraph.h"
 #include "utility.h"
 #include "apsp.h"
 

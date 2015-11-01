@@ -3,7 +3,7 @@
 #ifndef APSP_H
 #define APSP_H
 
-#include "URF_graph_Struct.h"
+#include "URFgraphStruct.h"
 
 #include "apspStruct.h"
 
