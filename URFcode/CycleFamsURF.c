@@ -207,11 +207,11 @@ void URF_vismara(cfURF *rc, URF_graph *gra, sPathInfo *spi)
 
 int URF_cycleFamsComp(const void *cf1, const void *cf2)
 {
-    if(((cfam *)cf1)->weight < ((cfam *)cf2)->weight)
+    if((*((cfam **)cf1))->weight < (*((cfam **)cf2))->weight)
     {
         return -1;
     }
-    else if(((cfam *)cf1)->weight > ((cfam *)cf2)->weight)
+    else if((*((cfam **)cf1))->weight > (*((cfam **)cf2))->weight)
     {
         return 1;
     }
