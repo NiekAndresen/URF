@@ -109,50 +109,50 @@ The length of this array is given by 'weight'. */
 typedef struct{
     URF_bond *bonds;
     unsigned int weight;
-} URFCycle;
+} URF_cycle;
 
 /** Gives all cycles of the URF with the given index.
  @return the number of cycles found
  @param URF_cycle_array_ptr pointer that points to the result array of cycles
-(declare 'URFCycle *' and give address as parameter)
+(declare 'URF_cycle *' and give address as parameter)
  @param URF_id index of the URF
  @note URF_cycle_array_ptr has to be deallocated using
 'URF_deleteCycles(*URF_cycle_array_ptr)'*/
-unsigned int URF_getCycles(URF_data *, URFCycle **URF_cycle_array_ptr,
+unsigned int URF_getCycles(URF_data *, URF_cycle **URF_cycle_array_ptr,
                            unsigned int URF_id);
 
 /** Returns a set of cycles that forms a Minimal Cycle Basis of the graph.
  @return the number of cycles returned (|E|-|V|+1)
  @param URF_cycle_array_ptr pointer that points to the result array
-(declare 'URFCycle *' and give address as parameter)
+(declare 'URF_cycle *' and give address as parameter)
  @note Result has to be deallocated using
 URF_deleteCycles(*URF_cycle_array_ptr, number).
  @note Does not return a correct basis for an unconnected graph.
  The result is an array of cycles.*/
-unsigned int URF_getBasis(URF_data *, URFCycle **URF_cycle_array_ptr);
+unsigned int URF_getBasis(URF_data *, URF_cycle **URF_cycle_array_ptr);
 
 /** @brief Gives a list of relevant cycle prototypes (one for each RCF).
  @return the number of prototypes
  @param URF_cycle_array_ptr pointer to the result array
-(declare 'URFCycle *' and give address as parameter)
+(declare 'URF_cycle *' and give address as parameter)
  The result is an array of cycles.
  @note Result has to be deallocated using
 URF_deleteCycles(*URF_cycle_array_ptr, number). */
-unsigned int URF_getRCPrototypes(URF_data *, URFCycle **URF_cycle_array_ptr);
+unsigned int URF_getRCPrototypes(URF_data *, URF_cycle **URF_cycle_array_ptr);
 
 /** @brief Gives a list of all relevant cycles
  @return the number of cycles
  @param URF_cycle_array_ptr pointer to the result array
-(declare 'URFCycle *' and give address as parameter)
+(declare 'URF_cycle *' and give address as parameter)
  The result is an array of cycles.
  @note Result has to be deallocated using
 URF_deleteCycles(*URF_cycle_array_ptr, number). */
-unsigned int URF_getRCycles(URF_data *, URFCycle **URF_cycle_array_ptr);
+unsigned int URF_getRCycles(URF_data *, URF_cycle **URF_cycle_array_ptr);
 
 /** Deallocates the structure given by 'URF_getCycles()', 'getBasis()',
 'URF_getRCPrototypes()' and 'URF_getRCycles()' if called on its result and
 return value (the number of cycles) */
-void URF_deleteCycles(URFCycle *cycles, unsigned int number);
+void URF_deleteCycles(URF_cycle *cycles, unsigned int number);
 
 /*============================================================================*/
 
@@ -170,7 +170,7 @@ by the position at which it was added to the graph starting at 0.
  @brief Changes the representation of a cycle in an array of cycles.
  @note The initial structure still exists afterwards and still has to be
 deleted. */
-unsigned int URF_translateCycArray(URF_data *, URFCycle *old_array,
+unsigned int URF_translateCycArray(URF_data *, URF_cycle *old_array,
                                    unsigned int number,
                                    char ***URF_cycle_array_ptr);
 

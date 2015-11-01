@@ -317,10 +317,10 @@ void URF_deleteCyclesChar(char **cycles)
   free(cycles);
 }
 
-unsigned int URF_getCycles(URF_data *udata, URFCycle **ptr, unsigned int index)
+unsigned int URF_getCycles(URF_data *udata, URF_cycle **ptr, unsigned int index)
 {
-  char **URFCycles;
-  URFCycle *result;
+  char **URF_cycles;
+  URF_cycle *result;
   int i,j;
   unsigned int alloced, nextfree, nextBond;
   unsigned int edgeCount;
@@ -329,13 +329,13 @@ unsigned int URF_getCycles(URF_data *udata, URFCycle **ptr, unsigned int index)
   alloced = 4;
   nextfree = 0;
   result = malloc(alloced * sizeof(*result));
-  URFCycles = URF_getCyclesChar(udata, index, 'b');
-  for(i=0; URFCycles[i]!=NULL; ++i)
+  URF_cycles = URF_getCyclesChar(udata, index, 'b');
+  for(i=0; URF_cycles[i]!=NULL; ++i)
   {
     edgeCount = 0; /*count number of edges in this cycle*/
     for(j=0; j<udata->graph->E; ++j)
     {
-      if(URFCycles[i][j] == 1)
+      if(URF_cycles[i][j] == 1)
       {
         ++edgeCount;
       }
@@ -350,7 +350,7 @@ unsigned int URF_getCycles(URF_data *udata, URFCycle **ptr, unsigned int index)
     nextBond = 0;
     for(j=0; j<udata->graph->E; ++j)
     {
-      if(URFCycles[i][j] == 1) /*copy edge into new structure*/
+      if(URF_cycles[i][j] == 1) /*copy edge into new structure*/
       {
         result[nextfree].bonds[nextBond][0] = udata->graph->edges[j][0];
         result[nextfree].bonds[nextBond][1] = udata->graph->edges[j][1];
@@ -360,12 +360,12 @@ unsigned int URF_getCycles(URF_data *udata, URFCycle **ptr, unsigned int index)
     ++nextfree;
   }
 
-  URF_deleteCyclesChar(URFCycles);
+  URF_deleteCyclesChar(URF_cycles);
   *ptr = result;
   return i;
 }
 
-void URF_deleteCycles(URFCycle *cycles, unsigned int number)
+void URF_deleteCycles(URF_cycle *cycles, unsigned int number)
 {
   int i;
   if(number < 1) return;
@@ -487,10 +487,10 @@ unsigned int URF_numContainingBond(URF_data *udata, URF_atom atom1, URF_atom ato
   return number;
 }
 
-unsigned int URF_getBasis(URF_data *udata, URFCycle **ptr)
+unsigned int URF_getBasis(URF_data *udata, URF_cycle **ptr)
 {
   int i,j;
-  URFCycle *result;
+  URF_cycle *result;
   char **mat; /*matrix in which the dependency checks take place*/
   unsigned int size, added;
   int currBond;
@@ -533,9 +533,9 @@ unsigned int URF_getBasis(URF_data *udata, URFCycle **ptr)
   return size;
 }
 
-unsigned int URF_getRCPrototypes(URF_data *udata, URFCycle **ptr)
+unsigned int URF_getRCPrototypes(URF_data *udata, URF_cycle **ptr)
 {
-  URFCycle *result;
+  URF_cycle *result;
   unsigned int nofRel=0;
   int currFam=0, currEdge;
   int i,j;
@@ -578,10 +578,10 @@ unsigned int URF_getRCPrototypes(URF_data *udata, URFCycle **ptr)
   return nofRel;
 }
 
-unsigned int URF_getRCycles(URF_data *udata, URFCycle **ptr)
+unsigned int URF_getRCycles(URF_data *udata, URF_cycle **ptr)
 {
-  URFCycle *result;
-  URFCycle *URFrel; /*relevant Cycles of a URF*/
+  URF_cycle *result;
+  URF_cycle *URFrel; /*relevant Cycles of a URF*/
   int i,j;
   unsigned int alloced=4, nextfree=0;
   int num;
@@ -607,7 +607,7 @@ unsigned int URF_getRCycles(URF_data *udata, URFCycle **ptr)
   return nextfree;
 }
 
-unsigned int URF_translateCycArray(URF_data *udata, URFCycle *array,
+unsigned int URF_translateCycArray(URF_data *udata, URF_cycle *array,
                                     unsigned int number, char ***ptr)
 {
   int i,j,URF_edgeIdx;
