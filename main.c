@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "./io.h"
-#include "./URFcode/URF_graph.h"
+#include "./URFcode/URFgraph.h"
 #include "./URFcode/utility.h"
 #include "URF.h"
 /** returns the index in the array of RCFs (fams) that the RCF with the weight
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
         printf("\n");
 
         int l,number;
-        URFCycle *cycles;
+        URF_cycle *cycles;
         number = URF_getCycles(udata, &cycles, i);
         printf("cycles (%d):\n",number);
         for(j=0; j<number; ++j)
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
         printf("\n");
         URF_deleteCycles(cycles, number);
         
-        URFBond *URFedges;
+        URF_bond *URFedges;
         int number4;
         number4 = URF_getBonds(udata, i,&URFedges);
         printf("edges of URF %d:\n",i);
@@ -140,16 +140,16 @@ int main(int argc, char **argv)
         free(URFedges);
     }
     
-    URFAtom *URFatoms;
+    URF_atom *URF_atoms;
     int number3;
     printf("atoms in the URFs:\n");
     for(i=0; i<udata->nofURFs; ++i)
     {
-        number3 = URF_getAtoms(udata, i, &URFatoms);
+        number3 = URF_getAtoms(udata, i, &URF_atoms);
         j=0;
         for(k=0; k<graph->V; ++k)
         {
-            if(j<number3 && URFatoms[j] == k)
+            if(j<number3 && URF_atoms[j] == k)
             {
                 printf("1 ");
                 ++j;
@@ -160,10 +160,10 @@ int main(int argc, char **argv)
             }
         }
         printf("\n");
-        free(URFatoms);
+        free(URF_atoms);
     }
     
-    URFCycle *basis;
+    URF_cycle *basis;
     int number1;
     number1 = URF_getBasis(udata, &basis);
     printf("basis:\n");
@@ -192,9 +192,9 @@ int main(int argc, char **argv)
     URF_deleteCycles(basis, number1);
     
     
-    URFAtom atom;
+    URF_atom atom;
     int number2;
-    URFAtom *URFsWithAtom;
+    URF_atom *URFsWithAtom;
     atom=1;
     number2 = URF_listURFsWithAtom(udata, &URFsWithAtom, atom);
     printf("listing all URFs with atom %d: ",atom);
@@ -218,7 +218,7 @@ int main(int argc, char **argv)
     printf("\n");
     free(URFsWithBond);
     
-    URFCycle *protos;
+    URF_cycle *protos;
     int num;
     printf("RC prototypes:\n");
     num = URF_getRCPrototypes(udata, &protos);
@@ -232,7 +232,7 @@ int main(int argc, char **argv)
     }
     URF_deleteCycles(protos, num);
     
-    URFCycle *relCycles;
+    URF_cycle *relCycles;
     int num1;
     printf("RCs:\n");
     num1=URF_getRCycles(udata, &relCycles);

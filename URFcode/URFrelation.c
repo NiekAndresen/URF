@@ -343,12 +343,15 @@ void URF_checkEdges(cfURF *RCFs, URF_graph *graph, URFinfo *uInfo, sPathInfo *sp
         if(uInfo->URFrel[i][j][k] == 1) /*find entries which indicate potential
                                         URF-relations*/
         {
+          uInfo->URFrel[i][j][k] = 0;
+          uInfo->URFrel[i][k][j] = 0;
           for(l=0; l<graph->E;  ++l)
           {
             if(RCFs->fams[URF_idxWeights(uInfo,i,j)]->prototype[l] == 1 &&
                RCFs->fams[URF_idxWeights(uInfo,i,k)]->prototype[l] == 1)
-            {
-              uInfo->URFrel[i][j][k] = 0;
+            {/* they share an edge */
+              uInfo->URFrel[i][j][k] = 1;
+              uInfo->URFrel[i][k][j] = 1;
             }
           }
         }
