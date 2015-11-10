@@ -58,9 +58,9 @@ int main(int argc, char **argv)
   URF_graph *graph;
   URF_data *URFdata;
   int idx, obIdx, URFcount, count, bondCount;
-  URFAtom *atoms;
-  URFBond *bondArray;
-  URFCycle *cycleArray;
+  URF_atom *atoms;
+  URF_bond *bondArray;
+  URF_cycle *cycleArray;
   char **otherCycleArray;
 
   /* read in the graph */
