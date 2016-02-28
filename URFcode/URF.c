@@ -43,6 +43,7 @@ URF_data *URF_calculate(URF_graph *gra)
   correctGraph = URF_checkGraphCorrect(gra); /*from URF_graph.h*/
   if(correctGraph == 0) URF_warn('c'); /* from utility.h */
   udata = malloc(sizeof(*udata));
+  
   URF_findShortestPaths(udata, gra); /*from apsp.h*/
   udata->CFs = URF_findCycleFams(gra, udata->spi); /*from CycleFamsURF.h*/
   udata->graph = gra;
